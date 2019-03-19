@@ -1,0 +1,65 @@
+@import '../../../../../../variables.scss';
+@import '../../../../../../functions.scss';
+
+$item-label-padding: 1px;
+$item-width: 79px + $item-label-padding * 2;
+$item-height: 64px;
+$item-spacing: 17px 2px;
+
+$icon-size: 32px;
+$icon-margin-bottom: 4px;
+$shortcut-icon-size: 11px;
+$focus-outline-color: rgb(99, 181, 222);
+$focus-active-outline-color: rgb(255, 177, 103);
+$selected-color: rgb(49, 107, 197);
+
+.file-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: $item-width;
+    height: $item-height;
+    margin: 9px 1px;
+
+    color: white;
+    font-family: 'Tahoma';
+    font-size: 11px;
+    text-align: center;
+    text-shadow: rgb(0, 0, 0) 1px 1px 3px;
+
+    .label {
+        padding: $item-label-padding;
+    }
+
+    &:focus {
+        .label {
+            border: 1px dotted $focus-outline-color;
+        }
+
+        &:active, &.active {
+            .label {
+                border-color: $focus-active-outline-color;
+            }
+        }
+    }
+
+    &:active, &.active {
+        .label {
+            text-shadow: none;
+            background: $selected-color;
+        }
+    }
+
+    img {
+        width: $icon-size;
+        height: $icon-size;
+        margin-bottom: $icon-margin-bottom;
+    }
+
+    &.shortcut {
+        .icon::after {
+            width: $shortcut-icon-size;
+            height: $shortcut-icon-size;
+        }
+    }       
+}

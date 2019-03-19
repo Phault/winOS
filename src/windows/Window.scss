@@ -1,0 +1,114 @@
+@import '../variables.scss';
+@import '../functions.scss';
+
+.window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+.frame {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border-style: solid;
+    border-image: url('../assets/window-border.png') 0 5 5 5 / 0px 4px 4px 4px round;
+    border-top: 0; // 0px is turned into 0 in border-image in prod builds, apparently this is not treated equally atleast in chrome
+
+    background: $window-white;
+}
+
+.title-bar {
+    width: 100%;
+    min-height: $titlebar-height;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 0;
+    padding: 0 4px 0 4px;
+
+    &::before {
+        @include background();
+        border-image: url('../assets/window_caption.png') 9 35 17 28 fill / 9px 35px 17px 28px round;
+    }
+
+    span {
+        flex-grow: 1;
+        font-family: 'Trebuchet MS';
+        font-size: 10pt;
+        font-weight: bold;
+        text-shadow: rgb(10, 24, 131) 1px 1px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .title-bar-buttons {
+        display: flex;
+        margin-top: 2px;
+
+        >* {
+            margin-right: 2px;
+        }
+    }
+}
+
+.app-icon {
+    width: $titlebar-icon-width;
+    height: $titlebar-icon-height;
+}
+
+.status-bar {
+    background: $window-gray;
+}
+
+.btn {
+    padding: 2px;
+    width: 21px;
+    height: 21px;
+    color: white;
+    border: 0;
+    outline: 0;
+    position: relative;
+    z-index: 0;
+    background: none;
+
+    &::before {
+        @include background();
+        border-image: url('../assets/window-button-blue-normal.png') 5 fill / 5px round;
+    }
+
+    &:hover::before {
+        border-image-source: url('../assets/window-button-blue-hover.png');
+    }
+
+    &:active::before {
+        border-image-source: url('../assets/window-button-blue-down.png');
+    }
+
+    &.btn-danger {
+        &::before {
+            border-image-source: url('../assets/window-button-red-normal.png');
+        }
+
+        &:hover::before {
+            border-image-source: url('../assets/window-button-red-hover.png');
+        }
+    
+        &:active::before {
+            border-image-source: url('../assets/window-button-red-down.png');
+        }
+    }
+
+    
+    .btn-icon {
+        width: 100%;
+        height: 100%;
+        // width: 11px;
+        // height: 11px;
+    }
+}

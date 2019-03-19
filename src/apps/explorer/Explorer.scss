@@ -1,0 +1,84 @@
+@import '../../functions.scss';
+
+.explorer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    @include gradient(#f3f5f6, #ede8ce, left, right);
+
+    .menu-bar {
+        background: transparent;
+        border-bottom: 0;
+    }
+
+    .toolbar {
+        height: 86px; // delete this
+    }
+
+    .body {
+        display: flex;
+        flex-grow: 1;
+        
+        padding-left: 1px;
+        padding-bottom: 1px;
+
+        .sidebar {
+            width: 210px;
+            @include gradient(rgb(123, 162, 231), rgb(99, 117, 214), top, bottom);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 12px;
+
+            .group {
+                background: white;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                overflow: hidden;
+                color: rgb(33, 93, 198);
+                margin-bottom: 15px;
+                font-family: 'Tahoma';
+                font-size: 11px;
+
+                .group-header {
+                    @include gradient(white, rgb(198, 211, 247), left, right);
+                    height: 25px;
+                    font-weight: bold;
+                    padding: 7px 13px;
+                }
+
+                .group-body {
+                    background: rgb(214, 223, 247);
+                    border: 1px solid white;
+                    border-top: 0;
+                    padding: 10px 12px;
+
+                    ul {
+                        margin: 0;
+                        list-style: none;
+                        padding-left: 0;
+
+                        li {
+                            margin-bottom: 4px;
+                            
+                            &:hover {
+                                text-decoration: underline;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        .contents {
+            background: white;
+            flex-grow: 1;
+
+            .icon {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    }
+}
