@@ -5,10 +5,10 @@ import { StartPanel } from './StartPanel';
 import { NotificationTray } from './NotificationTray';
 import { StartButton } from './StartButton';
 import { TaskList } from './TaskList';
+import { Clock } from './Clock';
 
 interface TaskBarProps {
     height: number;
-    windowManager: WindowManager;
 }
 
 interface TaskBarState {
@@ -26,12 +26,11 @@ export default class TaskBar extends Component<TaskBarProps, TaskBarState> {
                 {this.state.startMenuOpen && <StartPanel style={{bottom: this.props.height}} />}
 
                 <StartButton onActivated={() => this.setState({startMenuOpen: !this.state.startMenuOpen})} active={this.state.startMenuOpen} />
-                <TaskList windowManager={this.props.windowManager} />
+                <TaskList />
                 <NotificationTray>
-                    <span>{new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</span>
+                    <Clock />
                 </NotificationTray>
             </div>
         );
     }
 }
-

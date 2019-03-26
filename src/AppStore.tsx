@@ -1,12 +1,12 @@
-import { WinApp } from "./apps/framework/WinApp";
+import { Program } from "./apps/framework/Program.interface";
 export class AppStore {
-  getInstalledApps(): WinApp[] {
+  getInstalledApps(): Program[] {
     return [];
   }
-  async install(path: string): Promise<WinApp> {
+  async install(path: string): Promise<Program> {
     const result = await import(path);
-    return result as WinApp;
+    return result as Program;
   }
-  uninstall(app: WinApp) {
+  uninstall(app: Program) {
   }
 }

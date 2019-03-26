@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import UncontrolledWindow from './UncontrolledWindow';
-import { WindowManager } from './WindowManager';
-export function WindowRenderer({ windowManager }: {
-  windowManager: WindowManager;
-}) {
-  return (
+import { WindowManagerContext } from '../App';
+import { useObserver } from 'mobx-react-lite';
+
+export function WindowRenderer() {
+
+  const windowManager = useContext(WindowManagerContext);
+
+  return useObserver(() =>
     <React.Fragment>
-      {Array.from(windowManager.getWindows()).map(([id, w]) => (
-        <UncontrolledWindow key={id} title={w.title} icon={w.icon} {...w.rect} minWidth={w.minSize.width} minHeight={w.minSize.height}>
+      {windowManager.windows.map(w => (
+        <UncontrolledWindow 
+          key={w.id} 
+          title={w.title} 
+          icon={w.icon} 
+          {...w.rect} 
+          minWidth={w.template.minSize && w.template.minSize.width || 1} 
+          minHeight={w.template.minSize && w.template.minSize.height || 1}>
           {w.body}
         </UncontrolledWindow>
       ))}

@@ -1,28 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { FileSystemContext } from '../../../../App';
+
+export type ExecuteHandler = (items: string[]) => void;
+
+export interface ViewModeProps {
+    files: FileInfo[];
+    onExecute?: ExecuteHandler;
+}
 
 interface FolderViewProps {
     path: string;
-    viewMode: React.ComponentType<{files: FileInfo[]}>,
+    viewMode: React.ComponentType<ViewModeProps>,
     onSelectionChanged?: (items: string[]) => void;
+    onExecute?: ExecuteHandler;
 }
 
-const FolderView: React.FC<FolderViewProps> = (props) => {
+const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute}) => {
     const [contents, setContents] = useState<FileInfo[] | null>(null);
     const [selection, setSelection] = useState<string[]>([]);
+
+    const fileSystem = useContext(FileSystemContext);
     
-    function loadContents(path: string) {                                          
-        setContents([{
-            fullPath: '/folder/test.txt',
-        }]);
-        setSelection([]);
+    function loadContents(path: string) {
+        fileSystem!.readdir(path, (e, files) => {
+            const fileInfos = (files || []).map(file => ({
+                fullPath: file
+            }));
+            setContents(fileInfos);
+            setSelection([]);
+        });
     }
 
-    useEffect(() => {
-        loadContents(props.path);
-    }, [props.path]);
+    useEffect(() => loadContents(path), [path]);
 
     return (
-        <props.viewMode files={contents!}/>
+        <ViewMode files={contents!} onExecute={onExecute}/>
     );
 };
 

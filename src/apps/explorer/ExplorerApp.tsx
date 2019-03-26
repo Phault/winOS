@@ -1,12 +1,11 @@
 import React from 'react';
-import { WindowState } from '../../App';
-import { WinApp } from "../framework/WinApp";
+import { Program } from "../framework/Program.interface";
 import { Explorer } from './Explorer';
 
-export const ExplorerApp: WinApp<string> = {
+export const ExplorerApp: Program<string> = {
     name: 'File Explorer',
     run: (os, args) => {
-        os.windows.add({
+        os.windows.create({
             title: ExplorerApp.name,
             rect: {
                 left: 200,
@@ -18,7 +17,6 @@ export const ExplorerApp: WinApp<string> = {
                 width: 120,
                 height: 100,
             },
-            state: WindowState.Normal,
             body: <Explorer os={os} />
         });
     }

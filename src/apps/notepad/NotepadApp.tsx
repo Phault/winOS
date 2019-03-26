@@ -1,23 +1,22 @@
 import React from 'react';
 import notepadIcon from './icon.png';
-import { WinApp } from '../framework/WinApp';
-import { WindowState } from '../../App';
+import { Program } from '../framework/Program.interface';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
 import { Item, Separator } from 'react-contexify';
 
-export const NotepadApp : WinApp<string> = {
+export const NotepadApp : Program<string> = {
   name: 'Notepad',
   icon: notepadIcon,
   run: ({ windows, fileSystem }, args) => {
     const path = args || 'test.txt';
-    var file;
+    let file: string;
     try {
       file = fileSystem.readFileSync(path).toString();
     } catch (e) {
       file = '';
     }
     
-    windows.add({
+    windows.create({
       title: NotepadApp.name,
       icon: NotepadApp.icon,
       rect: {
@@ -30,7 +29,6 @@ export const NotepadApp : WinApp<string> = {
         width: 120,
         height: 100,
       },
-      state: WindowState.Normal,
       body: (
         <React.Fragment>
           <MenuBar id="Notepad">

@@ -10,7 +10,6 @@ import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
 
 interface ExplorerState {
     path: string;
-    contents: string[] | null;
 }
 
 export interface ExplorerProps {
@@ -24,48 +23,20 @@ interface FileDescriptor {
     type: 'File' | 'Dir'
 }
 
-interface DirContents {
-
-}
-
 export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
     state = {
         path: '/',
-        contents: null 
     }
 
-    componentDidMount() {
-        this.fetchContents(this.state.path);
-    }
-
-    fetchContents(path: string) {
-        this.setState({
-            path,
-            contents: null
-        });
-
-        this.props.os.fileSystem.readdir(path, (e, contents) => {
-            if (!e)
-                this.setState({ contents: contents || null });
-        });
-    }
-
-    handleFileDoubleClick(file: string) {
+    handleFileExecution = (files: string[]) => {
         // todo: replace all this nonsense
-        if (file.includes('.'))
-            NotepadApp.run(this.props.os, this.state.path + '/' + file);
+        if (files[0].includes('.'))
+            NotepadApp.run(this.props.os, files[0]);
         else
-            this.fetchContents(file);
+            this.setState({path: files[0]});
     }
 
     render() {
-        const files = (this.state.contents || []).map((file, i) => (
-            <li key={i} 
-                onDoubleClick={() => this.handleFileDoubleClick(file)}>
-                {file}
-            </li>
-        ));
-
         return (
             <div className="explorer">
                 <MenuBar id="explorer">
@@ -206,10 +177,7 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                         </div>
                     </div>
                     <div className="contents">
-                        <FolderView path={this.state.path} viewMode={IconView} />
-                        {/* <ul>
-                            {files}
-                        </ul> */}
+                        <FolderView path={this.state.path} viewMode={IconView} onExecute={this.handleFileExecution} />
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { TaskBarItem } from './TaskBarItem';
+
 export function NotificationTray({ children, ...rest }: {
     children?: any;
 }) {
