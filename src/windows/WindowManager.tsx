@@ -1,52 +1,11 @@
-import { WindowState, WindowManagerContext } from '../App';
-import { EventEmitter } from 'events';
-import { Rectangle } from '../misc/Rectangle';
-import { Size } from '../misc/Size';
-import { Position } from '../misc/Position';
-import { ReactNode, useContext } from 'react';
-import { useObservable } from 'mobx-react-lite';
-import { decorate, observable, action } from 'mobx';
+import { WindowState } from '../App';
+import { decorate, observable, action, computed } from 'mobx';
+import React from 'react';
+import { WindowInstance } from './WindowInstance';
+import { WindowTemplate } from './WindowTemplate';
 
-class WindowInstance {
-  id: Readonly<number>;
-  
-  title: string;
-  icon?: string;
-  state: WindowState;
-  rect: Rectangle;
-  body: ReactNode;
 
-  template: Readonly<WindowTemplate>;
-
-  constructor(id: number, template: WindowTemplate) {
-    this.id = id;
-    this.title = template.title;
-    this.icon = template.icon;
-    this.state = WindowState.Normal;
-    this.rect = template.rect || {
-      left: 0,
-      top: 0,
-      width: 1,
-      height: 1
-    };
-    this.body = template.body;
-
-    this.template = template;
-  }
-}
-
-interface WindowTemplate {
-  title: string;
-  icon?: string;
-  
-  parentId?: number;
-  
-  rect?: Rectangle;
-  minSize?: Size;
-  maxSize?: Size;
-  
-  body: ReactNode;
-}
+export const WindowContext = React.createContext<WindowInstance | null>(null);
 
 class WindowManager {
   windows: WindowInstance[] = [];
@@ -55,46 +14,95 @@ class WindowManager {
 
   private nextId = 0;
 
+  public get focused() {
+    for (let i = this.windows.length - 1; i >= 0; i--) {
+      const window = this.windows[i];
+
+      if (window.state !== WindowState.Minimized)
+        return window;
+    }
+
+    return null;
+  }
+
   public create(template: WindowTemplate): WindowInstance {
     const id = this.getNextId();
     const instance = new WindowInstance(id, template);
     this.windows.push(instance);
     this.idToWindowMap.set(id, instance);
+    
     return instance;
   }
 
-  public destroy(windowId: number) {
-    // remove from windows...
-    this.idToWindowMap.delete(windowId);
+  public destroy(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+    const currentIndex = this.windows.indexOf(window!);
+    this.windows.splice(currentIndex, 1);
+    this.idToWindowMap.delete(window!.id);
   }
 
-  public minimize(windowId: number) {
+  public minimize(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+
+    if (window!.state === WindowState.Minimized)
+      return;
+
+    window!.state = WindowState.Minimized;
+    this.sendBackwards(window!);
   }
 
-  public restore(windowId: number) { 
+  public restore(instanceOrId: WindowInstance | number) { 
+    const window = this.getWindow(instanceOrId);
+
+    if (window!.state !== WindowState.Minimized)
+      return;
+
+    window!.state = WindowState.Normal;
+    this.bringToFront(instanceOrId);
   }
 
-  public bringToFront(windowId: number) {
-
+  public bringToFront(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+    const currentIndex = this.windows.indexOf(window!);
+    this.windows.splice(currentIndex, 1);
+    this.windows.push(window!);
   }
 
-  public bringForwards(windowId: number) {
-    
+  public bringForwards(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+    const currentIndex = this.windows.indexOf(window!);
+    const targetIndex = Math.min(this.windows.length - 1, currentIndex + 1);
+    this.windows[currentIndex] = this.windows[targetIndex];
+    this.windows[targetIndex] = window!;
   }
 
-  public sendToBack(windowId: number) {
+  public sendToBack(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+    const currentIndex = this.windows.indexOf(window!);
+    this.windows.splice(currentIndex, 1);
+    this.windows.unshift(window!);
   }
 
-  public sendBackwards(windowId: number) {
+  public sendBackwards(instanceOrId: WindowInstance | number) {
+    const window = this.getWindow(instanceOrId);
+    const currentIndex = this.windows.indexOf(window!);
+    const targetIndex = Math.max(0, currentIndex - 1);
+    this.windows[currentIndex] = this.windows[targetIndex];
+    this.windows[targetIndex] = window!;
   }
 
   private getNextId() {
     return this.nextId++;
   }
+
+  private getWindow(instanceOrId: WindowInstance | number) {
+    return instanceOrId instanceof WindowInstance ? instanceOrId : this.idToWindowMap.get(instanceOrId);
+  }
 }
 
 decorate(WindowManager, {
   windows: observable,
+  focused: computed,
   create: action,
   destroy: action,
   minimize: action,
@@ -106,18 +114,3 @@ decorate(WindowManager, {
 });
 
 export { WindowManager };
-
-// const WindowManagerTest: React.FC<{}> = ({children}) => {
-
-//   const data = useObservable(new WindowManager());
-
-//   return (
-//     <WindowManagerContext.Provider value={data}>
-//       {children}
-//     </WindowManagerContext.Provider>
-//   );
-// }
-
-// function WindowManagerRenderer() {
-
-// }

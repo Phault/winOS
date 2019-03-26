@@ -2,6 +2,9 @@
     flex-grow: 1;
     padding: 2px 1px;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: row wrap;
     align-content: flex-start;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
 }

@@ -29,9 +29,9 @@ export const NotepadApp : Program<string> = {
         width: 120,
         height: 100,
       },
-      body: (
+      body: (window) => (
         <React.Fragment>
-          <MenuBar id="Notepad">
+          <MenuBar id={"Notepad" + window.id}>
             <MenuBar.Menu label='File'>
               <Item>New</Item>
               <Item>Open...</Item>

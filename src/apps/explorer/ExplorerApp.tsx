@@ -17,7 +17,7 @@ export const ExplorerApp: Program<string> = {
                 width: 120,
                 height: 100,
             },
-            body: <Explorer os={os} />
+            body: () => <Explorer os={os} />
         });
     }
 };

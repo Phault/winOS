@@ -72,13 +72,9 @@
         }
     
         .contents {
+            display: flex;
             background: white;
             flex-grow: 1;
-
-            .icon {
-                width: 48px;
-                height: 48px;
-            }
         }
     }
 }

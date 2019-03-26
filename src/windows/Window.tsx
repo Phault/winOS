@@ -1,9 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, HTMLAttributes } from 'react';
 import './Window.scss';
 import asResizable from '../misc/Resizable';
 import asMovable from '../misc/Movable';
 import { Rectangle } from '../misc/Rectangle';
 import { TitleBar } from './TitleBar';
+import classNames from 'classnames';
 
 function Frame({ children }: { children?: any }) {
     return (
@@ -18,11 +19,12 @@ export interface WindowProps extends Rectangle {
     children?: ReactNode;
     handle?: React.Ref<HTMLDivElement>;
     icon?: string;
+    active?: boolean;
 }
 
-export function StaticWindow({left, top, width, height, title, icon, children, handle}: WindowProps) {
+export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true}: WindowProps) {
     return (
-        <div className="window" style={{ left, top, width, height }}>
+        <div className={classNames("window", { inactive: !active })} style={{ left, top, width, height }}>
             <TitleBar title={title || ''} icon={icon} ref={handle} />
             <Frame>
                 {children}
@@ -33,13 +35,19 @@ export function StaticWindow({left, top, width, height, title, icon, children, h
 
 export default asMovable(asResizable(StaticWindow));
 
-export function Button({icon, children, className}: any) {
-    const iconNode = icon && <img className="btn-icon" src={icon} />;
+interface TitleBarButtonProps extends HTMLAttributes<any> {
+    icon?: string;
+}
+
+const Button: React.FC<TitleBarButtonProps> = ({icon, children, className, ...rest}) => {
+    const iconNode = icon && <div className="btn-icon" style={{borderImageSource: `url(${icon})`}} />;
     
     return (
-        <button className={"btn " + (className || '')} type="button">
+        <button className={classNames('btn', className)} type="button" {...rest}>
             {iconNode}
             {children}
         </button>
     );
 }
+
+export { Button };

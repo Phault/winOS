@@ -18,6 +18,10 @@
     border-top: 0; // 0px is turned into 0 in border-image in prod builds, apparently this is not treated equally atleast in chrome
 
     background: $window-white;
+
+    .inactive & {
+        border-image-source: url('../assets/window-border-inactive.png');
+    }
 }
 
 .title-bar {
@@ -33,7 +37,11 @@
 
     &::before {
         @include background();
-        border-image: url('../assets/window_caption.png') 9 35 17 28 fill / 9px 35px 17px 28px round;
+        border-image: url('../assets/window-caption.png') 9 35 17 28 fill / 9px 35px 17px 28px round;
+
+        .inactive & {
+            border-image-source: url('../assets/window-caption-inactive.png');
+        }
     }
 
     span {
@@ -66,6 +74,20 @@
     background: $window-gray;
 }
 
+$btnHeight: 21;
+$btnVersionCount: 8;
+
+$btnIconHeight: 23;
+$btnIconVersionCount: 8;
+
+@mixin sheetBorderSlice($index, $total, $height) {
+    $sheetHeight: $total * $height;
+    
+    $top: $index * $height;
+    $bottom: $sheetHeight - $top - $height;
+    border-image-slice: $top 0 $bottom 0 fill;
+}
+
 .btn {
     padding: 2px;
     width: 21px;
@@ -79,36 +101,76 @@
 
     &::before {
         @include background();
-        border-image: url('../assets/window-button-blue-normal.png') 5 fill / 5px round;
+        border-image: url('../assets/window-button-blue.png') 0 / 0;
+        @include sheetBorderSlice(0, $btnVersionCount, $btnHeight);
     }
 
     &:hover::before {
-        border-image-source: url('../assets/window-button-blue-hover.png');
+        @include sheetBorderSlice(1, $btnVersionCount, $btnHeight);
     }
 
     &:active::before {
-        border-image-source: url('../assets/window-button-blue-down.png');
+        @include sheetBorderSlice(2, $btnVersionCount, $btnHeight);
     }
 
-    &.btn-danger {
+    .disabled &::before, &.disabled::before {
+        @include sheetBorderSlice(3, $btnVersionCount, $btnHeight);
+    }
+    
+    .inactive &, &.inactive {
         &::before {
-            border-image-source: url('../assets/window-button-red-normal.png');
+            @include sheetBorderSlice(4, $btnVersionCount, $btnHeight);
         }
 
         &:hover::before {
-            border-image-source: url('../assets/window-button-red-hover.png');
+            @include sheetBorderSlice(5, $btnVersionCount, $btnHeight);
         }
     
         &:active::before {
-            border-image-source: url('../assets/window-button-red-down.png');
+            @include sheetBorderSlice(6, $btnVersionCount, $btnHeight);
+        }
+    
+        .disabled &::before, &.disabled::before {
+            @include sheetBorderSlice(7, $btnVersionCount, $btnHeight);
         }
     }
 
+    &.btn-danger::before {
+        border-image-source: url('../assets/window-button-red.png');
+    }
+}
+
+.btn-icon {
+    width: 17px;
+    height: 17px;
+
+    @include sheetBorderSlice(0, $btnIconVersionCount, $btnIconHeight);
+
+    .btn:hover & {
+        @include sheetBorderSlice(1, $btnIconVersionCount, $btnIconHeight);
+    }
+
+    .btn:active & {
+        @include sheetBorderSlice(2, $btnIconVersionCount, $btnIconHeight);
+    }
+
+    .disabled &, &.disabled {
+        @include sheetBorderSlice(3, $btnIconVersionCount, $btnIconHeight);
+    }
     
-    .btn-icon {
-        width: 100%;
-        height: 100%;
-        // width: 11px;
-        // height: 11px;
+    .inactive &, &.inactive {
+        @include sheetBorderSlice(4, $btnIconVersionCount, $btnIconHeight);
+
+        .btn:hover & {
+            @include sheetBorderSlice(5, $btnIconVersionCount, $btnIconHeight);
+        }
+    
+        .btn:active & {
+            @include sheetBorderSlice(6, $btnIconVersionCount, $btnIconHeight);
+        }
+    
+        .disabled &, &.disabled {
+            @include sheetBorderSlice(7, $btnIconVersionCount, $btnIconHeight);
+        }
     }
 }

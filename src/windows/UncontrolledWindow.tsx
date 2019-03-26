@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import Window from './Window';
 import { Rectangle } from '../misc/Rectangle';
 import { Position } from '../misc/Position';
@@ -6,36 +6,38 @@ import { Position } from '../misc/Position';
 export interface UncontrolledWindowProps extends Partial<Rectangle> {
     minWidth?: number;
     minHeight?: number;
-    children?: ReactNode;
     title?: string;
     icon?: string;
+    active?: boolean;
 }
 
-export default class UncontrolledWindow extends React.Component<UncontrolledWindowProps, Rectangle> {
-    state: Rectangle = {
-        left: this.props.left || 0,
-        top: this.props.top || 0,
-        width: this.props.width || 0,
-        height: this.props.height || 0
-    };
+const UncontrolledWindow: React.FC<UncontrolledWindowProps> = (props) => {
 
-    onMove = (pos: Position) => {
-        this.setState(pos);
+    const [rect, setRect] = useState<Rectangle>({
+        left: props.left || 0,
+        top: props.top || 0,
+        width: props.width || 0,
+        height: props.height || 0
+    });
+    
+    const onMove = (pos: Position) => {
+        setRect({
+            ...rect,
+            ...pos
+        });
     }
 
-    onResize = (bounds: Rectangle) => {
-        this.setState(bounds);
-    }
+    const onResize = (bounds: Rectangle) => setRect(bounds);
 
-    render() {
-        return (
-            <Window
-                {...this.props}
-                {...this.state}
-                onMove={this.onMove}
-                onResize={this.onResize}>
-                {this.props.children}
-            </Window>
-        );
-    }
+    return (
+        <Window
+            {...props}
+            {...rect}
+            onMove={onMove}
+            onResize={onResize}>
+            {props.children}
+        </Window>
+    );
 }
+
+export default UncontrolledWindow;

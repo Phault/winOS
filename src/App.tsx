@@ -20,8 +20,6 @@ export enum WindowState {
 }
 
 
-const windows = new WindowManager();
-
 function loadFileSystem(): Promise<FSModule> {
   return new Promise<FSModule>(
     (resolve, reject) => {
@@ -40,10 +38,6 @@ function loadFileSystem(): Promise<FSModule> {
       
         //   localStorage.setItem('installed', 'true');
         // }
-      
-        // NotepadApp.run(os, '/text.txt');
-        // NotepadApp.run(os, '/folder/otherfile.txt');
-        // ExplorerApp.run(os, '/');
     
         resolve(BFSRequire('fs'));
       });
