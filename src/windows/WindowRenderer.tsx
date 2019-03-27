@@ -16,6 +16,7 @@ export function WindowRenderer() {
             title={w.title} 
             icon={w.icon} 
             active={windowManager.focused === w}
+            onActivated={() => windowManager.bringToFront(w)}
             {...w.rect} 
             minWidth={w.template.minSize && w.template.minSize.width || 1} 
             minHeight={w.template.minSize && w.template.minSize.height || 1}>

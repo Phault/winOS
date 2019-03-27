@@ -25,11 +25,18 @@ export const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(({ title
 
     return (
         <div className="title-bar" ref={ref} onDoubleClick={toggleMaximize}>
-            <img className="app-icon" src={icon || fallbackIcon} draggable={false} onDoubleClick={() => windowManager.destroy(window)} />
+            <img 
+                className="app-icon" 
+                src={icon || fallbackIcon} 
+                draggable={false} 
+                onDoubleClick={() => windowManager.destroy(window)} 
+                onPointerDown={e => e.stopPropagation()}/>
+                
             <span>{title}</span>
-            <div className="title-bar-buttons">
+
+            <div className="title-bar-buttons" onPointerDown={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
                 <Button icon={minimizeIcon} onClick={() => windowManager.minimize(window)} />
-                <Button icon={maximizeIcon} onClick={toggleMaximize}  onDoubleClick={e => e.stopPropagation()}/>
+                <Button icon={maximizeIcon} onClick={toggleMaximize}/>
                 <Button className="btn-danger" icon={closeIcon} onClick={() => windowManager.destroy(window)}/>
             </div>
         </div>

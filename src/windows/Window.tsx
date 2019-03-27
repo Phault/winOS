@@ -20,11 +20,18 @@ export interface WindowProps extends Rectangle {
     handle?: React.Ref<HTMLDivElement>;
     icon?: string;
     active?: boolean;
+    onActivated?: () => void;
 }
 
-export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true}: WindowProps) {
+export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true, onActivated}: WindowProps) {
+
+    const activated = () => {
+        if (!active && onActivated)
+            onActivated();
+    };
+
     return (
-        <div className={classNames("window", { inactive: !active })} style={{ left, top, width, height }}>
+        <div className={classNames("window", { inactive: !active })} style={{ left, top, width, height }} onPointerDownCapture={activated}>
             <TitleBar title={title || ''} icon={icon} ref={handle} />
             <Frame>
                 {children}

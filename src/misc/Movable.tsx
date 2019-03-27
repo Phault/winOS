@@ -1,18 +1,14 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Position } from './Position';
 import { Rectangle } from './Rectangle';
+import { usePointerCapture } from './usePointerCapture';
 
-interface MovableComponentProps extends Partial<Position> {
+interface WrappedMovableProps extends Partial<Position> {
     handle?: React.Ref<HTMLDivElement>;
 }
 
 interface MovableProps extends Position {
     onMove: (pos: Position) => void;
-}
-
-interface MovableState {
-    isMoving: boolean;
-    anchor: Position;
 }
 
 function InsideRectangle(rect: Rectangle, x: number, y: number) {
@@ -25,67 +21,60 @@ function InsideRectangle(rect: Rectangle, x: number, y: number) {
     return true;
 }
 
-export default function asMovable<P extends MovableComponentProps>(WrappedComponent: React.ComponentType<P>) {
-    return class extends React.Component<P & MovableProps, MovableState> {
-        state: MovableState = {
-            isMoving: false,
-            anchor: { left: 0, top: 0 },
-        }
+export default function asMovable<P extends WrappedMovableProps>(WrappedComponent: React.ComponentType<P>): React.FC<P & MovableProps> {
+    return function Movable(props) {
+        const [ref, pointerId, setCapturedPointer] = usePointerCapture<HTMLDivElement>();
+        const [anchor, setAnchor] = useState<Position | null>(null);
 
-        handleRef = React.createRef<HTMLDivElement>();
+        const handleRef = useRef<HTMLDivElement>(null);
 
-        onMove = (e: React.PointerEvent<HTMLDivElement>) => {
-            if (this.state.isMoving) {
-                this.props.onMove({
-                    left: e.clientX - this.state.anchor.left,
-                    top: e.clientY - this.state.anchor.top
-                })                
-
-                e.stopPropagation();
+        const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+            if (pointerId === null) {
+                if (e.pressure && !!anchor)
+                    setCapturedPointer(e.pointerId!);
+                else 
+                    return;
             }
-        }
 
-        onDown = (e: React.PointerEvent<HTMLDivElement>) => {
-            if (this.handleRef.current && !InsideRectangle(this.handleRef.current.getBoundingClientRect(), e.clientX, e.clientY))
-                return;
+            props.onMove({
+                left: e.clientX - anchor!.left,
+                top: e.clientY - anchor!.top
+            })
 
-            this.setState({
-                isMoving: true, 
-                anchor: {
-                    left: e.clientX - this.props.left,
-                    top: e.clientY - this.props.top
-                }
-            });
-
-            e.currentTarget.setPointerCapture(e.pointerId);
             e.stopPropagation();
         }
 
-        onUp = (e: React.PointerEvent<HTMLDivElement>) => {
-            if (!this.state.isMoving)
+        const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+            if (handleRef.current && !InsideRectangle(handleRef.current.getBoundingClientRect(), e.clientX, e.clientY))
                 return;
 
-            this.setState({
-                isMoving: false
+            setAnchor({
+                left: e.clientX - props.left,
+                top: e.clientY - props.top
             });
 
-            e.currentTarget.releasePointerCapture(e.pointerId);
             e.stopPropagation();
         }
 
-        render() {
-            return (
-                <div 
-                    onPointerDown={this.onDown}
-                    onPointerMove={this.onMove}
-                    onPointerUp={this.onUp}>
-                    <WrappedComponent
-                        {...this.props}
-                        left={this.props.left}
-                        top={this.props.top}
-                        handle={this.handleRef} />
-                </div>
-            );
+        const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
+            if (pointerId === null)
+                return;
+
+            setCapturedPointer(null);
+            setAnchor(null);
+            e.stopPropagation();
         }
+
+        return (
+            <div
+                ref={ref}
+                onPointerDown={onDown}
+                onPointerMove={onMove}
+                onPointerUp={onUp}>
+                <WrappedComponent
+                    {...props}
+                    handle={handleRef} />
+            </div>
+        );
     }
 }

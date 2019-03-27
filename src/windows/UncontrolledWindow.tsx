@@ -1,14 +1,11 @@
-import React, { ReactNode, useState } from 'react';
-import Window from './Window';
+import React, { useState } from 'react';
+import Window, { WindowProps } from './Window';
 import { Rectangle } from '../misc/Rectangle';
 import { Position } from '../misc/Position';
 
-export interface UncontrolledWindowProps extends Partial<Rectangle> {
+export interface UncontrolledWindowProps extends Partial<WindowProps> {
     minWidth?: number;
     minHeight?: number;
-    title?: string;
-    icon?: string;
-    active?: boolean;
 }
 
 const UncontrolledWindow: React.FC<UncontrolledWindowProps> = (props) => {
@@ -34,9 +31,7 @@ const UncontrolledWindow: React.FC<UncontrolledWindowProps> = (props) => {
             {...props}
             {...rect}
             onMove={onMove}
-            onResize={onResize}>
-            {props.children}
-        </Window>
+            onResize={onResize} />
     );
 }
 
