@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useContext, useLayoutEffect } from 'react';
-import './App.css';
+import React, { useState, useEffect, useContext } from 'react';
+import './App.scss';
 import TaskBar from './taskbar/TaskBar';
-import { UncontrolledWindowProps } from './windows/UncontrolledWindow';
 import Desktop from './desktop/Desktop';
 import './ContextMenu.scss';
 import BFS, { BFSRequire } from 'browserfs';
@@ -45,7 +44,7 @@ function loadFileSystem(): Promise<FSModule> {
         resolve(BFSRequire('fs'));
       });
     }
-  )
+  );
 }
 
 export const FileSystemContext = React.createContext<FSModule | null>(null);

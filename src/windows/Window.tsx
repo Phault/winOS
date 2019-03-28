@@ -33,7 +33,9 @@ export function StaticWindow({left, top, width, height, title, icon, children, h
     };
 
     return (
-        <div className={classNames(className, "window", { inactive: !active })} style={{ ...style, transform: `translate(${left}px, ${top}px)`, width, height }} onPointerDownCapture={activated}>
+        <div className={classNames(className, "window", { inactive: !active })} 
+            style={{ ...style, transform: `translate(${left}px, ${top}px)`, width, height }} 
+            onPointerDownCapture={activated}>
             <TitleBar title={title || ''} icon={icon} ref={handle} />
             <Frame>
                 {children}
