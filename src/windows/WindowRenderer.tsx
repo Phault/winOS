@@ -8,22 +8,29 @@ export function WindowRenderer() {
 
   const windowManager = useContext(WindowManagerContext);
 
-  return useObserver(() =>
+  const windows = useObserver(() => {
+    const windows = windowManager.windows.map((w, i) => (
+      <WindowContext.Provider value={w} key={w.id}>
+        <UncontrolledWindow 
+          title={w.title} 
+          icon={w.icon} 
+          active={windowManager.focused === w}
+          onActivated={() => windowManager.bringToFront(w)}
+          style={{ zIndex: i, display: w.state === WindowState.Minimized ? 'none' : undefined }}
+          {...w.rect} 
+          minWidth={w.template.minSize && w.template.minSize.width || 1} 
+          minHeight={w.template.minSize && w.template.minSize.height || 1}>
+          {w.body}
+        </UncontrolledWindow>
+      </WindowContext.Provider>
+    ));
+
+    return windows.sort((a, b) => (a.key as number) - (b.key as number));
+  });
+
+  return (
     <React.Fragment>
-      {windowManager.windows.filter(w => w.state !== WindowState.Minimized).map(w => (
-        <WindowContext.Provider value={w} key={w.id}>
-          <UncontrolledWindow 
-            title={w.title} 
-            icon={w.icon} 
-            active={windowManager.focused === w}
-            onActivated={() => windowManager.bringToFront(w)}
-            {...w.rect} 
-            minWidth={w.template.minSize && w.template.minSize.width || 1} 
-            minHeight={w.template.minSize && w.template.minSize.height || 1}>
-            {w.body}
-          </UncontrolledWindow>
-        </WindowContext.Provider>
-      ))}
+      {windows}
     </React.Fragment>
   );
 }

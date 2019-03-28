@@ -3,6 +3,7 @@ import notepadIcon from './icon.png';
 import { Program } from '../framework/Program.interface';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
 import { Item, Separator } from 'react-contexify';
+import { BFSRequire } from 'browserfs';
 
 export const NotepadApp : Program<string> = {
   name: 'Notepad',
@@ -15,9 +16,12 @@ export const NotepadApp : Program<string> = {
     } catch (e) {
       file = '';
     }
+
+    const nodePath = BFSRequire('path');
+    const fileName = nodePath.basename(path);
     
     windows.create({
-      title: NotepadApp.name,
+      title: `${NotepadApp.name} - ${fileName}`,
       icon: NotepadApp.icon,
       rect: {
         left: 200,

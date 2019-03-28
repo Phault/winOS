@@ -30,14 +30,17 @@ function loadFileSystem(): Promise<FSModule> {
         if (e)
             reject(e);
       
-        // const fileSystem = BFSRequire('fs');
+        const fileSystem = BFSRequire('fs');
       
-        // if (!localStorage.getItem('installed')) {
-        //   // install os
-        //   fileSystem.mkdirSync('/folder');
+        if (!localStorage.getItem('installed')) {
+          // install os
+          fileSystem.writeFileSync('/file.txt', 'Hello world!');
+          
+          fileSystem.mkdirSync('/folder');
+          fileSystem.writeFileSync('/folder/test.txt', 'Just another file..');
       
-        //   localStorage.setItem('installed', 'true');
-        // }
+          localStorage.setItem('installed', 'true');
+        }
     
         resolve(BFSRequire('fs'));
       });
@@ -93,7 +96,7 @@ function DesktopEnvironment() {
   appContext.windows = windowManager;
 
   useEffect(() => {
-    NotepadApp.run(appContext, '/test.txt');
+    NotepadApp.run(appContext, '/file.txt');
     ExplorerApp.run(appContext);
   }, []);
 

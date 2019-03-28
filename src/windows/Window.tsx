@@ -1,4 +1,4 @@
-import React, { ReactNode, HTMLAttributes } from 'react';
+import React, { ReactNode, HTMLAttributes, CSSProperties } from 'react';
 import './Window.scss';
 import asResizable from '../misc/Resizable';
 import asMovable from '../misc/Movable';
@@ -21,9 +21,11 @@ export interface WindowProps extends Rectangle {
     icon?: string;
     active?: boolean;
     onActivated?: () => void;
+    className?: string;
+    style?: CSSProperties;
 }
 
-export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true, onActivated}: WindowProps) {
+export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true, onActivated, style, className}: WindowProps) {
 
     const activated = () => {
         if (!active && onActivated)
@@ -31,7 +33,7 @@ export function StaticWindow({left, top, width, height, title, icon, children, h
     };
 
     return (
-        <div className={classNames("window", { inactive: !active })} style={{ left, top, width, height }} onPointerDownCapture={activated}>
+        <div className={classNames(className, "window", { inactive: !active })} style={{ ...style, transform: `translate(${left}px, ${top}px)`, width, height }} onPointerDownCapture={activated}>
             <TitleBar title={title || ''} icon={icon} ref={handle} />
             <Frame>
                 {children}

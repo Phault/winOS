@@ -31,7 +31,7 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
     handleFileExecution = (files: string[]) => {
         // todo: replace all this nonsense
         if (files[0].includes('.'))
-            NotepadApp.run(this.props.os, files[0]);
+            NotepadApp.run(this.props.os, this.state.path + '/' + files[0]);
         else
             this.setState({path: files[0]});
     }

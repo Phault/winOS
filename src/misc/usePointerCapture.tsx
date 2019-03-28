@@ -8,11 +8,11 @@ export function usePointerCapture<T extends HTMLElement>(): [RefObject<T>, numbe
     useEffect(() => {
         const target = ref.current!;
 
-        if (capturedPointer !== null && !target.hasPointerCapture(capturedPointer)) {
+        if (capturedPointer !== null) {
             target.setPointerCapture(capturedPointer!);
             return () => target.releasePointerCapture(capturedPointer!);
         }
-    });
+    }, [ref, capturedPointer]);
 
     return [ref, capturedPointer, setCapturedPointer];
 }
