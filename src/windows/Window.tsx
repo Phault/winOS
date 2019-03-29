@@ -25,7 +25,11 @@ export interface WindowProps extends Rectangle {
     style?: CSSProperties;
 }
 
-export function StaticWindow({left, top, width, height, title, icon, children, handle, active = true, onActivated, style, className}: WindowProps) {
+export function StaticWindow({
+    left, top, width, height, 
+    title, icon, handle, 
+    active = true, onActivated, 
+    style, className, children}: WindowProps) {
 
     const activated = () => {
         if (!active && onActivated)
@@ -33,10 +37,13 @@ export function StaticWindow({left, top, width, height, title, icon, children, h
     };
 
     return (
-        <div className={classNames(className, "window", { inactive: !active })} 
+        <div 
+            className={classNames(className, "window", { inactive: !active })} 
             style={{ ...style, transform: `translate(${left}px, ${top}px)`, width, height }} 
             onPointerDownCapture={activated}>
+
             <TitleBar title={title || ''} icon={icon} ref={handle} />
+            
             <Frame>
                 {children}
             </Frame>

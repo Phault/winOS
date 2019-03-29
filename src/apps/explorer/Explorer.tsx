@@ -7,6 +7,13 @@ import { Submenu, Item, Separator } from 'react-contexify';
 import { FolderView } from '../framework/widgets/folderview/FolderView';
 import { DetailView } from '../framework/widgets/folderview/views/DetailView';
 import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
+import { Toolbar } from '../framework/widgets/toolbar/Toolbar';
+import backIcon from '../../assets/icons/toolbar/back.png';
+import forwardIcon from '../../assets/icons/toolbar/forward.png';
+import folderUpIcon from '../../assets/icons/toolbar/folder_up.png';
+import searchIcon from '../../assets/icons/toolbar/search.png';
+import foldersIcon from '../../assets/icons/toolbar/folders.png';
+import viewIcon from '../../assets/icons/toolbar/view.png';
 
 interface ExplorerState {
     path: string;
@@ -151,7 +158,18 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                         <Item>About Windows</Item>
                     </MenuBar.Menu>
                 </MenuBar>
-                <div className="toolbar">{this.state.path}</div>
+
+                <Toolbar>
+                    <Toolbar.SplitButton icon={backIcon}>Back</Toolbar.SplitButton>
+                    <Toolbar.SplitButton icon={forwardIcon} />
+                    <Toolbar.Button icon={folderUpIcon} />
+                    <Toolbar.Separator />
+                    <Toolbar.Button icon={searchIcon}>Search</Toolbar.Button>
+                    <Toolbar.Button icon={foldersIcon}>Folders</Toolbar.Button>
+                    <Toolbar.Separator />
+                    <Toolbar.Dropdown icon={viewIcon} />
+                </Toolbar>
+                
                 <div className="body">
                     <div className="sidebar">
                         <div className="group">

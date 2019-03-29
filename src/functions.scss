@@ -16,3 +16,11 @@
     background: linear-gradient(to $to, $start 0%, $end 100%);
     // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$start}', endColorstr='#{$end}', GradientType=1 );
 }
+
+@mixin sheetBorderSlice($index, $total, $height) {
+    $sheetHeight: $total * $height;
+    
+    $top: $index * $height;
+    $bottom: $sheetHeight - $top - $height;
+    border-image-slice: $top 0 $bottom 0 fill;
+}

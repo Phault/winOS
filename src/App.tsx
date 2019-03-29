@@ -18,6 +18,7 @@ export enum WindowState {
   Minimized
 }
 
+const VERSION = 1;
 
 function loadFileSystem(): Promise<FSModule> {
   return new Promise<FSModule>(
@@ -31,14 +32,17 @@ function loadFileSystem(): Promise<FSModule> {
       
         const fileSystem = BFSRequire('fs');
       
-        if (!localStorage.getItem('installed')) {
+        if (Number.parseInt(localStorage.getItem('installed-version') || '-1') !== VERSION) {
           // install os
-          fileSystem.writeFileSync('/file.txt', 'Hello world!');
+          fileSystem.writeFileSync('/file.txt', 'Hello world!', { flag: 'w+' });
           
-          fileSystem.mkdirSync('/folder');
-          fileSystem.writeFileSync('/folder/test.txt', 'Just another file..');
+          try {
+            fileSystem.mkdirSync('/folder');
+          }
+          catch {}
+          fileSystem.writeFileSync('/folder/test.txt', 'Just another file..', { flag: 'w+' });
       
-          localStorage.setItem('installed', 'true');
+          localStorage.setItem('installed-version', VERSION.toString());
         }
     
         resolve(BFSRequire('fs'));

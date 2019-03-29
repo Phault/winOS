@@ -82,14 +82,6 @@ $btnVersionCount: 8;
 $btnIconHeight: 13;
 $btnIconVersionCount: 8;
 
-@mixin sheetBorderSlice($index, $total, $height) {
-    $sheetHeight: $total * $height;
-    
-    $top: $index * $height;
-    $bottom: $sheetHeight - $top - $height;
-    border-image-slice: $top 0 $bottom 0 fill;
-}
-
 .btn {
     padding: 2px;
     width: #{$btnHeight}px;
