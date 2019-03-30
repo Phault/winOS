@@ -1,29 +1,19 @@
-import React, { useState } from 'react';
-import ieIcon from '../assets/icons/512.png';
-import paintIcon from '../assets/icons/paint.png';
-import notepadIcon from '../apps/notepad/icon.png';
+import React, { useState, useRef } from 'react';
 import { MenuProvider, Menu, animation, Submenu, Item, Separator } from 'react-contexify';
 import { FileContextMenu } from './FileContextMenu';
-import { FileIcon } from '../apps/framework/widgets/folderview/views/icon/FileIcon';
 import { FolderView } from '../apps/framework/widgets/folderview/FolderView';
 import { IconView } from '../apps/framework/widgets/folderview/views/icon/IconView';
+import { useUuid } from '../misc/useUuid';
 
 function Desktop() {
-    const [selection, setSelection] = useState<[] | null>(null);
+    const [] = useState<[] | null>(null);
+    const desktopId = useUuid();
 
     return (
-        <MenuProvider id='desktop' style={{flexGrow: 1}} storeRef={false}>
+        <MenuProvider id={desktopId} style={{flexGrow: 1}} storeRef={false}>
             <FolderView viewMode={IconView} path='/' />
-            {/* <FileIcon icon={notepadIcon}>Notepad</FileIcon>
-            <FileIcon icon={ieIcon}>Internet Explorer</FileIcon>
-            <FileIcon icon={paintIcon}>Paint</FileIcon>
-            <FileIcon icon={ieIcon}>Bitmap176</FileIcon>
-            <FileIcon icon={ieIcon}>Firefox Setup 65.0</FileIcon>
-            <FileIcon icon={ieIcon}>Firefox Setup 50.0</FileIcon>
-            <FileIcon icon={ieIcon}>Mozilla Firefox</FileIcon>
-            <FileIcon icon={ieIcon}>WinSCP</FileIcon> */}
 
-            <Menu id='desktop' animation={animation.fade}>
+            <Menu id={desktopId} animation={animation.fade}>
                 <Submenu label="Arrange Icons By">
                     <Item>Name</Item>
                     <Item>Size</Item>

@@ -3,7 +3,7 @@ import { OS } from "../../OS";
 import './Explorer.scss';
 import { NotepadApp } from '../notepad/NotepadApp';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
-import { Submenu, Item, Separator } from 'react-contexify';
+import { Submenu, Item, Separator, Menu } from 'react-contexify';
 import { FolderView } from '../framework/widgets/folderview/FolderView';
 import { DetailView } from '../framework/widgets/folderview/views/DetailView';
 import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
@@ -23,16 +23,9 @@ export interface ExplorerProps {
     os: OS;
 }
 
-interface FileDescriptor {
-    fileName: string;
-    icon?: string;
-    extension: string;
-    type: 'File' | 'Dir'
-}
-
 export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
     state = {
-        path: '/',
+        path: '/'
     }
 
     handleFileExecution = (files: string[]) => {
@@ -46,7 +39,7 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
     render() {
         return (
             <div className="explorer">
-                <MenuBar id="explorer">
+                <MenuBar>
                     <MenuBar.Menu label="File">
                         <Submenu label="New">
                             <Item>Folder</Item>
@@ -160,16 +153,30 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                 </MenuBar>
 
                 <Toolbar>
-                    <Toolbar.SplitButton icon={backIcon}>Back</Toolbar.SplitButton>
-                    <Toolbar.SplitButton icon={forwardIcon} />
-                    <Toolbar.Button icon={folderUpIcon} />
+                    <Toolbar.SplitButton>
+                        <Toolbar.Button icon={backIcon} onClick={() => console.log('back')}>Back</Toolbar.Button>
+                        <Toolbar.Dropdown>
+                            <Item>Hello</Item>
+                        </Toolbar.Dropdown>
+                    </Toolbar.SplitButton>
+
+                    <Toolbar.SplitButton>
+                        <Toolbar.Button icon={forwardIcon} onClick={() => console.log('forward')} />        
+                        <Toolbar.Dropdown>
+                            <Item>Hello</Item>
+                        </Toolbar.Dropdown>                
+                    </Toolbar.SplitButton>
+
+                    <Toolbar.Button icon={folderUpIcon} onClick={() => console.log('leave folder')} />
                     <Toolbar.Separator />
-                    <Toolbar.Button icon={searchIcon}>Search</Toolbar.Button>
-                    <Toolbar.Button icon={foldersIcon}>Folders</Toolbar.Button>
+                    <Toolbar.Button icon={searchIcon} onClick={() => console.log('search')}>Search</Toolbar.Button>
+                    <Toolbar.Button icon={foldersIcon} onClick={() => console.log('folders')}>Folders</Toolbar.Button>
                     <Toolbar.Separator />
-                    <Toolbar.Dropdown icon={viewIcon} />
+                    <Toolbar.Dropdown icon={viewIcon}>
+                        <Item>Hello</Item>
+                    </Toolbar.Dropdown>   
                 </Toolbar>
-                
+
                 <div className="body">
                     <div className="sidebar">
                         <div className="group">

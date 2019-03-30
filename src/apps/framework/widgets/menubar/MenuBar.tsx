@@ -1,30 +1,30 @@
 import React, { ReactNode, useState, ReactElement, DOMAttributes } from 'react';
 import './MenuBar.scss';
-import { eventManager } from 'react-contexify/lib/utils/eventManager';
-import { DISPLAY_MENU } from 'react-contexify/lib/utils/actions';
 import { Menu } from 'react-contexify';
 import classNames from 'classnames';
+import { useUuid } from '../../../../misc/useUuid';
+import { openDropdownMenu } from '../../../../misc/openDropdownMenu';
 
 interface MenuBarProps {
-    id: string;
     children: ReactElement<MenuProps & DOMAttributes<any>>[] | ReactElement<MenuProps & DOMAttributes<any>>
 }
 
 function MenuBar(props: MenuBarProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const menuId = useUuid();
     
     function mouseDown(id: string, e: React.MouseEvent) {
         if (activeMenu === id)
             return;
         
         setActiveMenu(id);
-        openMenu(id, e);
+        openDropdownMenu(id, e);
     }
 
     function mouseOver(id: string, e: React.MouseEvent) {
         if (activeMenu !== null && activeMenu !== id) {
             setActiveMenu(id);
-            openMenu(id, e);
+            openDropdownMenu(id, e);
         }
     }
 
@@ -34,7 +34,7 @@ function MenuBar(props: MenuBarProps) {
     }
 
     const childrenWithProps = React.Children.map(props.children, (child) => {
-        const id = props.id + '_' + (child.props.id || child.props.label);
+        const id = menuId + '_' + (child.props.id || child.props.label);
 
         return React.cloneElement(
             child,
@@ -54,18 +54,6 @@ function MenuBar(props: MenuBarProps) {
             {childrenWithProps}
         </div>
     );
-}
-
-function openMenu(id: string, event: React.MouseEvent) {
-    const buttonRect = (event.target as Element).getBoundingClientRect();
-    event.clientX = buttonRect.left;
-    event.clientY = buttonRect.top + buttonRect.height - 1;
-
-    // we can't use contextMenu.show() as it uses nativeEvent which we can't mutate
-    eventManager.emit(
-        DISPLAY_MENU(id),
-        event
-      );
 }
 
 interface MenuProps {
