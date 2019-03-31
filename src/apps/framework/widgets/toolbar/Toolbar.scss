@@ -21,41 +21,53 @@
     font-family: Tahoma;
     font-size: 11px;
 
+    >* {
+        pointer-events: none;
+    }
+
     .icon:not(:last-child) {
         margin-right: 4px;
     }
 
-    &:hover, .toolbar-split:hover & {
-        background: #f4f4ee;
-        border-color: rgb(206, 206, 195);
-        box-shadow: 
-            inset -2px -3px 2px -2px #D7D2C6,
-            inset 0px 20px 3px -17px #FDFDFC;
+    &:disabled {
+        filter: grayscale(100%) opacity(80%);
     }
 
-    &.light:hover, .toolbar-split.light:hover & {
-        background: white;
-        border-color: #7A98AF;
-        box-shadow: none;
-    }
-
-    &:active:hover {
-        background: #E2E1D9;
-        border-color: #9D9D92;
-        box-shadow: 
-            inset 0px -20px 3px -19px #FDFDFC,
-            inset 2px 3px 2px -2px #D7D2C6;
-
-        &>* {
-            transform: translate(1px, 1px);
+    &:not(:disabled) {
+        &:hover, .toolbar-split:hover & {
+            background: #f4f4ee;
+            border-color: rgb(206, 206, 195);
+            box-shadow: 
+                inset -2px -3px 2px -2px #D7D2C6,
+                inset 0px 20px 3px -17px #FDFDFC;
+        }
+    
+        &.light:hover, .toolbar-split.light:hover & {
+            background: white;
+            border-color: #7A98AF;
+            box-shadow: none;
+        }
+    
+        &:active:hover {
+            background: #E2E1D9;
+            border-color: #9D9D92;
+            box-shadow: 
+                inset 0px -20px 3px -19px #FDFDFC,
+                inset 2px 3px 2px -2px #D7D2C6;
+    
+            &>* {
+                transform: translate(1px, 1px);
+            }
+        }
+    
+        &.light:active:hover, .light &:active:hover {
+            background: white;
+            border-color: #7A98AF;
+            box-shadow: inset -2px -3px 2px -2px #E4DED8;
         }
     }
 
-    &.light:active:hover, .light &:active:hover {
-        background: white;
-        border-color: #7A98AF;
-        box-shadow: inset -2px -3px 2px -2px #E4DED8;
-    }
+    
 }
 
 .toolbar-split {

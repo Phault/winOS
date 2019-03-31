@@ -23,6 +23,21 @@ export interface ExplorerProps {
     os: OS;
 }
 
+function ViewModeItems() {
+    return (
+        <React.Fragment>
+            {/* only if dir contains images */}
+            {/* <Item>Filmstrip</Item> */}
+
+            <Item>Thumbnails</Item>
+            <Item>Tiles</Item>
+            <Item>Icons</Item>
+            <Item>List</Item>
+            <Item>Details</Item>
+        </React.Fragment>
+    );
+}
+
 export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
     state = {
         path: '/'
@@ -94,11 +109,7 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                             <Item>Tip of the Day</Item>
                         </Submenu>
                         <Separator />
-                        <Item>Thumbnails</Item>
-                        <Item>Tiles</Item>
-                        <Item>Icons</Item>
-                        <Item>List</Item>
-                        <Item>Details</Item>
+                        <ViewModeItems />
                         <Separator />
                         <Submenu label="Arrange Icons by">
                             <Item>Name</Item>
@@ -157,23 +168,27 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                         <Toolbar.Button icon={backIcon} onClick={() => console.log('back')}>Back</Toolbar.Button>
                         <Toolbar.Dropdown>
                             <Item>Hello</Item>
+                            <Separator />
+                            <Item>History</Item>
                         </Toolbar.Dropdown>
                     </Toolbar.SplitButton>
 
                     <Toolbar.SplitButton>
-                        <Toolbar.Button icon={forwardIcon} onClick={() => console.log('forward')} />        
-                        <Toolbar.Dropdown>
+                        <Toolbar.Button icon={forwardIcon} disabled onClick={() => console.log('forward')} />        
+                        <Toolbar.Dropdown disabled>
                             <Item>Hello</Item>
+                            <Separator />
+                            <Item>History</Item>
                         </Toolbar.Dropdown>                
                     </Toolbar.SplitButton>
 
-                    <Toolbar.Button icon={folderUpIcon} onClick={() => console.log('leave folder')} />
+                    <Toolbar.Button icon={folderUpIcon} disabled onClick={() => console.log('leave folder')} />
                     <Toolbar.Separator />
                     <Toolbar.Button icon={searchIcon} onClick={() => console.log('search')}>Search</Toolbar.Button>
                     <Toolbar.Button icon={foldersIcon} onClick={() => console.log('folders')}>Folders</Toolbar.Button>
                     <Toolbar.Separator />
                     <Toolbar.Dropdown icon={viewIcon}>
-                        <Item>Hello</Item>
+                        <ViewModeItems />
                     </Toolbar.Dropdown>   
                 </Toolbar>
 

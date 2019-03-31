@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useUuid } from '../../../../misc/useUuid';
 import { openDropdownMenu } from '../../../../misc/openDropdownMenu';
 
-interface MenuBarProps {
+export interface MenuBarProps {
     children: ReactElement<MenuProps & DOMAttributes<any>>[] | ReactElement<MenuProps & DOMAttributes<any>>
 }
 
@@ -33,7 +33,7 @@ function MenuBar(props: MenuBarProps) {
             setActiveMenu(null);
     }
 
-    const childrenWithProps = React.Children.map(props.children, (child) => {
+    const childrenWithProps = React.Children.map(props.children, child => {
         const id = menuId + '_' + (child.props.id || child.props.label);
 
         return React.cloneElement(
@@ -56,7 +56,7 @@ function MenuBar(props: MenuBarProps) {
     );
 }
 
-interface MenuProps {
+export interface MenuProps {
     label: string;
     id?: string;
     active?: boolean;
