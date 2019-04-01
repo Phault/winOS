@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { OS } from "../../OS";
 import './Explorer.scss';
 import { NotepadApp } from '../notepad/NotepadApp';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
-import { Submenu, Item, Separator, Menu } from 'react-contexify';
+import { Submenu, Item, Separator } from 'react-contexify';
 import { FolderView } from '../framework/widgets/folderview/FolderView';
-import { DetailView } from '../framework/widgets/folderview/views/DetailView';
 import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
 import { Toolbar } from '../framework/widgets/toolbar/Toolbar';
 import backIcon from '../../assets/icons/toolbar/back.png';
@@ -14,10 +13,11 @@ import folderUpIcon from '../../assets/icons/toolbar/folder_up.png';
 import searchIcon from '../../assets/icons/toolbar/search.png';
 import foldersIcon from '../../assets/icons/toolbar/folders.png';
 import viewIcon from '../../assets/icons/toolbar/view.png';
-
-interface ExplorerState {
-    path: string;
-}
+import goIcon from '../../assets/icons/toolbar/go-normal.png';
+import { WindowContext } from '../../windows/WindowManager';
+import { AddressBar } from './AddressBar';
+import { BFSRequire } from 'browserfs';
+const nodePath = BFSRequire('path');
 
 export interface ExplorerProps {
     os: OS;
@@ -38,22 +38,23 @@ function ViewModeItems() {
     );
 }
 
-export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
-    state = {
-        path: '/'
-    }
+const Explorer: React.FC<ExplorerProps> = (props) => {
+    const [path, setPath] = useState('/');
+    const window = useContext(WindowContext)!;
 
-    handleFileExecution = (files: string[]) => {
-        // todo: replace all this nonsense
-        if (files[0].includes('.'))
-            NotepadApp.run(this.props.os, this.state.path + '/' + files[0]);
+    const handleFileExecution = (files: string[]) => {
+        const file = files[0];
+        const fullPath =  nodePath.join(path, file);
+        const extension = nodePath.extname(file);
+        if (extension)
+            NotepadApp.run(props.os, fullPath);
         else
-            this.setState({path: files[0]});
+            setPath(fullPath);
     }
 
-    render() {
-        return (
-            <div className="explorer">
+    return (
+        <div className="explorer">
+            <div className="header">
                 <MenuBar>
                     <MenuBar.Menu label="File">
                         <Submenu label="New">
@@ -74,7 +75,7 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                         <Item disabled>Rename</Item>
                         <Item disabled>Properties</Item>
                         <Separator />
-                        <Item>Close</Item>
+                        <Item onClick={() => window.destroy()}>Close</Item>
                     </MenuBar.Menu>
                     <MenuBar.Menu label="Edit">
                         <Item disabled>Undo</Item>
@@ -192,36 +193,45 @@ export class Explorer extends React.Component<ExplorerProps, ExplorerState> {
                     </Toolbar.Dropdown>   
                 </Toolbar>
 
-                <div className="body">
-                    <div className="sidebar">
-                        <div className="group">
-                            <div className="group-header">File and Folder Tasks</div>
-                            <div className="group-body">
-                                <ul>
-                                    <li>Make a new folder</li>
-                                    <li>Publish this folder to the Web</li>
-                                    <li>Share this folder</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="group">
-                            <div className="group-header">Other Places</div>
-                            <div className="group-body">
-                                <ul>
-                                    <li>Desktop</li>
-                                    <li>Shared Documents</li>
-                                    <li>My Computer</li>
-                                    <li>My Network</li>
-                                </ul>
-                            </div>
+                <Toolbar>
+                    <span style={{padding: '0 4px 0 5px'}}>Address</span>
+                    <AddressBar onChange={newValue => setPath(newValue)} value={path} />
+                    <Toolbar.Button icon={goIcon} className="toolbar-button-go">
+                        Go
+                    </Toolbar.Button>
+                </Toolbar>
+            </div>
+
+            <div className="body">
+                <div className="sidebar">
+                    <div className="group">
+                        <div className="group-header">File and Folder Tasks</div>
+                        <div className="group-body">
+                            <ul>
+                                <li>Make a new folder</li>
+                                <li>Publish this folder to the Web</li>
+                                <li>Share this folder</li>
+                            </ul>
                         </div>
                     </div>
-                    <div className="contents">
-                        <FolderView path={this.state.path} viewMode={IconView} onExecute={this.handleFileExecution} />
+                    <div className="group">
+                        <div className="group-header">Other Places</div>
+                        <div className="group-body">
+                            <ul>
+                                <li>Desktop</li>
+                                <li>Shared Documents</li>
+                                <li>My Computer</li>
+                                <li>My Network</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+                <div className="contents">
+                    <FolderView path={path} viewMode={IconView} onExecute={handleFileExecution} />
+                </div>
             </div>
-        )
-    }
-}
+        </div>
+    )
+};
 
+export { Explorer };

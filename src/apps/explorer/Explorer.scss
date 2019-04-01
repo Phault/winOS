@@ -4,11 +4,26 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    @include gradient(#f3f5f6, #ede8ce, left, right);
+    background: white;
 
-    .menu-bar {
-        background: transparent;
-        border-bottom: 0;
+    .header {
+        @include gradient(#f3f5f6, #ede8ce, left, right);
+        box-shadow: inset 0 -10px 2px -8px #cdcabb;
+
+        .menu-bar {
+            background: transparent;
+            padding: 1px 2px 2px;
+        }
+
+        >* {
+            &:not(:last-child) {
+                border-bottom: 1px solid #cdcabb;
+            }
+
+            &:not(:first-child) {
+                border-top: 1px solid white;
+            }
+        }
     }
 
     .body {
@@ -73,4 +88,16 @@
             flex-grow: 1;
         }
     }
+}
+
+.toolbar-button-go {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    border-radius: 0 !important;
+}
+
+.react-autosuggest__container {
+    flex-grow: 1;
 }

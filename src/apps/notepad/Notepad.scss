@@ -1,0 +1,10 @@
+.notepad-textarea {
+    flex-grow: 1;
+    overflow: scroll;
+    white-space: nowrap;
+
+    &.wordwrap {
+        overflow-x: hidden;
+        white-space: normal;
+    }
+}

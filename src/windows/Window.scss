@@ -35,7 +35,7 @@
     align-items: center;
     position: relative;
     z-index: 0;
-    padding: 0 4px 0 4px;
+    padding: 1px 4px 0 6px;
 
     &::before {
         @include background();
@@ -49,12 +49,14 @@
     span {
         flex-grow: 1;
         font-family: 'Trebuchet MS';
-        font-size: 10pt;
+        font-size: 13px;
+        padding-top: 1px;
         font-weight: bold;
         text-shadow: rgb(10, 24, 131) 1px 1px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+        margin-right: 3px;
     }
 
     .title-bar-buttons {
@@ -70,6 +72,7 @@
 .app-icon {
     width: $titlebar-icon-width;
     height: $titlebar-icon-height;
+    margin-right: 4px;
 }
 
 .status-bar {

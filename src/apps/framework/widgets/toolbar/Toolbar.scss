@@ -1,6 +1,13 @@
 .toolbar {
     padding: 0 2px;
     display: flex;
+    align-items: center;
+    font-family: Tahoma;
+    font-size: 11px;
+
+
+
+    color: #7f7c73;
 }
 
 .toolbar-separator {
@@ -18,8 +25,8 @@
     border-radius: 4px;
     display: flex;
     align-items: center;
-    font-family: Tahoma;
-    font-size: 11px;
+    font: inherit;
+    margin-right: 4px;
 
     >* {
         pointer-events: none;
@@ -49,6 +56,7 @@
         }
     
         &:active:hover {
+            color: white;
             background: #E2E1D9;
             border-color: #9D9D92;
             box-shadow: 
@@ -64,16 +72,18 @@
             background: white;
             border-color: #7A98AF;
             box-shadow: inset -2px -3px 2px -2px #E4DED8;
+            color: black;
         }
     }
-
-    
 }
 
 .toolbar-split {
     display: flex;
+    margin-right: 4px;
 
     .toolbar-button {
+        margin-right: 0;
+
         &:not(:first-child) {
             border-left: 0;
             border-top-left-radius: 0;

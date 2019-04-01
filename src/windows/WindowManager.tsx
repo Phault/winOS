@@ -27,7 +27,7 @@ class WindowManager {
 
   public create(template: WindowTemplate): WindowInstance {
     const id = this.getNextId();
-    const instance = new WindowInstance(id, template);
+    const instance = new WindowInstance(id, this, template);
     this.windows.push(instance);
     this.idToWindowMap.set(id, instance);
     

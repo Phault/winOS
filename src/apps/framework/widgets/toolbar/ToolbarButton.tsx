@@ -8,7 +8,7 @@ export interface ToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonEleme
 
 export const ToolbarButton: React.FC<ToolbarButtonProps> = ({ icon, className, children, ...rest }) => (
     <button className={classNames("toolbar-button", className)} {...rest}>
-        {icon && <Icon src={icon} width={24} height={24} />}
+        {icon && <Icon src={icon} />}
         <div>{children}</div>
     </button>
 );

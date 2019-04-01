@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Rectangle } from './Rectangle';
 import { Direction } from './Direction';
 import { usePointerCapture } from './usePointerCapture';
+import { useCssRule } from './useStyleSheet';
 
 interface WrappedResizableProps extends Partial<Rectangle> {
 }
@@ -36,6 +37,8 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
     return function Resizable(props) {
         const [ref, pointerId, setCapturedPointer] = usePointerCapture<HTMLDivElement>();
         const [resizeDir, setResizeDir] = useState(Direction.None);
+
+        const [cursorStyle, setCursorStyle] = useCssRule('body *', null);
 
         useEffect(() => {
             ensureMinSize();
@@ -108,6 +111,7 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
             setCapturedPointer(e.pointerId);
             setResizeDir(dir);
 
+            e.preventDefault();
             e.stopPropagation();
         }
 
@@ -120,11 +124,12 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
             const dir = getResizeDir(e.clientX, e.clientY);
             updateCursor(dir);
 
+            e.preventDefault();
             e.stopPropagation();
         }
 
         function getResizeDir(x:number, y:number) {
-            const border = props.border || 10;
+            const border = props.border || 5;
 
             let dir: Direction = Direction.None;
             
@@ -145,7 +150,10 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
             if (pointerId !== null)
                 return;
 
-            document.body.style.cursor = mapDirectionToCursor(dir);            
+            if (dir === Direction.None)
+                setCursorStyle(null)
+            else
+                setCursorStyle(`cursor: ${mapDirectionToCursor(dir)} !important`);      
         }
 
         return (

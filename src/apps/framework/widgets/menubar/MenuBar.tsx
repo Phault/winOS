@@ -74,6 +74,7 @@ const MenuBarMenu: React.FC<MenuProps> = ({active, label, id, children, onMenuHi
                 {...rest}>
                 {label}
             </div>
+            
             <Menu id={id || label} onHidden={onMenuHidden}>
                 {children || <div />}
             </Menu>

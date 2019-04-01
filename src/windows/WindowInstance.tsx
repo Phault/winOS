@@ -3,9 +3,11 @@ import { Rectangle } from '../misc/Rectangle';
 import { ReactNode } from 'react';
 import { WindowTemplate } from "./WindowTemplate";
 import { decorate, observable } from 'mobx';
+import { WindowManager } from './WindowManager';
 
 class WindowInstance {
   id: Readonly<number>;
+  manager: Readonly<WindowManager>;
   title: string;
   icon?: string;
   state: WindowState;
@@ -13,8 +15,9 @@ class WindowInstance {
   body: ReactNode;
   template: Readonly<WindowTemplate>;
 
-  constructor(id: number, template: WindowTemplate) {
+  constructor(id: number, manager: WindowManager, template: WindowTemplate) {
     this.id = id;
+    this.manager = manager;
     this.title = template.title;
     this.icon = template.icon;
     this.state = WindowState.Normal;
@@ -26,6 +29,14 @@ class WindowInstance {
     };
     this.template = template;
     this.body = template.body(this);
+  }
+
+  focus() {
+    this.manager.bringToFront(this);
+  }
+
+  destroy() {
+    this.manager.destroy(this);
   }
 }
 

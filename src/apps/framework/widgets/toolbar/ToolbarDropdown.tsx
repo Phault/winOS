@@ -28,7 +28,7 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = ({ label, childre
         <React.Fragment>
             <ToolbarButton {...rest} onClick={onClicked}>
                 {label}
-                <Icon src={dropdownGlyph} width={5} height={3} />
+                <Icon src={dropdownGlyph} />
             </ToolbarButton>
 
             <Menu id={menuId}>

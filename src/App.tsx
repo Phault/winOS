@@ -45,7 +45,7 @@ function loadFileSystem(): Promise<FSModule> {
           localStorage.setItem('installed-version', VERSION.toString());
         }
     
-        resolve(BFSRequire('fs'));
+        resolve(fileSystem);
       });
     }
   );

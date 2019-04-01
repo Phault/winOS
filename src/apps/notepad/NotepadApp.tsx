@@ -4,6 +4,7 @@ import { Program } from '../framework/Program.interface';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
 import { Item, Separator } from 'react-contexify';
 import { BFSRequire } from 'browserfs';
+import './Notepad.scss';
 
 export const NotepadApp : Program<string> = {
   name: 'Notepad',
@@ -21,7 +22,7 @@ export const NotepadApp : Program<string> = {
     const fileName = nodePath.basename(path);
     
     windows.create({
-      title: `${NotepadApp.name} - ${fileName}`,
+      title: `${fileName || 'Untitled'} - ${NotepadApp.name}`,
       icon: NotepadApp.icon,
       rect: {
         left: 200,
@@ -45,7 +46,7 @@ export const NotepadApp : Program<string> = {
               <Item>Page Setup...</Item>
               <Item>Print...</Item>
               <Separator />
-              <Item>Exit</Item>
+              <Item onClick={() => window.destroy()}>Exit</Item>
             </MenuBar.Menu>
 
             <MenuBar.Menu label='Edit'>
@@ -80,8 +81,9 @@ export const NotepadApp : Program<string> = {
               <Item>About Notepad</Item>
             </MenuBar.Menu>
           </MenuBar>
+
           <textarea 
-            style={{ flexGrow: 1 }} 
+            className="notepad-textarea wordwrap"
             autoComplete='off' 
             autoCorrect='off' 
             autoCapitalize='off' 
