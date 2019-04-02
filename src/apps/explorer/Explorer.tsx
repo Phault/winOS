@@ -18,7 +18,7 @@ import { AddressBar } from './AddressBar';
 import { BFSRequire } from 'browserfs';
 import { Icon } from '../framework/widgets/Icon';
 import { NavigationHistory } from './NavigationHistory';
-import { useObserver } from 'mobx-react-lite';
+import { useObserver, Observer } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './NavigationHistoryButtons';
 
@@ -42,28 +42,21 @@ function ViewModeItems() {
 }
 
 const Explorer: React.FC<ExplorerProps> = (props) => {
-    const [path, setPath] = useState('/');
+    const [history] = useState(() => new NavigationHistory('/'));
     const window = useContext(WindowContext)!;
-    const [history] = useState(() => new NavigationHistory(path));
 
     const handleFileExecution = (files: string[]) => {
         const file = files[0];
-        const fullPath = nodePath.isAbsolute(file) ? file : nodePath.join(path, file);
+        const fullPath = nodePath.isAbsolute(file) ? file : nodePath.join(history.current, file);
         const extension = nodePath.extname(file);
+        
         if (extension)
             NotepadApp.run(props.os, fullPath);
         else {
-            setPath(fullPath);
-
             if (fullPath !== history.current)
                 history.push(fullPath);
         }
     }
-
-    useObserver(() => {
-        if (path !== history.current)
-            setPath(history.current);
-    });
 
     return (
         <div className="explorer">
@@ -197,7 +190,9 @@ const Explorer: React.FC<ExplorerProps> = (props) => {
 
                 <Toolbar>
                     <span style={{padding: '0 4px 0 5px'}}>Address</span>
-                    <AddressBar onChange={newValue => handleFileExecution([newValue])} value={path} />
+                    <Observer>
+                        {() => <AddressBar onChange={newValue => handleFileExecution([newValue])} value={history.current} />}
+                    </Observer>
                     <Toolbar.Button icon={goIcon} className="toolbar-button-go">
                         Go
                     </Toolbar.Button>
@@ -229,7 +224,9 @@ const Explorer: React.FC<ExplorerProps> = (props) => {
                     </div>
                 </div>
                 <div className="contents">
-                    <FolderView path={path} viewMode={IconView} onExecute={handleFileExecution} />
+                    <Observer>
+                        {() => <FolderView path={history.current} viewMode={IconView} onExecute={handleFileExecution} />}
+                    </Observer>
                 </div>
             </div>
         </div>
