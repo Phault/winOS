@@ -2,7 +2,7 @@
 
 A near-pixelperfect recreation of Windows XP's look and feel in the browser with a working filesystem. 
 
-[See the latest version here.](https://spacenet.casperlindschouw.com/)
+[See the latest version here.](https://phault.dev/winxp/)
 
 ## Status
 

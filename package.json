@@ -1,6 +1,7 @@
 {
   "name": "winos",
   "version": "0.1.0",
+  "homepage": "https://phault.dev/winxp",
   "private": true,
   "dependencies": {
     "@types/classnames": "^2.2.7",
