@@ -7,17 +7,20 @@ import { Submenu, Item, Separator } from 'react-contexify';
 import { FolderView } from '../framework/widgets/folderview/FolderView';
 import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
 import { Toolbar } from '../framework/widgets/toolbar/Toolbar';
-import backIcon from '../../assets/icons/toolbar/back.png';
-import forwardIcon from '../../assets/icons/toolbar/forward.png';
 import folderUpIcon from '../../assets/icons/toolbar/folder_up.png';
 import searchIcon from '../../assets/icons/toolbar/search.png';
 import foldersIcon from '../../assets/icons/toolbar/folders.png';
 import viewIcon from '../../assets/icons/toolbar/view.png';
 import goIcon from '../../assets/icons/toolbar/go-normal.png';
+import windowsIcon from '../../assets/toolbar-icon-windows.png';
 import { WindowContext } from '../../windows/WindowManager';
 import { AddressBar } from './AddressBar';
 import { BFSRequire } from 'browserfs';
-const nodePath = BFSRequire('path');
+import { Icon } from '../framework/widgets/Icon';
+import { NavigationHistory } from './NavigationHistory';
+import { useObserver } from 'mobx-react-lite';
+import * as nodePath from 'bfs-path';
+import { NavigationHistoryButtons } from './NavigationHistoryButtons';
 
 export interface ExplorerProps {
     os: OS;
@@ -41,147 +44,146 @@ function ViewModeItems() {
 const Explorer: React.FC<ExplorerProps> = (props) => {
     const [path, setPath] = useState('/');
     const window = useContext(WindowContext)!;
+    const [history] = useState(() => new NavigationHistory(path));
 
     const handleFileExecution = (files: string[]) => {
         const file = files[0];
-        const fullPath =  nodePath.join(path, file);
+        const fullPath = nodePath.isAbsolute(file) ? file : nodePath.join(path, file);
         const extension = nodePath.extname(file);
         if (extension)
             NotepadApp.run(props.os, fullPath);
-        else
+        else {
             setPath(fullPath);
+
+            if (fullPath !== history.current)
+                history.push(fullPath);
+        }
     }
+
+    useObserver(() => {
+        if (path !== history.current)
+            setPath(history.current);
+    });
 
     return (
         <div className="explorer">
             <div className="header">
-                <MenuBar>
-                    <MenuBar.Menu label="File">
-                        <Submenu label="New">
-                            <Item>Folder</Item>
-                            <Item>Shortcut</Item>
+                <Toolbar>
+                    <MenuBar>
+                        <MenuBar.Menu label="File">
+                            <Submenu label="New">
+                                <Item>Folder</Item>
+                                <Item>Shortcut</Item>
+                                <Separator />
+                                <Item>Briefcase</Item>
+                                <Item>Bitmap Image</Item>
+                                <Item>Wordpad Document</Item>
+                                <Item>Rich Text Document</Item>
+                                <Item>Text Document</Item>
+                                <Item>Wave Sound</Item>
+                                <Item>Compressed (zipped) Folder</Item>
+                            </Submenu>
                             <Separator />
-                            <Item>Briefcase</Item>
-                            <Item>Bitmap Image</Item>
-                            <Item>Wordpad Document</Item>
-                            <Item>Rich Text Document</Item>
-                            <Item>Text Document</Item>
-                            <Item>Wave Sound</Item>
-                            <Item>Compressed (zipped) Folder</Item>
-                        </Submenu>
-                        <Separator />
-                        <Item disabled>Create Shortcut</Item>
-                        <Item disabled>Delete</Item>
-                        <Item disabled>Rename</Item>
-                        <Item disabled>Properties</Item>
-                        <Separator />
-                        <Item onClick={() => window.destroy()}>Close</Item>
-                    </MenuBar.Menu>
-                    <MenuBar.Menu label="Edit">
-                        <Item disabled>Undo</Item>
-                        <Separator />
-                        <Item disabled>Cut</Item>
-                        <Item disabled>Copy</Item>
-                        <Item disabled>Paste</Item>
-                        <Item disabled>Paste Shortcut</Item>
-                        <Separator />
-                        <Item disabled>Copy To Folder...</Item>
-                        <Item disabled>Move To Folder...</Item>
-                        <Separator />
-                        <Item>Select All</Item>
-                        <Item>Invert Selection</Item>
-                    </MenuBar.Menu>
-                    <MenuBar.Menu label="View">
-                        <Submenu label="Toolbars">
-                            <Item>Standard Buttons</Item>
-                            <Item>Address Bar</Item>
-                            <Item>Links</Item>
+                            <Item disabled>Create Shortcut</Item>
+                            <Item disabled>Delete</Item>
+                            <Item disabled>Rename</Item>
+                            <Item disabled>Properties</Item>
                             <Separator />
-                            <Item>Lock the Toolbars</Item>
-                            <Item>Customize...</Item>
-                        </Submenu>
-                        <Item>Status Bar</Item>
-                        <Submenu label="Explorer Bar">
-                            <Item>Search</Item>
-                            <Item>Favorites</Item>
-                            <Item>History</Item>
-                            <Item>Folders</Item>
+                            <Item onClick={() => window.destroy()}>Close</Item>
+                        </MenuBar.Menu>
+                        <MenuBar.Menu label="Edit">
+                            <Item disabled>Undo</Item>
                             <Separator />
-                            <Item>Tip of the Day</Item>
-                        </Submenu>
-                        <Separator />
-                        <ViewModeItems />
-                        <Separator />
-                        <Submenu label="Arrange Icons by">
-                            <Item>Name</Item>
-                            <Item>Size</Item>
-                            <Item>Type</Item>
-                            <Item>Modified</Item>
+                            <Item disabled>Cut</Item>
+                            <Item disabled>Copy</Item>
+                            <Item disabled>Paste</Item>
+                            <Item disabled>Paste Shortcut</Item>
                             <Separator />
-                            <Item>Show in Groups</Item>
-                            <Item>Auto Arrange</Item>
-                            <Item>Align to Grid</Item>
-                        </Submenu>
-                        <Separator />
-                        <Item>Choose Details...</Item>
-                        <Submenu label="Go To">
-                            <Item disabled>Back</Item>
-                            <Item disabled>Forward</Item>
-                            <Item>Up One Level</Item>
+                            <Item disabled>Copy To Folder...</Item>
+                            <Item disabled>Move To Folder...</Item>
                             <Separator />
-                            <Item>Home Page</Item>
+                            <Item>Select All</Item>
+                            <Item>Invert Selection</Item>
+                        </MenuBar.Menu>
+                        <MenuBar.Menu label="View">
+                            <Submenu label="Toolbars">
+                                <Item>Standard Buttons</Item>
+                                <Item>Address Bar</Item>
+                                <Item>Links</Item>
+                                <Separator />
+                                <Item>Lock the Toolbars</Item>
+                                <Item>Customize...</Item>
+                            </Submenu>
+                            <Item>Status Bar</Item>
+                            <Submenu label="Explorer Bar">
+                                <Item>Search</Item>
+                                <Item>Favorites</Item>
+                                <Item>History</Item>
+                                <Item>Folders</Item>
+                                <Separator />
+                                <Item>Tip of the Day</Item>
+                            </Submenu>
                             <Separator />
-                            <Item>My Documents</Item>
-                        </Submenu>
-                        <Item>Refresh</Item>
-                    </MenuBar.Menu>
-                    <MenuBar.Menu label="Favorites">
-                        <Item>Add to Favorites...</Item>
-                        <Item>Organize Favorites...</Item>
-                        <Separator />
-                        <Submenu label="Links">
-                            <Item>Customize Links</Item>
-                            <Item>Free Hotmail</Item>
-                            <Item>Windows</Item>
-                            <Item>Windows Marketplace</Item>
-                            <Item>Windows Media</Item>
-                        </Submenu>
-                        <Item>MSN.com</Item>
-                        <Item>Radio Station Guide</Item>
-                    </MenuBar.Menu>
-                    <MenuBar.Menu label="Tools">
-                        <Item>Map Network Drive...</Item>
-                        <Item>Disconnect Network Drive...</Item>
-                        <Item>Synchronize...</Item>
-                        <Separator />
-                        <Item>Folder Options...</Item>
-                    </MenuBar.Menu>
-                    <MenuBar.Menu label="Help">
-                        <Item>Help and Support Center</Item>
-                        <Separator />
-                        <Item>Is this copy of Windows legal?</Item>
-                        <Item>About Windows</Item>
-                    </MenuBar.Menu>
-                </MenuBar>
+                            <ViewModeItems />
+                            <Separator />
+                            <Submenu label="Arrange Icons by">
+                                <Item>Name</Item>
+                                <Item>Size</Item>
+                                <Item>Type</Item>
+                                <Item>Modified</Item>
+                                <Separator />
+                                <Item>Show in Groups</Item>
+                                <Item>Auto Arrange</Item>
+                                <Item>Align to Grid</Item>
+                            </Submenu>
+                            <Separator />
+                            <Item>Choose Details...</Item>
+                            <Submenu label="Go To">
+                                <Item disabled>Back</Item>
+                                <Item disabled>Forward</Item>
+                                <Item>Up One Level</Item>
+                                <Separator />
+                                <Item>Home Page</Item>
+                                <Separator />
+                                <Item>My Documents</Item>
+                            </Submenu>
+                            <Item>Refresh</Item>
+                        </MenuBar.Menu>
+                        <MenuBar.Menu label="Favorites">
+                            <Item>Add to Favorites...</Item>
+                            <Item>Organize Favorites...</Item>
+                            <Separator />
+                            <Submenu label="Links">
+                                <Item>Customize Links</Item>
+                                <Item>Free Hotmail</Item>
+                                <Item>Windows</Item>
+                                <Item>Windows Marketplace</Item>
+                                <Item>Windows Media</Item>
+                            </Submenu>
+                            <Item>MSN.com</Item>
+                            <Item>Radio Station Guide</Item>
+                        </MenuBar.Menu>
+                        <MenuBar.Menu label="Tools">
+                            <Item>Map Network Drive...</Item>
+                            <Item>Disconnect Network Drive...</Item>
+                            <Item>Synchronize...</Item>
+                            <Separator />
+                            <Item>Folder Options...</Item>
+                        </MenuBar.Menu>
+                        <MenuBar.Menu label="Help">
+                            <Item>Help and Support Center</Item>
+                            <Separator />
+                            <Item>Is this copy of Windows legal?</Item>
+                            <Item>About Windows</Item>
+                        </MenuBar.Menu>
+                    </MenuBar>
+                    <div className="explorer-windows-icon">
+                        <Icon src={windowsIcon}/>
+                    </div>
+                </Toolbar>
 
                 <Toolbar>
-                    <Toolbar.SplitButton>
-                        <Toolbar.Button icon={backIcon} onClick={() => console.log('back')}>Back</Toolbar.Button>
-                        <Toolbar.Dropdown>
-                            <Item>Hello</Item>
-                            <Separator />
-                            <Item>History</Item>
-                        </Toolbar.Dropdown>
-                    </Toolbar.SplitButton>
-
-                    <Toolbar.SplitButton>
-                        <Toolbar.Button icon={forwardIcon} disabled onClick={() => console.log('forward')} />        
-                        <Toolbar.Dropdown disabled>
-                            <Item>Hello</Item>
-                            <Separator />
-                            <Item>History</Item>
-                        </Toolbar.Dropdown>                
-                    </Toolbar.SplitButton>
+                    <NavigationHistoryButtons history={history} />
 
                     <Toolbar.Button icon={folderUpIcon} disabled onClick={() => console.log('leave folder')} />
                     <Toolbar.Separator />
@@ -195,7 +197,7 @@ const Explorer: React.FC<ExplorerProps> = (props) => {
 
                 <Toolbar>
                     <span style={{padding: '0 4px 0 5px'}}>Address</span>
-                    <AddressBar onChange={newValue => setPath(newValue)} value={path} />
+                    <AddressBar onChange={newValue => handleFileExecution([newValue])} value={path} />
                     <Toolbar.Button icon={goIcon} className="toolbar-button-go">
                         Go
                     </Toolbar.Button>

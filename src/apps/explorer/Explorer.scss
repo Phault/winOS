@@ -13,9 +13,22 @@
         .menu-bar {
             background: transparent;
             padding: 1px 2px 2px;
+            flex-grow: 1;
+            border-bottom: none;
+            border-right: 1px solid #cdcabb;
+        }
+
+        .explorer-windows-icon {
+            padding: 0 8px 0 9px;
+            text-align: center;
+            background: white;
         }
 
         >* {
+            &:first-child {
+                padding-right: 0px;
+            }
+
             &:not(:last-child) {
                 border-bottom: 1px solid #cdcabb;
             }

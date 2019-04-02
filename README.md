@@ -1,44 +1,54 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Windows XP as a web page
 
-## Available Scripts
+A near-pixelperfect recreation of Windows XP's look and feel in the browser with a working filesystem. 
 
-In the project directory, you can run:
+[See the latest version here.](https://spacenet.casperlindschouw.com/)
 
-### `npm start`
+## Status
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+A ton of stuff is missing, which should be obvious if you check out the live version. 
+The code is also a bit messy at the moment as I'm experimenting and seeing what sticks.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Plans
 
-### `npm test`
+I have a lot of plans, most of which will never see the light of day. I will however consider this project complete enough once the following are done:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* Recreate standard reuseable widgets (toolbars, menubar, input fields, etc)
+* Start Menu
+* Boot sequence / loading screen
+* Replace most ripped images with CSS styling
+* Migrate to CSS modules or similar
+* Basic working filesystem
+* Have a few apps fully* working
+    * Notepad
+    * File Explorer
+    * Paint
+    * Minesweeper or Solitaire
+* Fallback to similar fonts on other platforms
+* Customize the cursor
 
-### `npm run build`
+<sub><sup>* mostly anyway</sup></sub>
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## But why..?
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+I love React, but I have done no projects that prove that. Windows XP also has a special place in my heart, so in a nostalgia-induced rush I decided to start this project.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Technology
+* React + TypeScript <3
+* [React-Contexify](https://github.com/fkhadra/react-contexify) for dropdowns and context menus
+* [React-Autosuggest](https://github.com/moroshko/react-autosuggest) for the navigation bar
+* [BrowserFS](https://github.com/jvilk/BrowserFS) for the filesystem
+* A bunch more
 
-### `npm run eject`
+### Tools
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+* Windows XP VM
+* Resource Hacker / ResBuild / MSStyles Converter
+* ImageMagick
+* Gimp
+* Magnifixer
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## License
+MIT - Do whatever your want
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Copyright of all image assets belong to Microsoft. I will remove them upon request, but I'm hoping they will turn a blind eye. The plan is to replace everything feasible with CSS styling or original recreations. 

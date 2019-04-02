@@ -1,5 +1,5 @@
-import React, { useState, useContext, useMemo, useCallback, useEffect, Children } from 'react';
-import Autosuggest, { InputProps, RenderSuggestion, RenderSuggestionsContainer } from 'react-autosuggest';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
+import Autosuggest, { RenderSuggestion } from 'react-autosuggest';
 import { FileSystemContext } from '../../App';
 import * as nodePath from 'bfs-path';
 import './AddressBar.scss';
@@ -22,37 +22,41 @@ export const AddressBar: React.FC<AddressBarProps> = ({value, onChange, ...rest}
 
     useEffect(() => setWorkingValue(value), [value]);
 
-    const inputProps = useMemo((): InputProps<string> => {
-        return {
-            ...rest,
-            value: workingValue,
-            suggestions,
-            onChange: (_, {newValue, method}) => {
-                if (method === 'escape')
-                    return;
-                    
-                setWorkingValue(newValue);
+    const onKeyDownCapture = useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            setWorkingValue(value);
 
-                if (method === 'enter' || method === 'click')
-                    onChange(newValue);
-            },
-            onKeyPress: (e: React.KeyboardEvent) => {
-                if (e.key === 'Enter') {
-                    onChange(workingValue);
-                    (document.activeElement as HTMLElement).blur();
-                }
-            },
-            onKeyDownCapture: (e: React.KeyboardEvent) => {
-                if (e.key === 'Escape') {
-                    setWorkingValue(value);
+            const input = e.currentTarget as HTMLInputElement;
+            input.value = value;
+            input.setSelectionRange(0, 99999999);
+        }
+    }, [value]);
 
-                    const input = e.currentTarget as HTMLInputElement;
-                    input.value = value;
-                    input.setSelectionRange(0, 99999999);
-                }
-            }
-        };
-    }, [workingValue, value, suggestions, rest]);
+    const onKeyPress = useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            onChange(workingValue);
+            (document.activeElement as HTMLElement).blur();
+        }
+    }, [workingValue, onChange]);
+
+    const onInputChange = useCallback((_, {newValue, method}) => {
+        if (method === 'escape')
+            return;
+            
+        setWorkingValue(newValue);
+
+        if (method === 'enter' || method === 'click')
+            onChange(newValue);
+    }, [onChange]);
+
+    const inputProps = {
+        ...rest,
+        value: workingValue,
+        suggestions,
+        onChange: onInputChange,
+        onKeyPress,
+        onKeyDownCapture
+    };
 
     const onSuggestionsFetchRequested = useCallback(({value: request}: {value: string}) => {
         const isExactDir = request.endsWith('/');

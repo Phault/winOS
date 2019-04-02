@@ -18,7 +18,7 @@ export enum WindowState {
   Minimized
 }
 
-const VERSION = 1;
+const VERSION = 2;
 
 function loadFileSystem(): Promise<FSModule> {
   return new Promise<FSModule>(
@@ -37,6 +37,11 @@ function loadFileSystem(): Promise<FSModule> {
           fileSystem.writeFileSync('/file.txt', 'Hello world!', { flag: 'w+' });
           
           try {
+            fileSystem.mkdirSync('/deeply');
+            fileSystem.mkdirSync('/deeply/nested');
+            fileSystem.mkdirSync('/deeply/nested/folders');
+            fileSystem.mkdirSync('/deeply/nested/folders/for');
+            fileSystem.mkdirSync('/deeply/nested/folders/for/testing');
             fileSystem.mkdirSync('/folder');
           }
           catch {}
