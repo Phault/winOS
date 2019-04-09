@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { FileSystemContext } from '../../../../App';
+import React, { useState, useEffect, useContext, Fragment, CSSProperties } from 'react';
+import { OSContext } from '../../../../App';
+import Stats from 'browserfs/dist/node/core/node_fs_stats';
+import { FolderContextMenu } from './FolderContextMenu';
+import { useUuid } from '../../../../misc/useUuid';
+import { MenuProvider } from 'react-contexify';
+import './FolderView.scss';
+import * as nodePath from 'bfs-path';
 
 export type ExecuteHandler = (items: string[]) => void;
 
@@ -8,23 +14,29 @@ export interface ViewModeProps {
     onExecute?: ExecuteHandler;
 }
 
-interface FolderViewProps {
+export interface FolderViewProps {
     path: string;
     viewMode: React.ComponentType<ViewModeProps>,
     onSelectionChanged?: (items: string[]) => void;
     onExecute?: ExecuteHandler;
+
+    className?: string;
+    style?: CSSProperties;
 }
 
-const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute}) => {
+const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute, onSelectionChanged}) => {
     const [contents, setContents] = useState<FileInfo[] | null>(null);
     const [selection, setSelection] = useState<string[]>([]);
 
-    const fileSystem = useContext(FileSystemContext);
+    const contextMenuId = useUuid();
+
+    const {fileSystem} = useContext(OSContext)!;
     
     function loadContents(path: string) {
-        fileSystem!.readdir(path, (e, files) => {
+        fileSystem.readdir(path, (e, files) => {
             const fileInfos = (files || []).map(file => ({
-                fullPath: file
+                path: file,
+                stats: fileSystem.statSync(nodePath.join(path, file))
             }));
             setContents(fileInfos);
             setSelection([]);
@@ -34,29 +46,18 @@ const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExec
     useEffect(() => loadContents(path), [path]);
 
     return (
-        <ViewMode files={contents!} onExecute={onExecute}/>
+        <Fragment>
+            <MenuProvider id={contextMenuId} className="folder-view" storeRef={false}>
+                <ViewMode files={contents!} onExecute={onExecute} />
+            </MenuProvider>
+            <FolderContextMenu id={contextMenuId}/>
+        </Fragment>
     );
 };
 
 export interface FileInfo {
-    //icon: string; // ? associated app? remove and move responsible elsewhere
-    fullPath: string;
-    //extension: string; // could be method
-    //fileName: string; // could be method
-
-    // attributes??
-    // lastModified: string; // what's the type for datetimes?
-    // created: string;
-    // accessed: string;
-
-    // readonly: boolean;
-    // hidden: boolean;
-    // owner: string;
-    // group: string; // ?
-    // permissions: number;
-
-    // size: number; // ?
-    // sizeOnDisk: number; // ?
+    path: string;
+    stats: Stats;
 }
 
 interface ShortcutInfo {

@@ -1,19 +1,22 @@
 import React from 'react';
-import notepadIcon from './icon.png';
+import icon from '../../assets/icons/apps/notepad.png';
 import { Program } from '../framework/Program.interface';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
 import { Item, Separator } from 'react-contexify';
 import { BFSRequire } from 'browserfs';
 import './Notepad.scss';
 
-export const NotepadApp : Program<string> = {
+export const NotepadApp: Program<string> = {
   name: 'Notepad',
-  icon: notepadIcon,
-  run: ({ windows, fileSystem }, args) => {
+  icon,
+  fileExtensions: [
+    'txt'
+  ],
+  run: async (os, args) => {
     const path = args || 'test.txt';
     let file: string;
     try {
-      file = fileSystem.readFileSync(path).toString();
+      file = os.fileSystem!.readFileSync(path).toString();
     } catch (e) {
       file = '';
     }
@@ -21,7 +24,7 @@ export const NotepadApp : Program<string> = {
     const nodePath = BFSRequire('path');
     const fileName = nodePath.basename(path);
     
-    windows.create({
+    os.windowManager.create({
       title: `${fileName || 'Untitled'} - ${NotepadApp.name}`,
       icon: NotepadApp.icon,
       rect: {
@@ -34,7 +37,7 @@ export const NotepadApp : Program<string> = {
         width: 120,
         height: 100,
       },
-      body: (window) => (
+      body: window => (
         <React.Fragment>
           <MenuBar>
             <MenuBar.Menu label='File'>
@@ -88,7 +91,7 @@ export const NotepadApp : Program<string> = {
             autoCorrect='off' 
             autoCapitalize='off' 
             spellCheck={false} 
-            onChange={e => fileSystem.writeFileSync(path, e.currentTarget.value, { flag: 'w+' })} 
+            onChange={e => os.fileSystem!.writeFileSync(path, e.currentTarget.value, { flag: 'w+' })} 
             defaultValue={file} />
         </React.Fragment>
       )

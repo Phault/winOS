@@ -8,11 +8,14 @@
   z-index: 0;
 }
 
-.desktop-environment {
+.desktop-environment, .desktop-usable-area {
   width: 100%;
   height: 100%;
   
-  background: url('./assets/bliss.jpg') center / cover no-repeat;
   display: flex;
   flex-flow: column nowrap;
+}
+
+.desktop-environment {
+  background: url('./assets/bliss.jpg') center / cover no-repeat;
 }

@@ -25,6 +25,7 @@
     "react-scripts": "^2.1.8",
     "react-truncate": "^2.4.0",
     "typescript": "3.3.4000",
+    "use-onclickoutside": "^0.3.1",
     "uuid": "^3.3.2"
   },
   "scripts": {

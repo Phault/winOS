@@ -1,25 +1,24 @@
 import React, { useContext } from 'react';
-import fallbackIcon from '../assets/icons/3.png';
+import fallbackIcon from '../assets/icons/apps/default.png';
 import { WindowInstance } from '../windows/WindowInstance';
 import { MenuProvider } from 'react-contexify';
 import { TaskBarItemMenu } from "./TaskBarItemMenu";
 import classNames from 'classnames';
-import { WindowManagerContext, WindowState } from '../App';
 import { observer } from 'mobx-react-lite';
+import { OSContext } from '../App';
 
 interface TaskListItemProps {
     window: WindowInstance
 }
 
 const TaskListItem: React.FC<TaskListItemProps> = observer(({ window }) => {
-
-    const windowManager = useContext(WindowManagerContext);
+    const {windowManager} = useContext(OSContext)!;
     const active = window === windowManager.focused;
 
     const onClick = () => {
         if (active)
             windowManager.minimize(window);
-        else if (window.state === WindowState.Minimized)
+        else if (window.isMinimized)
             windowManager.restore(window);
         else
             windowManager.bringToFront(window);

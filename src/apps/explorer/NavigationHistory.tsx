@@ -10,10 +10,7 @@ class NavigationHistory<T> {
     }
 
     push(val: T) {
-        if (this.position < this.stack.length - 1)
-            this.stack = this.stack.splice(this.position, this.stack.length - 1);
-
-        this.stack.push(val);
+        this.stack.splice(this.position + 1, Math.max(0, this.stack.length - this.position - 1), val);
         this.position = this.stack.length - 1;
     }
 

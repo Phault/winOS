@@ -4,10 +4,10 @@ import { Direction } from './Direction';
 import { usePointerCapture } from './usePointerCapture';
 import { useCssRule } from './useStyleSheet';
 
-interface WrappedResizableProps extends Partial<Rectangle> {
+export interface WrappedResizableProps extends Partial<Rectangle> {
 }
 
-interface ResizableProps extends Rectangle {
+export interface ResizableProps extends Rectangle {
     onResize: (bounds: Rectangle) => void;
     border?: number;
     minWidth?: number;

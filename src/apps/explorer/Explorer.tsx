@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { OS } from "../../OS";
+import React, { useState, useContext, useCallback } from 'react';
 import './Explorer.scss';
 import { NotepadApp } from '../notepad/NotepadApp';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
@@ -15,16 +14,12 @@ import goIcon from '../../assets/icons/toolbar/go-normal.png';
 import windowsIcon from '../../assets/toolbar-icon-windows.png';
 import { WindowContext } from '../../windows/WindowManager';
 import { AddressBar } from './AddressBar';
-import { BFSRequire } from 'browserfs';
 import { Icon } from '../framework/widgets/Icon';
 import { NavigationHistory } from './NavigationHistory';
-import { useObserver, Observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './NavigationHistoryButtons';
-
-export interface ExplorerProps {
-    os: OS;
-}
+import { OSContext } from '../../App';
 
 function ViewModeItems() {
     return (
@@ -41,22 +36,33 @@ function ViewModeItems() {
     );
 }
 
-const Explorer: React.FC<ExplorerProps> = (props) => {
-    const [history] = useState(() => new NavigationHistory('/'));
-    const window = useContext(WindowContext)!;
+interface ExplorerProps {
+    initialDir: string;
+}
 
-    const handleFileExecution = (files: string[]) => {
+const Explorer: React.FC<ExplorerProps> = ({initialDir}) => {
+    const [history] = useState(() => new NavigationHistory(initialDir));
+    const window = useContext(WindowContext)!;
+    const {processManager} = useContext(OSContext)!;
+
+    const handleFileExecution = useCallback((files: string[]) => {
         const file = files[0];
         const fullPath = nodePath.isAbsolute(file) ? file : nodePath.join(history.current, file);
         const extension = nodePath.extname(file);
-        
+
         if (extension)
-            NotepadApp.run(props.os, fullPath);
+            processManager.run(NotepadApp, fullPath);
         else {
             if (fullPath !== history.current)
                 history.push(fullPath);
         }
-    }
+    }, [history, processManager]);
+
+    const goUp = useCallback(() => {
+        const parentDir = nodePath.normalize(nodePath.join(history.current, '..'));
+        if (parentDir !== history.current)
+            history.push(parentDir);
+    }, [history]);
 
     return (
         <div className="explorer">
@@ -178,7 +184,7 @@ const Explorer: React.FC<ExplorerProps> = (props) => {
                 <Toolbar>
                     <NavigationHistoryButtons history={history} />
 
-                    <Toolbar.Button icon={folderUpIcon} disabled onClick={() => console.log('leave folder')} />
+                    <Toolbar.Button icon={folderUpIcon} onClick={goUp} />
                     <Toolbar.Separator />
                     <Toolbar.Button icon={searchIcon} onClick={() => console.log('search')}>Search</Toolbar.Button>
                     <Toolbar.Button icon={foldersIcon} onClick={() => console.log('folders')}>Folders</Toolbar.Button>

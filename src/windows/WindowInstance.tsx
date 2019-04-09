@@ -1,8 +1,7 @@
-import { WindowState } from '../App';
 import { Rectangle } from '../misc/Rectangle';
 import { ReactNode } from 'react';
 import { WindowTemplate } from "./WindowTemplate";
-import { decorate, observable } from 'mobx';
+import { decorate, observable, action } from 'mobx';
 import { WindowManager } from './WindowManager';
 
 class WindowInstance {
@@ -10,7 +9,8 @@ class WindowInstance {
   manager: Readonly<WindowManager>;
   title: string;
   icon?: string;
-  state: WindowState;
+  isMaximized: boolean = false;
+  isMinimized: boolean = false;
   rect: Rectangle;
   body: ReactNode;
   template: Readonly<WindowTemplate>;
@@ -20,7 +20,6 @@ class WindowInstance {
     this.manager = manager;
     this.title = template.title;
     this.icon = template.icon;
-    this.state = WindowState.Normal;
     this.rect = template.rect || {
       left: 0,
       top: 0,
@@ -43,8 +42,11 @@ class WindowInstance {
 decorate(WindowInstance, {
   title: observable,
   icon: observable,
-  state: observable,
-  rect: observable
+  isMaximized: observable,
+  isMinimized: observable,
+  rect: observable,
+  focus: action,
+  destroy: action
 });
 
 export { WindowInstance };

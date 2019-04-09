@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import { TaskBarItem } from './TaskBarItem';
 import { TaskListItem } from './TaskListItem';
 import { TaskBarItemMenu } from "./TaskBarItemMenu";
-import { WindowManagerContext } from '../App';
 import { useObserver } from 'mobx-react-lite';
+import { OSContext } from '../App';
 
 export function TaskList() {
-    const windowManager = useContext(WindowManagerContext);
+    const { windowManager: windows } = useContext(OSContext)!;
 
     const items = useObserver(() => {
-        const sortedArray = [...windowManager.windows].sort((a, b) => a.id - b.id);
+        const sortedArray = [...windows.windows].sort((a, b) => a.id - b.id);
 
         return sortedArray.map(w => <TaskListItem key={w.id} window={w} />)
     });

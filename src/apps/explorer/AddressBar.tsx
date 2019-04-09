@@ -1,8 +1,8 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import Autosuggest, { RenderSuggestion } from 'react-autosuggest';
-import { FileSystemContext } from '../../App';
 import * as nodePath from 'bfs-path';
 import './AddressBar.scss';
+import { OSContext } from '../../App';
 
 const renderSuggestion: RenderSuggestion<string> = (suggestion: string) => {
     return <span>{suggestion}</span>;
@@ -18,7 +18,7 @@ export interface AddressBarProps {
 export const AddressBar: React.FC<AddressBarProps> = ({value, onChange, ...rest}) => {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [workingValue, setWorkingValue] = useState<string>(value);
-    const fileSystem = useContext(FileSystemContext)!;
+    const {fileSystem} = useContext(OSContext)!;
 
     useEffect(() => setWorkingValue(value), [value]);
 

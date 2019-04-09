@@ -159,8 +159,8 @@ $btn-expand-height: 20px;
     position: fixed;
     left: 0;
     bottom: 0;
-    width: $startmenu-width;
-    height: $startmenu-height;
+    min-width: $startmenu-width;
+    min-height: $startmenu-height;
     display: flex;
     flex-direction: column;
 }
@@ -324,10 +324,8 @@ $btn-expand-height: 20px;
     }
 
     .icon {
-        width: 32px;
-        height: 32px;
-        background: url('../assets/icons/512.png');
-        background-size: contain;
+        width: 32px !important;
+        height: 32px !important;
     }
 
     .content {
@@ -372,10 +370,8 @@ $btn-expand-height: 20px;
         color: rgb(10, 36, 106);
 
         .icon {
-            width: 24px;
-            height: 24px;
-            background: url('../assets/icons/512.png');
-            background-size: contain;
+            width: 24px !important;
+            height: 24px !important;
         }
         
         &.favorite .content h1 {

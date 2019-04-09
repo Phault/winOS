@@ -1,8 +1,16 @@
-import { OS } from '../../OS';
+import { OS } from "../../App";
 
-export interface Program<A = any> {
+export enum Signal {
+  QUIT,
+  KILL
+}
+
+export type SignalHandler = (signal: Signal) => void;
+
+export interface Program<T = any, R = any> {
   name: string;
+  description?: string;
   icon?: string;
   fileExtensions?: string[];
-  run(os: OS, args?: A): void;
+  run(os: OS, args?: T): Promise<R>;
 }

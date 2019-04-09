@@ -21,11 +21,10 @@ $selected-color: rgb(49, 107, 197);
     height: $item-height;
     margin: 9px 1px;
 
-    color: white;
+    color: black;
     font-family: 'Tahoma';
     font-size: 11px;
     text-align: center;
-    text-shadow: rgb(0, 0, 0) 1px 1px 3px;
 
     .label {
         padding: $item-label-padding;
@@ -44,7 +43,13 @@ $selected-color: rgb(49, 107, 197);
     }
 
     &:active, &.active {
+        img {
+            // source: https://codepen.io/stilllife00/pen/avXpgJ
+            filter: grayscale(100%) brightness(30%) sepia(100%) hue-rotate(-180deg) saturate(700%) contrast(0.8);
+        }
+
         .label {
+            color: white;
             text-shadow: none;
             background: $selected-color;
         }

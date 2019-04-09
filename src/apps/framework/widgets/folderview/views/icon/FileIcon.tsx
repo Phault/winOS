@@ -19,6 +19,6 @@ const FileIcon: React.FC<FileIconProps> = ({ icon, children, ...rest }) => {
             </div>
         </div>
     );
-}
+};
 
 export { FileIcon };

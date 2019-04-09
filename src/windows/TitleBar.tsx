@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
-import fallbackIcon from '../assets/icons/3.png';
+import fallbackIcon from '../assets/icons/apps/default.png';
 import { Button } from './Window';
 import minimizeIcon from '../assets/window-button-icon-minimize.png';
 import closeIcon from '../assets/window-button-icon-close.png';
 import maximizeIcon from '../assets/window-button-icon-maximize.png';
+import restoreIcon from '../assets/window-button-icon-restore.png';
 import { WindowContext } from './WindowManager';
-import { WindowManagerContext, WindowState } from '../App';
+import { OSContext } from '../App';
 
 export interface TitleBarProps {
     title: string;
@@ -13,14 +14,11 @@ export interface TitleBarProps {
 }
 
 export const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(({ title, icon }, ref) => {
-
-    const windowManager = useContext(WindowManagerContext);
+    const { windowManager } = useContext(OSContext)!;
     const window = useContext(WindowContext)!;
 
     function toggleMaximize() {
-        window.state = window.state === WindowState.Maximized 
-            ? WindowState.Normal 
-            : WindowState.Maximized;
+        window.isMaximized = !window.isMaximized;
     }
 
     return (
@@ -29,15 +27,15 @@ export const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(({ title
                 className="app-icon" 
                 src={icon || fallbackIcon} 
                 draggable={false} 
-                onDoubleClick={() => windowManager.destroy(window)} 
+                onDoubleClick={() => window.destroy()} 
                 onPointerDown={e => e.stopPropagation()}/>
                 
             <span>{title}</span>
 
             <div className="title-bar-buttons" onPointerDown={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
                 <Button icon={minimizeIcon} onClick={() => windowManager.minimize(window)} />
-                <Button icon={maximizeIcon} onClick={toggleMaximize}/>
-                <Button className="btn-danger" icon={closeIcon} onClick={() => windowManager.destroy(window)}/>
+                <Button icon={window.isMaximized ? restoreIcon : maximizeIcon} onClick={toggleMaximize}/>
+                <Button className="btn-danger" icon={closeIcon} onClick={() => window.destroy()}/>
             </div>
         </div>
     )

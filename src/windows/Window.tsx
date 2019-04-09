@@ -51,7 +51,9 @@ export function StaticWindow({
     );
 }
 
-export default asMovable(asResizable(StaticWindow));
+const Window = asMovable(asResizable(StaticWindow));
+
+export { Window };
 
 interface TitleBarButtonProps extends HTMLAttributes<any> {
     icon?: string;

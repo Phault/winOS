@@ -1,12 +1,18 @@
 import React from 'react';
 import { Program } from "../framework/Program.interface";
 import { Explorer } from './Explorer';
+import icon from '../../assets/icons/apps/explorer.png';
 
 export const ExplorerApp: Program<string> = {
     name: 'File Explorer',
-    run: (os, args) => {
-        os.windows.create({
+    icon,
+    run: async (os, args) => {
+
+        const initialDir = args || '/';
+
+        os.windowManager.create({
             title: ExplorerApp.name,
+            icon,
             rect: {
                 left: 200,
                 top: 550,
@@ -17,7 +23,7 @@ export const ExplorerApp: Program<string> = {
                 width: 120,
                 height: 100,
             },
-            body: () => <Explorer os={os} />
+            body: () => <Explorer initialDir={initialDir} />
         });
     }
 };

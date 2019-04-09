@@ -3,11 +3,11 @@ import { Position } from './Position';
 import { Rectangle } from './Rectangle';
 import { usePointerCapture } from './usePointerCapture';
 
-interface WrappedMovableProps extends Partial<Position> {
+export interface WrappedMovableProps extends Partial<Position> {
     handle?: React.Ref<HTMLDivElement>;
 }
 
-interface MovableProps extends Position {
+export interface MovableProps extends Position {
     onMove: (pos: Position) => void;
 }
 

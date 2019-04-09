@@ -1,4 +1,3 @@
-import { WindowState } from '../App';
 import { decorate, observable, action, computed } from 'mobx';
 import React from 'react';
 import { WindowInstance } from './WindowInstance';
@@ -18,7 +17,7 @@ class WindowManager {
     for (let i = this.windows.length - 1; i >= 0; i--) {
       const window = this.windows[i];
 
-      if (window.state !== WindowState.Minimized)
+      if (!window.isMinimized)
         return window;
     }
 
@@ -44,20 +43,20 @@ class WindowManager {
   public minimize(instanceOrId: WindowInstance | number) {
     const window = this.getWindow(instanceOrId);
 
-    if (window!.state === WindowState.Minimized)
+    if (window!.isMinimized)
       return;
 
-    window!.state = WindowState.Minimized;
+    window!.isMinimized = true;
     this.sendBackwards(window!);
   }
 
   public restore(instanceOrId: WindowInstance | number) { 
     const window = this.getWindow(instanceOrId);
 
-    if (window!.state !== WindowState.Minimized)
+    if (!window!.isMinimized)
       return;
 
-    window!.state = WindowState.Normal;
+    window!.isMinimized = false;
     this.bringToFront(instanceOrId);
   }
 

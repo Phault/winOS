@@ -1,9 +1,9 @@
 import React from 'react';
 import { Menu, Submenu, Item, Separator } from 'react-contexify';
 
-export function FileContextMenu() {
+export function FileContextMenu({id}: {id: string}) {
     return (
-        <Menu id={FileContextMenu.Id}>
+        <Menu id={id}>
             <Item><b>Open</b></Item>
             <Item>Run as...</Item>
             <Item>Pin to Start menu</Item>
@@ -27,5 +27,3 @@ export function FileContextMenu() {
         </Menu>
     );
 }
-
-FileContextMenu.Id = 'file';

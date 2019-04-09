@@ -33,7 +33,8 @@ export function NavigationHistoryButtons({history}: {history: NavigationHistory<
             <Observer>
                 {() => {
                     let previous = history.previousAll;
-                    previous = previous.slice(previous.length - maxItems);
+                    if (previous.length > maxItems)
+                        previous = previous.slice(previous.length - maxItems);
                     previous.reverse();
                     
                     return (
@@ -59,7 +60,8 @@ export function NavigationHistoryButtons({history}: {history: NavigationHistory<
             <Observer>
                 {() => {
                     let next = history.nextAll;
-                    next = next.slice(0, maxItems);
+                    if (next.length > maxItems)
+                        next = next.slice(0, maxItems);
 
                     return (
                         <Toolbar.SplitButton>
