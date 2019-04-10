@@ -34,6 +34,7 @@ I have a lot of plans, most of which will never see the light of day. I will how
 I love React, but I have done no projects that prove that. Windows XP also has a special place in my heart, so in a nostalgia-induced rush I decided to start this project.
 
 ## Technology
+
 * React + TypeScript <3
 * [React-Contexify](https://github.com/fkhadra/react-contexify) for dropdowns and context menus
 * [React-Autosuggest](https://github.com/moroshko/react-autosuggest) for the navigation bar
@@ -49,6 +50,7 @@ I love React, but I have done no projects that prove that. Windows XP also has a
 * Magnifixer
 
 ## License
-MIT - Do whatever your want
+
+MIT - Do whatever you want
 
 Copyright of all image assets belong to Microsoft. I will remove them upon request, but I'm hoping they will turn a blind eye. The plan is to replace everything feasible with CSS styling or original recreations. 

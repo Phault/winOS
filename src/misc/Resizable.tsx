@@ -159,6 +159,7 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
         return (
             <div
                 ref={ref}
+                touch-action="none"
                 onPointerEnter={onEnter}
                 onPointerDown={onDown}
                 onPointerMove={onMove}

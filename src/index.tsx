@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'pepjs';
 import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';

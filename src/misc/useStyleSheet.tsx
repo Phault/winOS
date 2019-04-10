@@ -24,9 +24,9 @@ export function useCssRule(selector: string, initialValue: CSSProperty): [CSSPro
         if (!value)
             return;
 
-        styleSheet.addRule(selector, value);
+        styleSheet.insertRule(`${selector} { ${value} }`);
         const index = styleSheet.cssRules.length - 1;
-        return () => styleSheet.removeRule(index);
+        return () => styleSheet.deleteRule(index);
     }, [selector, value]);
 
     return [value, setValue];
