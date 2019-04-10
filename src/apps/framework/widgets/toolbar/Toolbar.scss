@@ -15,14 +15,11 @@
 }
 
 .toolbar-button {
-    background: none;
-    outline: none;
     padding: 6px 3px;
     border: 1px solid transparent;
     border-radius: 4px;
     display: flex;
     align-items: center;
-    font: inherit;
     margin-right: 4px;
 
     >* {

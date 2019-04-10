@@ -6,6 +6,9 @@
   height: 100%;
   overflow: hidden;
   z-index: 0;
+  font-family: Tahoma;
+  font-size: 11px;
+  color: black;
 }
 
 .desktop-environment, .desktop-usable-area {
@@ -18,4 +21,23 @@
 
 .desktop-environment {
   background: url('./assets/bliss.jpg') center / cover no-repeat;
+}
+
+
+button, input, textarea {
+  font: inherit;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  margin: 0;
+}
+
+button {
+  background: none;
+}
+
+input, textarea {
+  border: 1px solid #7f9db9;
+  background: white;
 }

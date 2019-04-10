@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, Fragment } from 'react';
 import './Explorer.scss';
 import { NotepadApp } from '../notepad/NotepadApp';
 import { MenuBar } from '../framework/widgets/menubar/MenuBar';
@@ -20,6 +20,7 @@ import { Observer } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './NavigationHistoryButtons';
 import { OSContext } from '../../App';
+import { CreateNewItems } from '../framework/widgets/folderview/FolderContextMenu';
 
 function ViewModeItems() {
     return (
@@ -71,16 +72,7 @@ const Explorer: React.FC<ExplorerProps> = ({initialDir}) => {
                     <MenuBar>
                         <MenuBar.Menu label="File">
                             <Submenu label="New">
-                                <Item>Folder</Item>
-                                <Item>Shortcut</Item>
-                                <Separator />
-                                <Item>Briefcase</Item>
-                                <Item>Bitmap Image</Item>
-                                <Item>Wordpad Document</Item>
-                                <Item>Rich Text Document</Item>
-                                <Item>Text Document</Item>
-                                <Item>Wave Sound</Item>
-                                <Item>Compressed (zipped) Folder</Item>
+                                <CreateNewItems path={history.current} />
                             </Submenu>
                             <Separator />
                             <Item disabled>Create Shortcut</Item>

@@ -33,24 +33,23 @@ const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExec
     const {fileSystem} = useContext(OSContext)!;
     
     function loadContents(path: string) {
-        fileSystem.readdir(path, (e, files) => {
-            const fileInfos = (files || []).map(file => ({
-                path: file,
-                stats: fileSystem.statSync(nodePath.join(path, file))
-            }));
-            setContents(fileInfos);
-            setSelection([]);
-        });
+        const files = fileSystem.readdirSync(path);
+        const fileInfos = (files || []).map(file => ({
+            path: file,
+            stats: fileSystem.statSync(nodePath.join(path, file))
+        }));
+        setContents(fileInfos);
+        setSelection([]);
     }
 
     useEffect(() => loadContents(path), [path]);
-
+    
     return (
         <Fragment>
             <MenuProvider id={contextMenuId} className="folder-view" storeRef={false}>
                 <ViewMode files={contents!} onExecute={onExecute} />
             </MenuProvider>
-            <FolderContextMenu id={contextMenuId}/>
+            <FolderContextMenu id={contextMenuId} path={path} />
         </Fragment>
     );
 };

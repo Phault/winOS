@@ -1,5 +1,10 @@
 .desktop {
     flex-grow: 1;
+    height: 100%;
+
+    .folderview-icons {
+        flex-flow: column wrap;
+    }
 
     .file-icon {
         color: white;
