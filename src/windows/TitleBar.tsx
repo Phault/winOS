@@ -22,7 +22,7 @@ export const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(({ title
     }
 
     return (
-        <div className="title-bar" ref={ref} onDoubleClick={toggleMaximize}>
+        <div className="title-bar" ref={ref} onDoubleClick={toggleMaximize} onPointerDown={e => e.stopPropagation()}>
             <img 
                 className="app-icon" 
                 src={icon || fallbackIcon} 
