@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import classNames from 'classnames';
-import { useImageDimensions } from '../../../misc/useImageDimensions';
+import { useImageDimensions } from '../misc/useImageDimensions';
 
 interface IconProps {
     src: string;

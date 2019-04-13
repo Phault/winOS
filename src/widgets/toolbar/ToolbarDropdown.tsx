@@ -1,9 +1,9 @@
 import React, { ReactElement, DOMAttributes, Ref, RefObject, ReactNodeArray, ReactNode } from 'react';
 import { Icon } from '../Icon';
-import dropdownGlyph from '../../../../assets/toolbar-dropdown-glyph.png';
+import dropdownGlyph from '../../assets/toolbar-dropdown-glyph.png';
 import { Menu } from 'react-contexify';
-import { useUuid } from '../../../../misc/useUuid';
-import { openDropdownMenu, Anchor } from '../../../../misc/openDropdownMenu';
+import { useUuid } from '../../misc/useUuid';
+import { openDropdownMenu, Anchor } from '../../misc/openDropdownMenu';
 import { ToolbarButtonProps, ToolbarButton } from './ToolbarButton';
 
 export interface ToolbarDropdownProps extends ToolbarButtonProps {

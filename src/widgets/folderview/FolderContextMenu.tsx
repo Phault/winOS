@@ -1,37 +1,7 @@
 import React, { useContext, Fragment } from 'react';
 import { Menu, animation, Submenu, Item, Separator } from "react-contexify";
-import { OSContext } from '../../../../App';
-import { FSModule } from 'browserfs/dist/node/core/FS';
-import * as nodePath from 'bfs-path';
-
-export function createNewFolder(fs: FSModule, parentPath: string) {
-    const name = getNextFreeName(fs, parentPath, 'New Folder');
-    fs.mkdirSync(nodePath.join(parentPath, name));
-    return name;
-}
-
-export function createNewFile(fs: FSModule, parentPath: string, fileName: string) {
-    const name = getNextFreeName(fs, parentPath, fileName);
-    fs.writeFileSync(nodePath.join(parentPath, name), '');
-    return name;
-}
-
-export function getNextFreeName(fs: FSModule, parentPath: string, fileName: string) {
-    const contents = new Set(fs.readdirSync(parentPath));
-
-    if (!contents.has(fileName))
-        return fileName;
-
-    const base = nodePath.basename(fileName);
-    const ext = nodePath.extname(fileName);
-
-    for (let i = 2;; i++) {
-        const newName = `${base} (${i})${ext}`;
-        
-        if (!contents.has(newName))
-            return newName;
-    }
-}
+import { OSContext } from '../../App';
+import { createNewFolder, createNewFile } from '../../misc/fileUtils';
 
 export function CreateNewItems({path}: {path: string}) {
     const { fileSystem } = useContext(OSContext)!;
@@ -43,11 +13,11 @@ export function CreateNewItems({path}: {path: string}) {
             <Separator />
             <Item>Briefcase</Item>
             <Item onClick={() => createNewFile(fileSystem, path, 'New Bitmap Image.bmp')}>Bitmap Image</Item>
-            <Item onClick={() => createNewFile(fileSystem, path, 'New Wordpad Document.doc')}>WordPad Document</Item>
+            <Item onClick={() => createNewFile(fileSystem, path, 'New Wordpad Document.doc')}>Wordpad Document</Item>
             <Item onClick={() => createNewFile(fileSystem, path, 'New Rich Text Document.rtf')}>Rich Text Document</Item>
             <Item onClick={() => createNewFile(fileSystem, path, 'New Text Document.txt')}>Text Document</Item>
             <Item onClick={() => createNewFile(fileSystem, path, 'New Wave Sound.wav')}>Wave Sound</Item>
-            <Item onClick={() => createNewFile(fileSystem, path, 'New Compressed Folder.zip')}>Compressed (zipped) Folder</Item>
+            <Item onClick={() => createNewFolder(fileSystem, path, 'New Compressed Folder.zip')}>Compressed (zipped) Folder</Item>
         </Fragment>
     );
 }

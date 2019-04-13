@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { Item, Separator } from 'react-contexify';
-import { Toolbar } from '../framework/widgets/toolbar/Toolbar';
+import { Toolbar } from '../../widgets/toolbar/Toolbar';
 import backIcon from '../../assets/icons/toolbar/back.png';
 import forwardIcon from '../../assets/icons/toolbar/forward.png';
 import { NavigationHistory } from './NavigationHistory';
 import { Observer } from 'mobx-react-lite';
-import { ToolbarDropdownProps } from '../framework/widgets/toolbar/ToolbarDropdown';
+import { ToolbarDropdownProps } from '../../widgets/toolbar/ToolbarDropdown';
 import { Omit } from 'react-autosuggest';
 import * as nodePath from 'bfs-path';
 

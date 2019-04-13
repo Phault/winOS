@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Fragment } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './App.scss';
 import { TaskBar } from './taskbar/TaskBar';
 import Desktop from './desktop/Desktop';
@@ -9,9 +9,10 @@ import { WindowRenderer } from './windows/WindowRenderer';
 import { FSModule } from 'browserfs/dist/node/core/FS';
 import { ProgramManager } from './ProgramManager';
 import { ProcessManager } from './ProcessManager';
+import { installOS } from './installOS';
 const BrowserFS: typeof BFS = require('browserfs');
 
-const VERSION = 2;
+const VERSION = 3;
 
 function loadFileSystem(): Promise<FSModule> {
   return new Promise<FSModule>(
@@ -24,22 +25,9 @@ function loadFileSystem(): Promise<FSModule> {
             reject(e);
       
         const fileSystem = BFSRequire('fs');
-      
+
         if (Number.parseInt(localStorage.getItem('installed-version') || '-1') !== VERSION) {
-          // install os
-          fileSystem.writeFileSync('/file.txt', 'Hello world!', { flag: 'w+' });
-          
-          try {
-            fileSystem.mkdirSync('/deeply');
-            fileSystem.mkdirSync('/deeply/nested');
-            fileSystem.mkdirSync('/deeply/nested/folders');
-            fileSystem.mkdirSync('/deeply/nested/folders/for');
-            fileSystem.mkdirSync('/deeply/nested/folders/for/testing');
-            fileSystem.mkdirSync('/folder');
-          }
-          catch (e) { console.warn(e) }
-          fileSystem.writeFileSync('/folder/test.txt', 'Just another file..', { flag: 'w+' });
-      
+          installOS(fileSystem);
           localStorage.setItem('installed-version', VERSION.toString());
         }
     
@@ -104,7 +92,7 @@ function DesktopEnvironment() {
   return (
     <div className="desktop-environment">
       <div className="desktop-usable-area">
-        <Desktop path="/" />
+        <Desktop path="/Documents and Settings/Administrator/Desktop" />
         <WindowRenderer />
       </div>
       <TaskBar height={30} />

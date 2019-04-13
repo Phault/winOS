@@ -2,8 +2,8 @@ import React, { ReactNode, useState, ReactElement, DOMAttributes } from 'react';
 import './MenuBar.scss';
 import { Menu } from 'react-contexify';
 import classNames from 'classnames';
-import { useUuid } from '../../../../misc/useUuid';
-import { openDropdownMenu } from '../../../../misc/openDropdownMenu';
+import { useUuid } from '../../misc/useUuid';
+import { openDropdownMenu } from '../../misc/openDropdownMenu';
 
 export interface MenuBarProps {
     children: ReactElement<MenuProps & DOMAttributes<any>>[] | ReactElement<MenuProps & DOMAttributes<any>>

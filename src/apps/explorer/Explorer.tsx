@@ -1,11 +1,10 @@
-import React, { useState, useContext, useCallback, Fragment } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import './Explorer.scss';
-import { NotepadApp } from '../notepad/NotepadApp';
-import { MenuBar } from '../framework/widgets/menubar/MenuBar';
+import { MenuBar } from '../../widgets/menubar/MenuBar';
 import { Submenu, Item, Separator } from 'react-contexify';
-import { FolderView } from '../framework/widgets/folderview/FolderView';
-import { IconView } from '../framework/widgets/folderview/views/icon/IconView';
-import { Toolbar } from '../framework/widgets/toolbar/Toolbar';
+import { FolderView, FileInfo } from '../../widgets/folderview/FolderView';
+import { IconView } from '../../widgets/folderview/views/icon/IconView';
+import { Toolbar } from '../../widgets/toolbar/Toolbar';
 import folderUpIcon from '../../assets/icons/toolbar/folder_up.png';
 import searchIcon from '../../assets/icons/toolbar/search.png';
 import foldersIcon from '../../assets/icons/toolbar/folders.png';
@@ -14,13 +13,16 @@ import goIcon from '../../assets/icons/toolbar/go-normal.png';
 import windowsIcon from '../../assets/toolbar-icon-windows.png';
 import { WindowContext } from '../../windows/WindowManager';
 import { AddressBar } from './AddressBar';
-import { Icon } from '../framework/widgets/Icon';
+import { Icon } from '../../widgets/Icon';
 import { NavigationHistory } from './NavigationHistory';
-import { Observer } from 'mobx-react-lite';
+import { Observer, useObserver } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './NavigationHistoryButtons';
 import { OSContext } from '../../App';
-import { CreateNewItems } from '../framework/widgets/folderview/FolderContextMenu';
+import { CreateNewItems } from '../../widgets/folderview/FolderContextMenu';
+import { KeyMap } from 'react-hotkeys';
+import { getIcon } from '../../misc/fileUtils';
+import { ExplorerApp } from './ExplorerApp';
 
 function ViewModeItems() {
     return (
@@ -37,26 +39,46 @@ function ViewModeItems() {
     );
 }
 
+const ExplorerKeyMap: KeyMap = {
+    SEARCH: ['ctrl+f', 'ctrl+e', 'f3'],
+    FAVORITES: 'ctrl+i',
+    HISTORY: 'ctrl+h',
+    BACK: ['alt+left', 'backspace'],
+    FORWARD: 'alt+right',
+    CLOSE: 'ctrl+w',
+    FOCUS_ADDRESSBAR: 'f4'
+}
+
 interface ExplorerProps {
     initialDir: string;
 }
 
+
 const Explorer: React.FC<ExplorerProps> = ({initialDir}) => {
     const [history] = useState(() => new NavigationHistory(initialDir));
     const window = useContext(WindowContext)!;
-    const {processManager} = useContext(OSContext)!;
+    const {processManager, programManager, fileSystem} = useContext(OSContext)!;
 
-    const handleFileExecution = useCallback((files: string[]) => {
+    useObserver(() => {
+        const stats = fileSystem.statSync(history.current);
+        window.icon = getIcon({
+            path: history.current,
+            stats
+        });
+        window.title = nodePath.basename(history.current) || ExplorerApp.name;
+    });
+
+    const handleFileExecution = useCallback((files: FileInfo[]) => {
         const file = files[0];
-        const fullPath = nodePath.isAbsolute(file) ? file : nodePath.join(history.current, file);
-        const extension = nodePath.extname(file);
+        const fullPath = nodePath.isAbsolute(file.path) ? file.path : nodePath.join(history.current, file.path);
 
-        if (extension)
-            processManager.run(NotepadApp, fullPath);
-        else {
-            if (fullPath !== history.current)
-                history.push(fullPath);
+        if (file.stats.isFile()) {
+            const apps = programManager.getInstalledForExtension(nodePath.extname(fullPath));
+            if (apps.length > 0)
+                processManager.run(apps[0], fullPath);
         }
+        else if (fullPath !== history.current)
+            history.push(fullPath);
     }, [history, processManager]);
 
     const goUp = useCallback(() => {
@@ -187,9 +209,9 @@ const Explorer: React.FC<ExplorerProps> = ({initialDir}) => {
                 </Toolbar>
 
                 <Toolbar>
-                    <span style={{padding: '0 4px 0 5px'}}>Address</span>
+                    <span style={{padding: '0 4px 0 5px', color: '#7f7c73'}}>Address</span>
                     <Observer>
-                        {() => <AddressBar onChange={newValue => handleFileExecution([newValue])} value={history.current} />}
+                        {() => <AddressBar onChange={newValue => handleFileExecution([{path: newValue, stats: fileSystem.statSync(newValue)}])} value={history.current} />}
                     </Observer>
                     <Toolbar.Button icon={goIcon} className="toolbar-button-go">
                         Go

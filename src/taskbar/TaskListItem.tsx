@@ -25,7 +25,11 @@ const TaskListItem: React.FC<TaskListItemProps> = observer(({ window }) => {
     }
 
     return (
-        <MenuProvider id={TaskBarItemMenu.Id} className={classNames('task-list-item', { active })} render={(props: any) => <div onClick={onClick} {...props} />}>
+        <MenuProvider 
+            id={TaskBarItemMenu.Id} 
+            className={classNames('task-list-item', { active })} 
+            render={props => <div onClick={onClick} {...props} />}>
+            
             <img className="app-icon" src={window.icon || fallbackIcon} draggable={false} />
             <span>{window.title}</span>
         </MenuProvider>

@@ -1,4 +1,4 @@
-import { Program } from "./apps/framework/Program.interface";
+import { Program } from "./Program.interface";
 import { decorate, computed, action, observable } from 'mobx';
 
 class ProgramManager {
@@ -18,7 +18,7 @@ class ProgramManager {
   }
 
   getInstalledForExtension(extension: string): Program[] {
-    return computed(() => this._installed.filter(p => p.fileExtensions && p.fileExtensions.includes(extension))).get();
+    return computed(() => this._installed.filter(p => p.fileExtensions && extension in p.fileExtensions)).get();
   }
 }
 

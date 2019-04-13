@@ -2,6 +2,7 @@
     flex-grow: 1;
     overflow: scroll;
     white-space: nowrap;
+    font: 'Lucida Console' 10pt;
 
     &.wordwrap {
         overflow-x: hidden;

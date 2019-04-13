@@ -1,10 +1,10 @@
 import React, { useContext, CSSProperties, MutableRefObject } from 'react';
 import { OSContext } from '../App';
-import { Icon } from '../apps/framework/widgets/Icon';
+import { Icon } from '../widgets/Icon';
 import fallbackIcon from '../assets/icons/apps/default.png';
 import classNames from 'classnames';
 import myDocumentsIcon from '../assets/icons/filetypes/folder-documents.png';
-import myRecentDocumentsIcon from '../assets/icons/recent-documents.png';
+import myRecentDocumentsIcon from '../assets/icons/filetypes/folder-recent.png';
 import myPictures from '../assets/icons/filetypes/folder-pictures.png';
 import myMusicIcon from '../assets/icons/filetypes/folder-music.png';
 import myComputerIcon from '../assets/icons/computer.png';
@@ -15,7 +15,10 @@ import connectToIcon from '../assets/icons/connect.png';
 import printersAndFaxesIcon from '../assets/icons/printers-and-faxes.png';
 import controlPanelIcon from '../assets/icons/apps/control-panel.png';
 import internetExplorerIcon from '../assets/icons/apps/internet-explorer.png';
-import { Program } from '../apps/framework/Program.interface';
+import outlookIcon from '../assets/icons/apps/outlook.png';
+import programAccessIcon from '../assets/icons/program-access.png';
+import { Program } from '../Program.interface';
+import { ExplorerApp } from '../apps/explorer';
 
 interface ProgListItemProps {
     title: string;
@@ -63,7 +66,7 @@ const StartPanel: React.FC<StartPanelProps> = ({ onClose, className, ...rest }) 
             <div className="start-panel-body">
                 <div className="proglist">
                     <ProgListItem title="Internet" subtitle="Internet Explorer" icon={internetExplorerIcon} />
-                    <ProgListItem title="E-mail" subtitle="Outlook Express" />
+                    <ProgListItem title="E-mail" subtitle="Outlook Express" icon={outlookIcon} />
                     <hr />
                     {programs}
                     <div className="spacer" />
@@ -73,14 +76,19 @@ const StartPanel: React.FC<StartPanelProps> = ({ onClose, className, ...rest }) 
                     </div>
                 </div>
                 <div className="placeslist">
-                    <ProgListItem title="My Documents" icon={myDocumentsIcon} className="favorite" />
-                    <ProgListItem title="My Recent Documents" icon={myRecentDocumentsIcon} className="favorite" />
-                    <ProgListItem title="My Pictures" icon={myPictures} className="favorite" />
-                    <ProgListItem title="My Music" icon={myMusicIcon} className="favorite" />
-                    <ProgListItem title="My Computer" icon={myComputerIcon} className="favorite" />
+                    <ProgListItem title="My Documents" icon={myDocumentsIcon} className="favorite" 
+                        onClick={() => processManager.run(ExplorerApp, '/Documents and Settings/Administrator/My Documents')}/>
+                    <ProgListItem title="My Recent Documents" icon={myRecentDocumentsIcon} className="favorite"
+                        onClick={() => processManager.run(ExplorerApp, '/Documents and Settings/Administrator/Recent')}/>
+                    <ProgListItem title="My Pictures" icon={myPictures} className="favorite" 
+                        onClick={() => processManager.run(ExplorerApp, '/Documents and Settings/Administrator/My Documents/My Pictures')}/>
+                    <ProgListItem title="My Music" icon={myMusicIcon} className="favorite" 
+                        onClick={() => processManager.run(ExplorerApp, '/Documents and Settings/Administrator/My Documents/My Music')}/>
+                    <ProgListItem title="My Computer" icon={myComputerIcon} className="favorite"
+                        onClick={() => processManager.run(ExplorerApp, '/')} />
                     <hr />
                     <ProgListItem title="Control Panel" icon={controlPanelIcon} />
-                    <ProgListItem title="Set Program Access and Defaults" />
+                    <ProgListItem title="Set Program Access and Defaults" icon={programAccessIcon} />
                     <ProgListItem title="Connect To" icon={connectToIcon} />
                     <ProgListItem title="Printers and Faxes" icon={printersAndFaxesIcon} />
                     <hr />

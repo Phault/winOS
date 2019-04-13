@@ -1,11 +1,11 @@
-import { Program } from "./apps/framework/Program.interface";
+import { Program } from "./Program.interface";
 import { OS } from './App';
 import { decorate, computed } from "mobx";
 
-export interface Process<T = any, R = any> {
-    program: Program<T>;
-    args?: T;
-    promise: Promise<R>,
+export interface Process {
+    program: Program;
+    args?: string;
+    promise: Promise<number | void>,
 }
 
 class ProcessManager {
@@ -17,7 +17,7 @@ class ProcessManager {
         return this._running;
     }
 
-    async run<T, R>(program: Program<T, R>, args?: T): Promise<R> {
+    async run(program: Program, args?: string): Promise<number | void> {
         const process: Process = {
             program,
             args,

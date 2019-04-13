@@ -1,37 +1,41 @@
 import React from 'react';
 import icon from '../../assets/icons/apps/notepad.png';
-import { Program } from '../framework/Program.interface';
-import { MenuBar } from '../framework/widgets/menubar/MenuBar';
+import { Program } from '../../Program.interface';
+import { MenuBar } from '../../widgets/menubar/MenuBar';
 import { Item, Separator } from 'react-contexify';
 import { BFSRequire } from 'browserfs';
 import './Notepad.scss';
 
-export const NotepadApp: Program<string> = {
+export const NotepadApp: Program = {
   name: 'Notepad',
   icon,
-  fileExtensions: [
-    'txt'
-  ],
+  fileExtensions: {
+    '.txt': null
+  },
   run: async (os, args) => {
     const path = args || 'test.txt';
     let file: string;
     try {
-      file = os.fileSystem!.readFileSync(path).toString();
+      file = os.fileSystem.readFileSync(path).toString();
     } catch (e) {
       file = '';
     }
 
     const nodePath = BFSRequire('path');
     const fileName = nodePath.basename(path);
+
+    const windowSize = {
+      width: Math.min(window.innerWidth, 300),
+      height: Math.min(window.innerHeight, 200)
+    }
     
     os.windowManager.create({
       title: `${fileName || 'Untitled'} - ${NotepadApp.name}`,
       icon: NotepadApp.icon,
       rect: {
-        left: 200,
-        top: 150,
-        width: 300,
-        height: 200,
+        left: Math.max(0, window.innerWidth * 0.2 - windowSize.width / 2),
+        top: Math.max(0, window.innerHeight * 0.3 - windowSize.height / 2),
+        ...windowSize
       },
       minSize: {
         width: 120,
