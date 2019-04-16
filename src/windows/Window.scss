@@ -19,6 +19,7 @@
     border-style: solid;
     border-image: url('../assets/window-border.png') 0 5 5 5 / 0px 4px 4px 4px round;
     border-top: 0; // 0px is turned into 0 in border-image in prod builds, apparently this is not treated equally atleast in chrome
+    padding: 0 1px 1px;
 
     background: $window-white;
 

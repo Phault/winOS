@@ -1,0 +1,232 @@
+@import '../../functions';
+
+$background: #c0c0c0;
+$border-dark: #808080;
+$border-light: white;
+$border-colorless-dark: black;
+
+@mixin bevel($topLeftColor, $bottomRightColor, $width) {
+    border: $width solid $topLeftColor;
+    border-right-color: $bottomRightColor;
+    border-bottom-color: $bottomRightColor;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.minesweeper {
+    margin: 4px 0 0 3px;
+    padding: 6px;
+    background: $background;
+    width: fit-content;
+
+    .scoreboard {
+        @include bevel($border-dark, $border-light, 2px);
+        margin-bottom: 6px;
+        padding: 4px 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .counter {
+            @include bevel($border-dark, $border-light, 1px);
+
+            .digit {
+                background: url('./assets/numbers.png') no-repeat 0 -23px;
+                width: 13px;
+                height: 23px;
+                float: left;
+
+                &.minus {
+                    background-position-y: -23px * 0;
+                }
+    
+                &.blank {
+                    background-position-y: -23px * 1;
+                }
+    
+                &.nine {
+                    background-position-y: -23px * 2;
+                }
+    
+                &.eight {
+                    background-position-y: -23px * 3;
+                }
+    
+                &.seven {
+                    background-position-y: -23px * 4;
+                }
+    
+                &.six {
+                    background-position-y: -23px * 5;
+                }
+    
+                &.five {
+                    background-position-y: -23px * 6;
+                }
+    
+                &.four {
+                    background-position-y: -23px * 7;
+                }
+    
+                &.three {
+                    background-position-y: -23px * 8;
+                }
+                
+                &.two {
+                    background-position-y: -23px * 9;
+                }
+    
+                &.one {
+                    background-position-y: -23px * 10;
+                }
+    
+                &.zero {
+                    background-position-y: -23px * 11;
+                }
+            }
+        }
+
+        .btn-reset {
+            width: 24px;
+            height: 24px;
+            background: url('./assets/smileys.png') no-repeat 0 (-24px * 4);
+            box-sizing: content-box;
+
+            @include bevel($border-dark, $border-dark, 1px);
+
+            &:active, &.active {
+                background-position-y: -24px * 0 !important;
+            }
+
+            &.cool {
+                background-position-y: -24px * 1;
+            }
+
+            &.dead {
+                background-position-y: -24px * 2;
+            }
+            
+            &.surprised {
+                background-position-y: -24px * 3;
+            }
+
+            &.normal {
+                background-position-y: -24px * 4;
+            }
+        }
+    }
+
+    .minefield {
+        display: grid;
+        grid-auto-columns: 16px;
+        grid-auto-rows: 16px;
+        grid-auto-flow: column;
+        background: $background;
+        width: fit-content;
+        @include bevel($border-dark, $border-light, 3px);
+
+        .cell {
+            width: 16px;
+            height: 16px;
+            background: url('./assets/cells.png') no-repeat 0 0;
+
+            &.hidden {
+                background-position-y: -16px * 0;
+                
+                &:active {
+                    background-position-y: -16px * 15;
+                }
+            }
+
+            &.flag {
+                background-position-y: -16px * 1;  
+            }
+
+            &.unknown {
+                background-position-y: -16px * 2;
+
+                &:active {
+                    background-position-y: -16px * 6;
+                }
+            }
+
+            &.explosion {
+                background-position-y: -16px * 3;
+            }
+
+            &.flag-misplaced {
+                background-position-y: -16px * 4;
+            }
+
+            &.mine {
+                background-position-y: -16px * 5;
+            }
+
+            &.eight {
+                background-position-y: -16px * 7;
+            }
+
+            &.seven {
+                background-position-y: -16px * 8;
+            }
+
+            &.six {
+                background-position-y: -16px * 9;
+            }
+
+            &.five {
+                background-position-y: -16px * 10;
+            }
+
+            &.four {
+                background-position-y: -16px * 11;
+            }
+
+            &.three {
+                background-position-y: -16px * 12;
+            }
+            
+            &.two {
+                background-position-y: -16px * 13;
+            }
+
+            &.one {
+                background-position-y: -16px * 14;
+            }
+
+            &.zero {
+                background-position-y: -16px * 15;
+            }
+        }
+    }
+
+    &.colorless {
+        .scoreboard {
+            border-top-color: $border-colorless-dark;
+            border-left-color: $border-colorless-dark;
+
+            .btn-reset {
+                border-color: $border-colorless-dark;
+                background-image: url('./assets/smileys_colorless.png');
+            }
+        
+            .counter {
+                border-top-color: $border-colorless-dark;
+                border-left-color: $border-colorless-dark;
+
+                .digit {
+                    background-image: url('./assets/numbers_colorless.png'); 
+                }
+            }
+        }
+
+        .minefield {
+            border-top-color: $border-colorless-dark;
+            border-left-color: $border-colorless-dark;
+
+            .cell {
+                background-image: url('./assets/cells_colorless.png');
+            }
+        }
+    }
+}

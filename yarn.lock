@@ -8287,9 +8287,10 @@ react-autowhatever@^10.1.2:
     react-themeable "^1.1.0"
     section-iterator "^2.0.0"
 
-"react-contexify@https://github.com/Phault/react-contexify":
-  version "4.0.2"
-  resolved "https://github.com/Phault/react-contexify#65b22b818b87afa8063749c9e75fb2de35be39a3"
+react-contexify@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-contexify/-/react-contexify-4.1.0.tgz#3b3d8fdea3ea273e712788acb189101c5e385555"
+  integrity sha512-CbLBgw19Z100mhvrTGM2PuI0ON/3ZY5ek1PuUGoLVg1dSD182uJ34gYJaIDyOoSTMEXeYven13oNu4HBWERT7w==
   dependencies:
     classnames "^2.2.6"
     prop-types "^15.6.2"

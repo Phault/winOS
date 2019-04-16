@@ -10,5 +10,6 @@ export interface WindowTemplate {
   rect?: Rectangle;
   minSize?: Size;
   maxSize?: Size;
+  isResizable?: boolean;
   body: (window: WindowInstance) => ReactNode;
 }

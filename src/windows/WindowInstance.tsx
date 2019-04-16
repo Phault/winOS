@@ -14,6 +14,7 @@ class WindowInstance {
   rect: Rectangle;
   body: ReactNode;
   template: Readonly<WindowTemplate>;
+  isResizable: boolean;
 
   constructor(id: number, manager: WindowManager, template: WindowTemplate) {
     this.id = id;
@@ -26,6 +27,7 @@ class WindowInstance {
       width: 1,
       height: 1
     };
+    this.isResizable = template.isResizable !== undefined ? template.isResizable : true;
     this.template = template;
     this.body = template.body(this);
   }
@@ -44,6 +46,7 @@ decorate(WindowInstance, {
   icon: observable,
   isMaximized: observable,
   isMinimized: observable,
+  isResizable: observable,
   rect: observable,
   focus: action,
   destroy: action

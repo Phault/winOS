@@ -96,7 +96,7 @@ const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExec
     const keyHandlers: KeyHandlers<CursorMovementKeyMap> = {
         DELETE: deleteSelection,
         REFRESH: e => { loadContents(path); e!.preventDefault()},
-        EXECUTE: () => { onExecute && onExecute(selection.current.map(i => contents![i])) },
+        EXECUTE: () => { onExecute && selection.current.length && onExecute(selection.current.map(i => contents![i])) },
         SELECT_ALL: () => selection.set(contents!.map((_f, i) => i)),
     };
 

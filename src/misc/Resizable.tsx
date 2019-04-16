@@ -12,6 +12,7 @@ export interface ResizableProps extends Rectangle {
     border?: number;
     minWidth?: number;
     minHeight?: number;
+    resizable?: boolean;
 }
 
 function mapDirectionToCursor(dir: Direction) {
@@ -160,11 +161,11 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
             <div
                 ref={ref}
                 touch-action="none"
-                onPointerEnter={onEnter}
-                onPointerDown={onDown}
-                onPointerMove={onMove}
-                onPointerUp={onUp}
-                onPointerLeave={onLeave}>
+                onPointerEnter={props.resizable ? onEnter : undefined}
+                onPointerDown={props.resizable ? onDown : undefined}
+                onPointerMove={props.resizable ? onMove : undefined}
+                onPointerUp={props.resizable ? onUp : undefined}
+                onPointerLeave={props.resizable ? onLeave : undefined}>
                 <WrappedComponent {...props} />
             </div>
         );

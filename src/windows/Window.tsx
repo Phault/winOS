@@ -1,4 +1,4 @@
-import React, { ReactNode, HTMLAttributes, CSSProperties } from 'react';
+import React, { ReactNode, HTMLAttributes, CSSProperties, HTMLProps } from 'react';
 import './Window.scss';
 import asResizable from '../misc/Resizable';
 import asMovable from '../misc/Movable';
@@ -36,10 +36,17 @@ export function StaticWindow({
             onActivated();
     };
 
+    const roundedRect = {
+        left: Math.floor(left),
+        top: Math.floor(top),
+        width: Math.floor(width),
+        height: Math.floor(height),
+    }
+
     return (
         <div 
             className={classNames(className, "window", { inactive: !active })} 
-            style={{ ...style, transform: `translate(${left}px, ${top}px)`, width, height }} 
+            style={{ ...style, transform: `translate(${roundedRect.left}px, ${roundedRect.top}px)`, width: roundedRect.width, height: roundedRect.height }} 
             onPointerDownCapture={activated}>
 
             <TitleBar title={title || ''} icon={icon} ref={handle} />
@@ -55,7 +62,7 @@ const Window = asMovable(asResizable(StaticWindow));
 
 export { Window };
 
-interface TitleBarButtonProps extends HTMLAttributes<any> {
+interface TitleBarButtonProps extends HTMLProps<HTMLButtonElement> {
     icon?: string;
 }
 
@@ -63,7 +70,7 @@ const Button: React.FC<TitleBarButtonProps> = ({icon, children, className, ...re
     const iconNode = icon && <div className="btn-icon" style={{borderImageSource: `url(${icon})`}} />;
     
     return (
-        <button className={classNames('btn', className)} type="button" {...rest}>
+        <button className={classNames('btn', className)} {...rest} type="button">
             {iconNode}
             {children}
         </button>

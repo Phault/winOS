@@ -60,6 +60,7 @@ function App() {
 
     os.programManager!.install(async () => (await import('./apps/notepad')).NotepadApp).then(p => os.processManager!.run(p));
     os.programManager!.install(async () => (await import('./apps/explorer')).ExplorerApp).then(p => os.processManager!.run(p));
+    os.programManager!.install(async () => (await import('./apps/minesweeper')).MinesweeperApp);
   
     return os as OS;
   }, [files]);

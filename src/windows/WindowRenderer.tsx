@@ -36,6 +36,7 @@ export function WindowRenderer() {
           {...(w.isMaximized ? fullScreenRect : w.rect)} 
           minWidth={w.template.minSize && w.template.minSize.width || 1} 
           minHeight={w.template.minSize && w.template.minSize.height || 1}
+          resizable={w.isResizable}
           onResize={rect => saveWindowRect(w, rect)}
           onMove={pos => saveWindowRect(w, {...w.rect, ...pos})}>
           {w.body}
