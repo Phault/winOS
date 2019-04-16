@@ -8,6 +8,7 @@ import './FolderView.scss';
 import * as nodePath from 'bfs-path';
 import { HotKeys, KeyMap, KeySequence } from 'react-hotkeys';
 import { ItemSelection } from "../../misc/ItemSelection";
+import { rimraf } from '../../misc/rimraf';
 
 export type ExecuteHandler = (items: FileInfo[]) => void;
 
@@ -86,7 +87,7 @@ const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExec
         for (const file of files) {
             const fullPath = nodePath.join(path, file.path);
             if (file.stats.isDirectory())
-                fileSystem.rmdirSync(fullPath);
+                rimraf(fileSystem, fullPath);
             else if (file.stats.isFile())
                 fileSystem.unlinkSync(fullPath)
         }
