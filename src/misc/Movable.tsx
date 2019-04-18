@@ -29,12 +29,8 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
         const handleRef = useRef<HTMLDivElement>(null);
 
         const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
-            if (pointerId === null) {
-                if (e.pressure && !!anchor)
-                    setCapturedPointer(e.pointerId!);
-                else 
-                    return;
-            }
+            if (pointerId === null)
+                return;
 
             props.onMove({
                 left: e.clientX - anchor!.left,
@@ -52,6 +48,8 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
                 left: e.clientX - props.left,
                 top: e.clientY - props.top
             });
+
+            setCapturedPointer(e.pointerId!);
 
             e.stopPropagation();
         }
