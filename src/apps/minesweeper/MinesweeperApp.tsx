@@ -1,7 +1,6 @@
 import React from 'react';
 import icon from '../../assets/icons/apps/minesweeper.png';
 import { Program } from '../../Program.interface';
-import './Minesweeper.scss';
 import { Minesweeper } from './Minesweeper';
 
 export const MinesweeperApp: Program = {

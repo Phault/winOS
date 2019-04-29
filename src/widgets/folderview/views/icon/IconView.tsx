@@ -1,15 +1,28 @@
 import React, { useState, useRef } from 'react';
 import { ViewModeProps, FileInfo, KeyHandlers, CursorMovementKeyMap } from '../../FolderView';
-import { FileIcon } from './FileIcon';
-import './IconView.scss';
-import { useUuid } from '../../../../misc/useUuid';
+import { Icon } from './Icon';
+import { useUuid } from '../../../../misc/hooks/useUuid';
 import { FileContextMenu } from '../../FileContextMenu';
 import { MenuProvider } from 'react-contexify';
 import { getIcon } from '../../../../misc/fileUtils';
 import { HotKeys } from 'react-hotkeys';
 import { Observer } from 'mobx-react-lite';
+import styled from 'styled-components/macro';
 
-const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
+export const StyledIconView = styled.div`
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+    padding: 2px 1px;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+`;
+
+export const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
     const fileContextMenuId = useUuid();
     const [cursorPosition, setCursorPosition] = useState(0);
     const container = useRef<HTMLDivElement>(null);
@@ -72,8 +85,8 @@ const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
     };
 
     return (
-        <HotKeys handlers={keyHandlers} className="folderview-icons" >
-            <div className="folderview-icons" onMouseDown={e => !e.ctrlKey && selection.clear()} ref={container}>
+        <HotKeys handlers={keyHandlers} component={StyledIconView} >
+            <StyledIconView onMouseDown={e => !e.ctrlKey && selection.clear()} ref={container}>
                 {(files || []).map((f, i) => (
                     <MenuProvider 
                         id={fileContextMenuId} 
@@ -82,7 +95,7 @@ const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
                         render={props => (
                             <Observer>
                                 {() => (
-                                    <FileIcon 
+                                    <Icon 
                                         {...props}
                                         icon={getIcon(f)} 
                                         onMouseDown={e => onFileClick(e, f)} 
@@ -90,15 +103,13 @@ const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
                                         focus={cursorPosition === i}
                                         active={selection.has(i)}>
                                         {f.path}
-                                    </FileIcon>
+                                    </Icon>
                                 )}
                             </Observer>
                         )}>{' '}</MenuProvider>
                 ))}
-            </div>
+            </StyledIconView>
             <FileContextMenu id={fileContextMenuId} />
         </HotKeys>        
     );
 };
-
-export { IconView };

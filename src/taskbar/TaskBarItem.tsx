@@ -1,8 +1,7 @@
-import React from 'react';
-import classNames from 'classnames';
+import styled from 'styled-components/macro';
 
-export function TaskBarItem({ className, ...rest }: any) {
-    return (
-        <div className={classNames("task-bar-item", className)} {...rest} />
-    );
-}
+export const TaskBarItem = styled.div`
+    &:last-child {
+        margin-left: auto;
+    }
+`;

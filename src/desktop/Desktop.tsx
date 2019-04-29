@@ -1,12 +1,27 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, FC } from 'react';
 import { FolderView, FileInfo } from '../widgets/folderview/FolderView';
-import { IconView } from '../widgets/folderview/views/icon/IconView';
-import './Desktop.scss';
+import { IconView, StyledIconView } from '../widgets/folderview/views/icon/IconView';
 import { OSContext } from '../App';
 import * as nodePath from 'bfs-path';
 import { ExplorerApp } from '../apps/explorer';
+import styled from 'styled-components/macro';
+import { Icon } from '../widgets/folderview/views/icon/Icon';
 
-function Desktop({path}: {path: string}) {
+const StyledDesktop = styled.div`
+    flex-grow: 1;
+    height: 100%;
+
+    ${StyledIconView} {
+        flex-flow: column wrap;
+    }
+
+    ${Icon} {
+        color: white;
+        text-shadow: rgb(0, 0, 0) 1px 1px 3px;
+    }
+`;
+
+export const Desktop: FC<{path: string}> = ({path}) => {
     const {processManager, programManager} = useContext(OSContext)!;
 
     // todo: deduplicate
@@ -24,10 +39,8 @@ function Desktop({path}: {path: string}) {
     }, [processManager, path]);
 
     return (
-        <div className="desktop">
+        <StyledDesktop>
             <FolderView viewMode={IconView} path={path} onExecute={handleFileExecution} />
-        </div>
+        </StyledDesktop>
     );
 }
-
-export default Desktop;

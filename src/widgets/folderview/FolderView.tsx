@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext, Fragment, CSSProperties } from 
 import { OSContext } from '../../App';
 import Stats from 'browserfs/dist/node/core/node_fs_stats';
 import { FolderContextMenu } from './FolderContextMenu';
-import { useUuid } from '../../misc/useUuid';
+import { useUuid } from '../../misc/hooks/useUuid';
 import { MenuProvider } from 'react-contexify';
-import './FolderView.scss';
 import * as nodePath from 'bfs-path';
 import { HotKeys, KeyMap, KeySequence } from 'react-hotkeys';
 import { ItemSelection } from "../../misc/ItemSelection";
 import { rimraf } from '../../misc/rimraf';
+import styled from 'styled-components/macro';
 
 export type ExecuteHandler = (items: FileInfo[]) => void;
 
@@ -62,7 +62,13 @@ const keyMap: CursorMovementKeyMap = {
     CURSOR_EXPAND_RIGHT: 'shift+right',
 }
 
-const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute}) => {
+const FillParent = styled.div`
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+`;
+
+export const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute}) => {
     const [contents, setContents] = useState<FileInfo[] | null>(null);
     const [selection] = useState(new ItemSelection<number>());
 
@@ -103,8 +109,8 @@ const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExec
 
     return (
         <Fragment>
-            <HotKeys keyMap={keyMap} handlers={keyHandlers} className="folder-view">
-                <MenuProvider id={contextMenuId} className="folder-view" storeRef={false}>
+            <HotKeys keyMap={keyMap} handlers={keyHandlers} component={FillParent}>
+                <MenuProvider id={contextMenuId} storeRef={false} render={props => <FillParent {...props}/>}>
                     <ViewMode files={contents!} onExecute={onExecute || (() => {})} selection={selection} />
                 </MenuProvider>
             </HotKeys>
@@ -118,5 +124,3 @@ export interface FileInfo {
     path: string;
     stats: Stats;
 }
-
-export { FolderView };

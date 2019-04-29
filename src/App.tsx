@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import './App.scss';
-import { TaskBar } from './taskbar/TaskBar';
-import Desktop from './desktop/Desktop';
 import './ContextMenu.scss';
 import BFS, { BFSRequire } from 'browserfs';
 import { WindowManager } from './windows/WindowManager';
-import { WindowRenderer } from './windows/WindowRenderer';
 import { FSModule } from 'browserfs/dist/node/core/FS';
-import { ProgramManager } from './ProgramManager';
-import { ProcessManager } from './ProcessManager';
+import { ProgramManager } from './apps/ProgramManager';
+import { ProcessManager } from './apps/ProcessManager';
 import { installOS } from './installOS';
+import { LoadingScreen } from './LoadingScreen';
+import { OS } from './OS';
+import { DesktopEnvironment } from './DesktopEnvironment';
+import styled from 'styled-components/macro';
 const BrowserFS: typeof BFS = require('browserfs');
 
 const VERSION = 3;
@@ -37,14 +37,25 @@ function loadFileSystem(): Promise<FSModule> {
   );
 }
 
-export interface OS {
-  fileSystem: FSModule;
-  programManager: ProgramManager;
-  processManager: ProcessManager;
-  windowManager: WindowManager;
+export const OSContext = React.createContext<OS | null>(null)
+
+function blockEvent(e: React.BaseSyntheticEvent<any>) {
+  if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development')
+    e.preventDefault();
 }
 
-export const OSContext = React.createContext<OS | null>(null)
+const StyledApp = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  font-family: Tahoma;
+  font-size: 11px;
+  color: black;
+`;
 
 function App() {
   const [files, setFiles] = useState<FSModule>();
@@ -61,14 +72,9 @@ function App() {
     os.programManager!.install(async () => (await import('./apps/notepad')).NotepadApp).then(p => os.processManager!.run(p));
     os.programManager!.install(async () => (await import('./apps/explorer')).ExplorerApp).then(p => os.processManager!.run(p));
     os.programManager!.install(async () => (await import('./apps/minesweeper')).MinesweeperApp);
-  
+
     return os as OS;
   }, [files]);
-  
-  function blockEvent(e: React.BaseSyntheticEvent<any>) {
-    if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development')
-      e.preventDefault();
-  }
 
   useEffect(() => {
     loadFileSystem().then(fileSystem => setFiles(fileSystem));
@@ -76,28 +82,10 @@ function App() {
 
   return (
     <OSContext.Provider value={os}>
-        <div className="App" onContextMenu={blockEvent}>
+        <StyledApp onContextMenu={blockEvent}>
           {files ? <DesktopEnvironment /> : <LoadingScreen />}
-        </div>
+        </StyledApp>
     </OSContext.Provider>
-  );
-}
-
-function LoadingScreen() {
-  return (
-    <span>Loading...</span>
-  );
-}
-
-function DesktopEnvironment() {
-  return (
-    <div className="desktop-environment">
-      <div className="desktop-usable-area">
-        <Desktop path="/Documents and Settings/Administrator/Desktop" />
-        <WindowRenderer />
-      </div>
-      <TaskBar height={30} />
-    </div>
   );
 }
 

@@ -1,7 +1,30 @@
 import React from 'react';
 import { FC } from "react";
-import classNames from 'classnames';
 import { digitToWord } from '../utils/digitToWord';
+import styled from 'styled-components/macro';
+import { sprites } from '../utils/sprites';
+
+const StyledDigit = styled.div`
+    background: url(${props => props.theme.digits}) no-repeat 0 -23px;
+    width: 13px;
+    height: 23px;
+    float: left;
+
+    ${sprites(23, [
+        'minus',
+        'blank',
+        'nine',
+        'eight',
+        'seven',
+        'six',
+        'five',
+        'four',
+        'three',
+        'two',
+        'one',
+        'zero'
+    ])}
+`;
 
 export interface DigitProps {
     symbol?: string;
@@ -22,5 +45,5 @@ export const Digit: FC<DigitProps> = ({symbol}) => {
             break;
     }
 
-    return <div className={classNames("digit", className)} />
+    return <StyledDigit className={className} />
 };

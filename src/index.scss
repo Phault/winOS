@@ -7,13 +7,33 @@ body {
   margin: 0;
   padding: 0;
   touch-action: none;
-  // font-family: 'Tahoma';
-  // -webkit-font-smoothing: antialiased;
-  // -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, textarea {
+  font: inherit;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  margin: 0;
+}
+
+button {
+  background: none;
+  padding: 0;
+}
+
+input, textarea {
+  border: 1px solid #7f9db9;
+  background: white;
 }
 
 textarea, textarea:focus, textarea:active {
   border: 1px solid rgb(127, 157, 185);
   outline: 0;
   resize: none;
+}
+
+:focus {
+  outline: none;
 }

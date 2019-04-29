@@ -11,7 +11,9 @@
     "@types/react-autosuggest": "^9.3.7",
     "@types/react-dom": "^16.8.4",
     "@types/react-truncate": "^2.3.3",
+    "@types/styled-components": "^4.1.14",
     "@types/uuid": "^3.4.4",
+    "barrelsby": "^2.0.0",
     "bfs-path": "^1.0.2",
     "browserfs": "^1.4.3",
     "classnames": "^2.2.6",
@@ -26,6 +28,7 @@
     "react-hotkeys": "^1.1.4",
     "react-scripts": "^2.1.8",
     "react-truncate": "^2.4.0",
+    "styled-components": "^4.2.0",
     "typescript": "3.3.4000",
     "use-onclickoutside": "^0.3.1",
     "uuid": "^3.3.2"

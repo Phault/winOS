@@ -1,6 +1,12 @@
 import React from 'react';
 import { FC } from "react";
 import { Digit } from './Digit';
+import styled from 'styled-components';
+import { bevel } from '../utils/bevel';
+
+const StyledCounter = styled.div`
+    ${props => bevel(props.theme.border.dark, props.theme.border.light, 1)};
+`;
 
 export interface CounterProps {
     value: number;
@@ -17,8 +23,8 @@ export const Counter: FC<CounterProps> = ({value}) => {
         val = '-' + val;
 
     return (
-        <div className="counter">
+        <StyledCounter>
             {[...val].map((c, i) => <Digit key={i} symbol={c} />)}
-        </div>
+        </StyledCounter>
     );
 };

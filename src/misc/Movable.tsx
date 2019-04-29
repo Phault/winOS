@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Position } from './Position';
 import { Rectangle } from './Rectangle';
-import { usePointerCapture } from './usePointerCapture';
+import { usePointerCapture } from './hooks/usePointerCapture';
 
 export interface WrappedMovableProps extends Partial<Position> {
     handle?: React.Ref<HTMLDivElement>;

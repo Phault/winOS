@@ -1,26 +1,28 @@
-import React, { CSSProperties } from 'react';
-import classNames from 'classnames';
-import { useImageDimensions } from '../misc/useImageDimensions';
+import React from 'react';
+import { useImageDimensions } from '../misc/hooks/useImageDimensions';
+import styled from 'styled-components/macro';
 
-interface IconProps {
+export interface IconProps {
     src: string;
     width?: number;
     height?: number;
-    className?: string;
-    style?: CSSProperties;
 }
 
-const Icon: React.FC<IconProps> = ({src, width, height, className, style}) => {
+const StyledIcon = styled.div<IconProps>`
+    background: url(${props => props.src}) center / contain no-repeat;
+    width: ${props => props.width}px;
+    height: ${props => props.height}px;
+`;
+
+export const Icon: React.FC<IconProps> = ({src, width, height, ...rest}) => {
     const dimensions = useImageDimensions(src);
-    
-    const styles: CSSProperties = {
-        background: `url(${src}) center / contain no-repeat`,
-        width: width !== undefined ? width : dimensions.width,
-        height: height !== undefined ? height : dimensions.height,
-        ...style
-    };
 
-    return <div className={classNames("icon", className)} style={styles} />;
+    return (
+        <StyledIcon 
+            className="icon"
+            src={src} 
+            width={width !== undefined ? width : dimensions.width} 
+            height={height !== undefined ? height : dimensions.height}
+            {...rest} />
+    );
 }
-
-export { Icon };

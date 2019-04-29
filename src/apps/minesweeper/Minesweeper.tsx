@@ -5,32 +5,29 @@ import { Item, Separator } from "react-contexify";
 import { WindowContext } from "../../windows/WindowManager";
 import { Minefield } from './views/Minefield';
 import { Counter } from './views/Counter';
-import { DifficultyPresets, Difficulty, DifficultyPreset } from './DifficultyPresets';
+import { DifficultyPresets, Difficulty } from './DifficultyPresets';
 import { Observer } from 'mobx-react-lite';
 import { Game, GameState } from './Game';
 import { Cell } from './Cell';
 import { AutoRefresh } from './utils/AutoRefresh';
-import classNames from 'classnames';
-import { SmileyState, ResetButton } from './ResetButton';
+import { SmileyState, ResetButton } from './views/ResetButton';
 import { useGlobalListener } from './utils/useGlobalListener';
+import { MenuBarMenu } from '../../widgets/menubar/MenuBarMenu';
+import styled, { ThemeProvider } from 'styled-components/macro';
+import { ColorlessTheme } from './ColorlessTheme';
+import { DefaultTheme } from './DefaultTheme';
+import { Scoreboard } from './views/Scoreboard';
+import { Options } from './Options';
+import { DefaultOptions } from './DefaultOptions';
 
-export interface Options {
-    unknownMarkEnabled: boolean;
-    colorEnabled: boolean;
-    soundEnabled: boolean;
-    difficulty: Difficulty;
-    customDifficulty: DifficultyPreset;
-}
+const StyledMinesweeper = styled.div`
+    margin: 4px 0 0 3px;
+    padding: 6px;
+    background: ${props => props.theme.background};
+    width: fit-content;
+`;
 
-const DefaultOptions: Options = {
-    colorEnabled: true,
-    unknownMarkEnabled: true,
-    soundEnabled: false,
-    difficulty: Difficulty.Beginner,
-    customDifficulty: DifficultyPresets.get(Difficulty.Beginner)!
-}
-
-const Minesweeper: FC = () => {
+export const Minesweeper: FC = () => {
     const ref = useRef<HTMLDivElement>(null);
     const window = useContext(WindowContext)!;
 
@@ -88,7 +85,7 @@ const Minesweeper: FC = () => {
     return (
         <Fragment>
             <MenuBar>
-                <MenuBar.Menu label='Game'>
+                <MenuBarMenu label='Game'>
                     <Item onClick={reset}>New</Item>
                     <Separator />
                     <Item onClick={() => setGameOptions(prev => ({...prev, difficulty: Difficulty.Beginner}))}>Beginner</Item>
@@ -103,35 +100,37 @@ const Minesweeper: FC = () => {
                     <Item disabled>Best Times...</Item>
                     <Separator />
                     <Item onClick={() => window.destroy()}>Exit</Item>
-                </MenuBar.Menu>
+                </MenuBarMenu>
 
-                <MenuBar.Menu label='Help'>
+                <MenuBarMenu label='Help'>
                     <Item disabled>Contents</Item>
                     <Item disabled>Search for Help on...</Item>
                     <Item disabled>Using Help</Item>
                     <Separator />
                     <Item disabled>About Minesweeper...</Item>
-                </MenuBar.Menu>
+                </MenuBarMenu>
             </MenuBar>
 
-            <div className={classNames("minesweeper", {colorless: !gameOptions.colorEnabled})} ref={ref} onMouseDown={mouseDown}>
-                <div className="scoreboard">
-                    <Observer>{() => <Counter value={game.mineCount - game.flagsPlaced} />}</Observer>
-                    <Observer>
-                        {() => {
-                            let smileyState: SmileyState = aboutToClick ? 'surprised' :'normal';
-                            if (game.state === GameState.Ended)
-                                smileyState = game.cellsLeft > 0 ? 'dead' : 'cool';
-                            
-                            return <ResetButton state={smileyState} onClick={reset} />;
-                        }}
-                    </Observer>
-                    <AutoRefresh interval={200} render={() => <Counter value={Math.ceil(game.time / 1000)} />} />
-                </div>
-                <Minefield grid={game.minefield} onMouseDown={cellMouseDown} onMouseUp={cellMouseUp} />
-            </div>
+            <ThemeProvider theme={gameOptions.colorEnabled ? DefaultTheme : ColorlessTheme}>
+                <StyledMinesweeper ref={ref} onMouseDown={mouseDown}>
+                    <Scoreboard>
+                        <Observer>{() => <Counter value={game.mineCount - game.flagsPlaced} />}</Observer>
+                        <Observer>
+                            {() => {
+                                let smileyState: SmileyState = aboutToClick ? 'surprised' :'normal';
+                                if (game.state === GameState.Ended)
+                                    smileyState = game.cellsLeft > 0 ? 'dead' : 'cool';
+                                
+                                return <ResetButton state={smileyState} onClick={reset} />;
+                            }}
+                        </Observer>
+                        <AutoRefresh interval={200} render={() => <Counter value={Math.ceil(game.time / 1000)} />} />
+                    </Scoreboard>
+                    <Minefield grid={game.minefield} onMouseDown={cellMouseDown} onMouseUp={cellMouseUp} />
+                </StyledMinesweeper>
+            </ThemeProvider>
         </Fragment>
     );
 };
 
-export { Minesweeper };
+

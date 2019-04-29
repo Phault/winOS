@@ -5,8 +5,17 @@ import { WindowContext } from './WindowManager';
 import { OSContext } from '../App';
 import { Rectangle } from '../misc/Rectangle';
 import { WindowInstance } from './WindowInstance';
-import './WindowRenderer.scss';
-import { useDimensions } from '../misc/useDimensions';
+import { useDimensions } from '../misc/hooks/useDimensions';
+import styled from 'styled-components/macro';
+
+const StyledWindowRenderer = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+`;
 
 export function WindowRenderer() {
   const { windowManager } = useContext(OSContext)!;
@@ -48,8 +57,8 @@ export function WindowRenderer() {
   });
 
   return (
-    <div className="window-renderer" ref={screenRef}>
+    <StyledWindowRenderer ref={screenRef}>
       {windows}
-    </div>
+    </StyledWindowRenderer>
   );
 }

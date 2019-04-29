@@ -1,21 +1,10 @@
-import React, { ReactNode } from 'react';
-import './Toolbar.scss';
-import { ToolbarButton } from './ToolbarButton';
-import { ToolbarDropdown } from './ToolbarDropdown';
-import { ToolbarSplitButton } from './ToolbarSplitButton';
-import { ToolbarSeparator } from './ToolbarSeparator';
+import styled from 'styled-components/macro';
 
-function Toolbar({children}: {children?: ReactNode}) {
-    return (
-        <div className="toolbar">
-            {children}
-        </div>
-    );
-};
-
-Toolbar.Button = ToolbarButton; 
-Toolbar.Dropdown = ToolbarDropdown; 
-Toolbar.SplitButton = ToolbarSplitButton; 
-Toolbar.Separator = ToolbarSeparator; 
-
-export { Toolbar };
+export const Toolbar = styled.div`
+    padding: 0 2px;
+    display: flex;
+    align-items: center;
+    font-family: Tahoma;
+    font-size: 11px;
+    color: black;
+`;

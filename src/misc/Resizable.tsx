@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Rectangle } from './Rectangle';
 import { Direction } from './Direction';
-import { usePointerCapture } from './usePointerCapture';
-import { useCssRule } from './useStyleSheet';
+import { usePointerCapture } from './hooks/usePointerCapture';
+import { useCssRule } from './hooks/useStyleSheet';
 
 export interface WrappedResizableProps extends Partial<Rectangle> {
 }

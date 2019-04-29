@@ -16,14 +16,12 @@ I have a lot of plans, most of which will never see the light of day. I will how
 * Recreate standard reuseable widgets (toolbars, menubar, input fields, etc)
 * Start Menu
 * Boot sequence / loading screen
-* Replace most ripped images with CSS styling
-* Migrate to CSS modules or similar
 * Basic working filesystem
 * Have a few apps fully* working
     * Notepad
     * File Explorer
     * Paint
-    * Minesweeper or Solitaire
+    * Minesweeper
 * Fallback to similar fonts on other platforms
 * Customize the cursor
 
@@ -39,6 +37,7 @@ I love React, but I have done no projects that prove that. Windows XP also has a
 * [React-Contexify](https://github.com/fkhadra/react-contexify) for dropdowns and context menus
 * [React-Autosuggest](https://github.com/moroshko/react-autosuggest) for the navigation bar
 * [BrowserFS](https://github.com/jvilk/BrowserFS) for the filesystem
+* [Styled Components](https://www.styled-components.com/) for styling
 * A bunch more
 
 ### Tools
@@ -47,7 +46,7 @@ I love React, but I have done no projects that prove that. Windows XP also has a
 * Resource Hacker / ResBuild / MSStyles Converter
 * ImageMagick
 * Gimp
-* Magnifixer
+* Magnifixer / KMag
 
 ## License
 

@@ -1,15 +1,14 @@
-import React, { ReactNode, useState, ReactElement, DOMAttributes } from 'react';
-import './MenuBar.scss';
-import { Menu } from 'react-contexify';
-import classNames from 'classnames';
-import { useUuid } from '../../misc/useUuid';
+import React, { useState, ReactElement, DOMAttributes, FC, HTMLAttributes } from 'react';
+import { useUuid } from '../../misc/hooks/useUuid';
 import { openDropdownMenu } from '../../misc/openDropdownMenu';
+import styled from 'styled-components/macro';
+import { MenuProps } from './MenuBarMenu';
 
-export interface MenuBarProps {
-    children: ReactElement<MenuProps & DOMAttributes<any>>[] | ReactElement<MenuProps & DOMAttributes<any>>
+export interface MenuBarProps extends HTMLAttributes<HTMLDivElement> {
+    children: ReactElement<MenuProps & DOMAttributes<any>>[] | ReactElement<MenuProps & DOMAttributes<any>>;
 }
 
-function MenuBar(props: MenuBarProps) {
+const MenuBarBase: FC<MenuBarProps> = ({children, ...rest}: MenuBarProps) => {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const menuId = useUuid();
     
@@ -33,7 +32,7 @@ function MenuBar(props: MenuBarProps) {
             setActiveMenu(null);
     }
 
-    const childrenWithProps = React.Children.map(props.children, child => {
+    const childrenWithProps = React.Children.map(children, child => {
         const id = menuId + '_' + (child.props.id || child.props.label);
 
         return React.cloneElement(
@@ -49,39 +48,14 @@ function MenuBar(props: MenuBarProps) {
         );
     });
 
-    return (
-        <div className="menu-bar">
-            {childrenWithProps}
-        </div>
-    );
+    return <div {...rest}>{childrenWithProps}</div>;
 }
 
-export interface MenuProps {
-    label: string;
-    id?: string;
-    active?: boolean;
-    children: ReactNode;
-    onMenuHidden?: () => void;
-}
-
-const MenuBarMenu: React.FC<MenuProps> = ({active, label, id, children, onMenuHidden, ...rest}) => {
-    return (
-        <React.Fragment>
-            <div className={classNames({
-                    "menu-bar-menu": true,
-                    "active": !!active
-                })}
-                {...rest}>
-                {label}
-            </div>
-            
-            <Menu id={id || label} onHidden={onMenuHidden}>
-                {children || <div />}
-            </Menu>
-        </React.Fragment>
-    );
-}
-
-MenuBar.Menu = MenuBarMenu;
-
-export { MenuBar };
+export const MenuBar = styled(MenuBarBase)`
+    display: flex;
+    background: #ece9d8;
+    border-bottom: 1px solid white;
+    font-family: 'Tahoma';
+    font-size: 11px;
+    flex-wrap: wrap;
+`;
