@@ -39,25 +39,22 @@ export const SelectableGroup: FC<SelectableGroupProps> = ({component: Component 
         };
     }, [start, stop]);
 
-    useEffect(() => {
+    const recheckCollisions = useCallback(() => {
         if (!rect)
             return;
 
         const collisions = checkCollision(ref.current!, context.items.keys(), rect);
         context.setSelection(collisions);
-
     }, [rect, context, ref]);
 
+    useEffect(recheckCollisions, [recheckCollisions]);
+
     useEffect(() => {
-        const handler = (item: HTMLElement) => {
-            // if selecting
-                // recalculate selected
-        }; 
+        const handler = recheckCollisions;
 
         context.onItemRegistered.register(handler);
-
         return () => context.onItemRegistered.unregister(handler);
-    }, [context]);
+    }, [context, recheckCollisions]);
 
     const onPointerDown = useCallback((e: React.PointerEvent) => {
         const bounds = ref.current!.getBoundingClientRect();
