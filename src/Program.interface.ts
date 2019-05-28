@@ -8,5 +8,6 @@ export interface Program {
   description?: string;
   icon?: string;
   fileExtensions?: FileTypeAssociations;
+  hidden?: boolean,
   run(os: OS, args?: string): Promise<number | void>;
 }

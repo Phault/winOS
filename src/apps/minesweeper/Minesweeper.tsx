@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect, useCallback } from 'react';
 import { FC, useRef, Fragment, useContext } from "react";
 import { MenuBar } from "../../widgets/menubar/MenuBar";
 import { Item, Separator } from "react-contexify";
@@ -34,16 +34,16 @@ export const Minesweeper: FC = () => {
     const [gameOptions, setGameOptions] = useState<Options>(DefaultOptions);
     const [game, setGame] = useState(() => new Game(0, 0, 0));
 
-    function reset() {
+    const reset = useCallback(() => {
         let difficulty = gameOptions.difficulty === Difficulty.Custom 
             ? gameOptions.customDifficulty 
             : DifficultyPresets.get(gameOptions.difficulty)!;
         setGame(new Game(difficulty.width, difficulty.height, difficulty.mines));
-    }
+    }, [setGame, gameOptions.difficulty, gameOptions.customDifficulty]);
 
     useEffect(reset, [gameOptions.difficulty, gameOptions.customDifficulty]);
 
-    function cellMouseDown(e: React.MouseEvent, cell: Cell, x: number, y: number) {
+    const cellMouseDown = useCallback((e: React.MouseEvent, cell: Cell, x: number, y: number) => {
         if (game.state === GameState.Ended)
             return;
 
@@ -52,9 +52,9 @@ export const Minesweeper: FC = () => {
                 game.cycleMarker(cell, gameOptions.unknownMarkEnabled);
                 break;
         }
-    }
+    }, [game, gameOptions]);
 
-    function cellMouseUp(e: React.MouseEvent, cell: Cell, x: number, y: number) {
+    const cellMouseUp = useCallback((e: React.MouseEvent, cell: Cell, x: number, y: number) => {
         if (game.state === GameState.Ended)
             return;
 
@@ -63,14 +63,14 @@ export const Minesweeper: FC = () => {
                 game.revealCell(x, y);
                 break;
         }
-    }
+    }, [game]);
 
     const [aboutToClick, setAboutToClick] = useState(false);
 
-    function mouseDown(e: React.MouseEvent) {
+    const mouseDown = useCallback((e: React.MouseEvent) => {
         if (e.button === 0)
             setAboutToClick(true);
-    }
+    }, [setAboutToClick]);
     
     useGlobalListener('mouseup', e => {
         if (e.button === 0) 

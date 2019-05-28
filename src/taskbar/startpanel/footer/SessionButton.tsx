@@ -13,7 +13,9 @@ export const SessionButton = styled.button`
     }
 `;
 
-const Icon = styled.img`
+const Icon = styled.img.attrs({
+    draggable: false
+})`
     margin-right: 4px;
     padding: 2px;
     vertical-align: middle;

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import fallbackIcon from '../assets/icons/apps/default.png';
 import { Button } from './Window';
 import minimizeIcon from '../assets/widgets/window-minimize.png';
@@ -75,27 +75,42 @@ export interface TitleBarProps {
     icon?: string;
 }
 
+function blockEvent(e: React.BaseSyntheticEvent) {
+    e.stopPropagation();
+}
+
 export const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(({ title, icon }, ref) => {
     const { windowManager } = useContext(OSContext)!;
     const window = useContext(WindowContext)!;
 
-    function toggleMaximize() {
+    const toggleMaximize = useCallback((e: React.MouseEvent) => {
         window.isMaximized = !window.isMaximized;
-    }
+        e.stopPropagation();
+    }, [window]);
+
+    const closeWindow = useCallback((e: React.MouseEvent) => {
+        window.destroy();
+        e.stopPropagation();
+    }, [window]);
+
+    const minimizeWindow = useCallback((e: React.MouseEvent) => {
+        windowManager.minimize(window);
+        e.stopPropagation();
+    }, [windowManager, window]);
 
     return (
-        <StyledTitleBar ref={ref} onDoubleClick={() => window.isResizable && toggleMaximize()}>
+        <StyledTitleBar ref={ref} onDoubleClick={toggleMaximize}>
             <AppIcon 
                 src={icon || fallbackIcon} 
-                onDoubleClick={() => window.destroy()} 
-                onPointerDown={e => e.stopPropagation()} />
+                onDoubleClick={closeWindow} 
+                onPointerDown={blockEvent} />
                 
             <Title>{title}</Title>
 
-            <div className="title-bar-buttons" onPointerDown={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
-                <Button icon={minimizeIcon} onClick={() => windowManager.minimize(window)} />
-                <Button icon={window.isMaximized ? restoreIcon : maximizeIcon} disabled={!window.isResizable} onClick={toggleMaximize}/>
-                <Button className="danger" icon={closeIcon} onClick={() => window.destroy()}/>
+            <div className="title-bar-buttons" onPointerDown={blockEvent} onDoubleClick={blockEvent}>
+                <Button icon={minimizeIcon} onClick={minimizeWindow} />
+                <Button icon={window.isMaximized ? restoreIcon : maximizeIcon} disabled={!window.isResizable} onClick={toggleMaximize} />
+                <Button className="danger" icon={closeIcon} onClick={closeWindow}/>
             </div>
         </StyledTitleBar>
     )

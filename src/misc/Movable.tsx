@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Position } from './Position';
 import { Rectangle } from './Rectangle';
 import { usePointerCapture } from './hooks/usePointerCapture';
+import { GlobalIframePointerPassthrough } from './GlobalIframePointerPassthrough';
 
 export interface WrappedMovableProps extends Partial<Position> {
     handle?: React.Ref<HTMLDivElement>;
+    isMoving?: boolean;
 }
 
 export interface MovableProps extends Position {
@@ -28,7 +30,7 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
 
         const handleRef = useRef<HTMLDivElement>(null);
 
-        const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+        const onMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
             if (pointerId === null)
                 return;
 
@@ -38,10 +40,13 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
             })
 
             e.stopPropagation();
-        }
+        }, [pointerId, anchor, props.onMove]);
 
-        const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+        const onDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
             if (handleRef.current && !InsideRectangle(handleRef.current.getBoundingClientRect(), e.clientX, e.clientY))
+                return;
+
+            if (e.button !== 0)
                 return;
 
             setAnchor({
@@ -52,16 +57,16 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
             setCapturedPointer(e.pointerId!);
 
             e.stopPropagation();
-        }
+        }, [handleRef.current, setAnchor, props.left, props.top, setCapturedPointer]);
 
-        const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
+        const onUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
             if (pointerId === null)
                 return;
 
             setCapturedPointer(null);
             setAnchor(null);
             e.stopPropagation();
-        }
+        }, [pointerId, setCapturedPointer, setAnchor]);
 
         return (
             <div
@@ -69,8 +74,10 @@ export default function asMovable<P extends WrappedMovableProps>(WrappedComponen
                 onPointerDown={onDown}
                 onPointerMove={onMove}
                 onPointerUp={onUp}>
+                {pointerId !== null && <GlobalIframePointerPassthrough />}
                 <WrappedComponent
                     {...props}
+                    isMoving={pointerId !== null}
                     handle={handleRef} />
             </div>
         );

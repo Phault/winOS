@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { ViewModeProps, FileInfo, KeyHandlers, CursorMovementKeyMap } from '../../FolderView';
-import { Icon } from './Icon';
+import React, { useContext } from 'react';
+import { ViewModeProps, FileInfo, FileSelectionContext } from '../../FolderView';
+import { Icon, IconProps } from './Icon';
 import { useUuid } from '../../../../misc/hooks/useUuid';
 import { FileContextMenu } from '../../FileContextMenu';
 import { MenuProvider } from 'react-contexify';
-import { getIcon } from '../../../../misc/fileUtils';
-import { HotKeys } from 'react-hotkeys';
 import { Observer } from 'mobx-react-lite';
 import styled from 'styled-components/macro';
+import { OSContext } from '../../../../App';
+import { asSelectable } from "../../../dragselect/SelectableItem";
 
 export const StyledIconView = styled.div`
     height: 100%;
@@ -20,96 +20,64 @@ export const StyledIconView = styled.div`
 
     overflow-x: hidden;
     overflow-y: auto;
+
+    position: relative;
+
+    touch-action: none;
 `;
 
-export const IconView: React.FC<ViewModeProps> = ({ files, onExecute, selection}) => {
+export const IconView: React.FC<ViewModeProps> = ({ files, onExecute}) => {
     const fileContextMenuId = useUuid();
-    const [cursorPosition, setCursorPosition] = useState(0);
-    const container = useRef<HTMLDivElement>(null);
+
+    const {programManager} = useContext(OSContext)!;
+    const selection = useContext(FileSelectionContext);
 
     function onFileClick(e: React.MouseEvent, file: FileInfo) {
-        const index = files.indexOf(file);
-
-        setCursorPosition(index);
+        const [element] = [...selection.items].find(([_element, config]) => config.data === file)!;
 
         if (e.ctrlKey)
-            selection.toggle(index);
+            selection.toggleSelected(element);
         else
-            selection.set(index);
+            selection.setSelection([element]);
 
         e.stopPropagation();
     }
 
     function onFileDoubleClick(e: React.MouseEvent, file: FileInfo) {
         if (onExecute)
-            onExecute(selection.current.map(i => files[i]));
+            onExecute([file]);
 
         e.stopPropagation();        
     }
 
-    function getColumnCount() {
-        const containerDiv = container.current!;
-        const rowWidth = containerDiv.clientWidth;
-        const columnWidth = containerDiv.firstElementChild ? containerDiv.firstElementChild.clientWidth : rowWidth;
-        return Math.floor(rowWidth / columnWidth);
-    }
-
-    function getRowCount() {
-        return Math.ceil(files.length / getColumnCount());
-    }
-
-    // function selectionFromTo(start: number, end: number) {
-    //     const actualStart = Math.min(start, end);
-    //     const actualEnd = Math.max(start, end);
-    //     selection.set(files.slice(actualStart, actualEnd + 1).map((_f, i) => actualStart + i));
-    //     setCursorPosition(actualEnd);
-    // }
-
-    // function getStart() {
-    //     return selection.current.reduce((previous, current) => Math.min(previous, current));
-    // }
-
-    // function getEnd() {
-    //     return selection.current.reduce((previous, current) => Math.max(previous, current));
-    // }
-
-    const keyHandlers: KeyHandlers<CursorMovementKeyMap> = {
-        CURSOR_MOVE_UP: () => setCursorPosition(cursorPosition - getColumnCount()),
-        CURSOR_MOVE_DOWN: () => setCursorPosition(cursorPosition + getColumnCount()),
-        CURSOR_MOVE_LEFT: () => setCursorPosition(cursorPosition - 1),
-        CURSOR_MOVE_RIGHT: () => setCursorPosition(cursorPosition + 1),
-        // CURSOR_EXPAND_UP: () => selectionFromTo(getStart(), getEnd() - getColumnCount()),
-        // CURSOR_EXPAND_DOWN: () => selectionFromTo(getStart(), getEnd() + getColumnCount()),
-        // CURSOR_EXPAND_LEFT: () => selectionFromTo(getStart(), getEnd() - 1),
-        // CURSOR_EXPAND_RIGHT: () => selectionFromTo(getStart(), getEnd() + 1),
-    };
-
     return (
-        <HotKeys handlers={keyHandlers} component={StyledIconView} >
-            <StyledIconView onMouseDown={e => !e.ctrlKey && selection.clear()} ref={container}>
-                {(files || []).map((f, i) => (
+        <>
+            <StyledIconView onMouseDown={e => !e.ctrlKey && selection.clearSelection()}>
+                {(files || []).map((f) => (
                     <MenuProvider 
                         id={fileContextMenuId} 
-                        key={f.path} 
+                        key={f.path}
                         storeRef={false} 
                         render={props => (
                             <Observer>
                                 {() => (
-                                    <Icon 
+                                    <SelectableIcon 
                                         {...props}
-                                        icon={getIcon(f)} 
-                                        onMouseDown={e => onFileClick(e, f)} 
-                                        onDoubleClick={e => onFileDoubleClick(e, f)} 
-                                        focus={cursorPosition === i}
-                                        active={selection.has(i)}>
+                                        data={f}
+                                        icon={programManager.getFileIcon(f)} 
+                                        onPointerDown={(e: any) => e.stopPropagation()}
+                                        onMouseDown={(e:any) => onFileClick(e, f)} 
+                                        onDoubleClick={(e: any) => onFileDoubleClick(e, f)}>
                                         {f.path}
-                                    </Icon>
+                                    </SelectableIcon>
                                 )}
                             </Observer>
                         )}>{' '}</MenuProvider>
                 ))}
             </StyledIconView>
             <FileContextMenu id={fileContextMenuId} />
-        </HotKeys>        
+        </>
     );
 };
+
+const SelectableIcon = asSelectable<IconProps, FileInfo>(Icon);

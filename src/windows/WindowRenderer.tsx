@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { UncontrolledWindow } from './UncontrolledWindow';
 import { useObserver } from 'mobx-react-lite';
 import { WindowContext } from './WindowManager';
@@ -17,15 +17,16 @@ const StyledWindowRenderer = styled.div`
     pointer-events: none;
 `;
 
+function saveWindowRect(window: WindowInstance, rect: Rectangle) {
+  window.isMaximized = false;
+  window.rect = rect;
+}
+
 export function WindowRenderer() {
   const { windowManager } = useContext(OSContext)!;
   const [screenRef, screenSize] = useDimensions();
   
-  function saveWindowRect(window: WindowInstance, rect: Rectangle) {
-    window.isMaximized = false;
-    window.rect = rect;
-  }
-
+  
   const windows = useObserver(() => {
     const fullScreenRect: Rectangle = {
       left: 0,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Program } from "../../Program.interface";
 import { Explorer } from './Explorer';
-import icon from '../../assets/icons/apps/explorer.png';
+import icon from './icon.png';
 
 export const ExplorerApp: Program = {
     name: 'File Explorer',

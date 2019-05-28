@@ -1,5 +1,6 @@
 import React from "react";
-import icon from "../../assets/icons/apps/notepad.png";
+import icon from './assets/notepad.png';
+import textIcon from './assets/text.png';
 import { Program } from "../../Program.interface";
 import { BFSRequire } from "browserfs";
 import { NotepadWindow } from "./NotepadWindow";
@@ -8,7 +9,7 @@ export const NotepadApp: Program = {
   name: "Notepad",
   icon,
   fileExtensions: {
-    ".txt": null
+    ".txt": textIcon
   },
   run: async (os, args) => {
     const path = args || "test.txt";

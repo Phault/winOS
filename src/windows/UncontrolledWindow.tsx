@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Window, WindowProps } from './Window';
 import { Rectangle } from '../misc/Rectangle';
 import { Position } from '../misc/Position';
@@ -26,7 +26,7 @@ const UncontrolledWindow: React.FC<UncontrolledWindowProps> = (props) => {
         });
     }, [props.left, props.top, props.width, props.height]);
     
-    const onMove = (pos: Position) => {
+    const onMove = useCallback((pos: Position) => {
         setRect({
             ...rect,
             ...pos
@@ -34,14 +34,14 @@ const UncontrolledWindow: React.FC<UncontrolledWindowProps> = (props) => {
 
         if (props.onMove)
             props.onMove(pos);
-    }
+    }, [rect, setRect, props.onMove]);
 
-    const onResize = (bounds: Rectangle) => { 
+    const onResize = useCallback((bounds: Rectangle) => { 
         setRect(bounds);
 
         if (props.onResize)
             props.onResize(bounds);
-    };
+    }, [setRect, props.onResize]);
 
     return (
         <Window

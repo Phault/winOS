@@ -6,6 +6,7 @@ import * as nodePath from 'bfs-path';
 import { ExplorerApp } from '../apps/explorer';
 import styled from 'styled-components/macro';
 import { Icon } from '../widgets/folderview/views/icon/Icon';
+import { SelectionBox } from '../widgets/dragselect/SelectionBox';
 
 const StyledDesktop = styled.div`
     flex-grow: 1;
@@ -18,6 +19,12 @@ const StyledDesktop = styled.div`
     ${Icon} {
         color: white;
         text-shadow: rgb(0, 0, 0) 1px 1px 3px;
+    }
+
+    ${SelectionBox} {
+        background: none;
+        border: 1px dotted white;
+        mix-blend-mode: exclusion;
     }
 `;
 

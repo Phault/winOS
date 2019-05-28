@@ -26,7 +26,7 @@ import { Item } from "./body/list/Item";
 import { ProgramList } from './body/ProgramList';
 import { PlacesList } from './body/PlacesList';
 import { PlacesItem } from "./body/PlacesItem";
-import profilePicture from '../../assets/avatars/dirt-bike.png';
+import profilePicture from '../../assets/avatars/profile.png';
 import { Avatar } from './header/Avatar';
 import { Header } from './header/Header';
 import { Body } from './body/Body';
@@ -77,15 +77,17 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
         onClose();
     }
 
-    const programs = programManager.installed.map((p, i) => (
-        <Item key={i} title={p.name} icon={p.icon} onClick={() => run(p)}/>
-    ));
-    
+    const programs = programManager.installed
+        .filter(p => !p.hidden)
+        .map((p, i) => (
+            <Item key={i} title={p.name} icon={p.icon} onClick={() => run(p)} />
+        ));
+
     return (
         <StyledStartPanel {...rest}>
             <Header>
                 <Avatar src={profilePicture} />
-                Administrator
+                Casper Lindschouw
             </Header>
             <Body>
                 <ProgramList>
@@ -99,13 +101,13 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
                 </ProgramList>
                 <PlacesList>
                     <PlacesItem title="My Documents" icon={myDocumentsIcon} favorite
-                        onClick={() => run(ExplorerApp, '/Documents and Settings/Administrator/My Documents')} />
+                        onClick={() => run(ExplorerApp, '/Documents and Settings/Casper Lindschouw/My Documents')} />
                     <PlacesItem title="My Recent Documents" icon={myRecentDocumentsIcon} favorite
-                        onClick={() => run(ExplorerApp, '/Documents and Settings/Administrator/Recent')} />
+                        onClick={() => run(ExplorerApp, '/Documents and Settings/Casper Lindschouw/Recent')} />
                     <PlacesItem title="My Pictures" icon={myPictures} favorite
-                        onClick={() => run(ExplorerApp, '/Documents and Settings/Administrator/My Documents/My Pictures')} />
+                        onClick={() => run(ExplorerApp, '/Documents and Settings/Casper Lindschouw/My Documents/My Pictures')} />
                     <PlacesItem title="My Music" icon={myMusicIcon} favorite
-                        onClick={() => run(ExplorerApp, '/Documents and Settings/Administrator/My Documents/My Music')} />
+                        onClick={() => run(ExplorerApp, '/Documents and Settings/Casper Lindschouw/My Documents/My Music')} />
                     <PlacesItem title="My Computer" icon={myComputerIcon} favorite
                         onClick={() => run(ExplorerApp, '/')} />
                     <hr />

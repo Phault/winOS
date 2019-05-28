@@ -1,5 +1,5 @@
 import React from 'react';
-import icon from '../../assets/icons/apps/minesweeper.png';
+import icon from './assets/icon.png';
 import { Program } from '../../Program.interface';
 import { Minesweeper } from './Minesweeper';
 

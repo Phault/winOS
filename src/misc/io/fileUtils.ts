@@ -1,29 +1,24 @@
-import defaultIcon from '../assets/icons/filetypes/default.png';
-import folderIcon from '../assets/icons/filetypes/folder.png';
-import textIcon from '../assets/icons/filetypes/text.png';
-import richTextIcon from '../assets/icons/filetypes/rich-text.png';
-import mediaIcon from '../assets/icons/filetypes/media.png';
-import compressedFolderIcon from '../assets/icons/filetypes/folder-compressed.png';
-import executableIcon from '../assets/icons/filetypes/executable.png';
-import dllIcon from '../assets/icons/filetypes/dll.png';
-import batchIcon from '../assets/icons/filetypes/batch.png';
-import configIcon from '../assets/icons/filetypes/config.png';
-import pictureIcon from '../assets/icons/filetypes/picture.png';
-import imageIcon from '../assets/icons/filetypes/image.png';
-import faxIcon from '../assets/icons/filetypes/fax.png';
-import bitmapIcon from '../assets/icons/filetypes/bitmap.png';
-import folderDocumentsIcon from '../assets/icons/filetypes/folder-documents.png';
-import folderPicturesIcon from '../assets/icons/filetypes/folder-pictures.png';
-import folderMusicIcon from '../assets/icons/filetypes/folder-music.png';
-import folderRecentIcon from '../assets/icons/filetypes/folder-recent.png';
-import folderFavoritesIcon from '../assets/icons/filetypes/folder-favorites.png';
+import defaultIcon from '../../assets/icons/filetypes/default.png';
+import folderIcon from '../../assets/icons/filetypes/folder.png';
+import richTextIcon from '../../assets/icons/filetypes/rich-text.png';
+import mediaIcon from '../../assets/icons/filetypes/media.png';
+import compressedFolderIcon from '../../assets/icons/filetypes/folder-compressed.png';
+import executableIcon from '../../assets/icons/filetypes/executable.png';
+import dllIcon from '../../assets/icons/filetypes/dll.png';
+import batchIcon from '../../assets/icons/filetypes/batch.png';
+import configIcon from '../../assets/icons/filetypes/config.png';
+import folderDocumentsIcon from '../../assets/icons/filetypes/folder-documents.png';
+import folderPicturesIcon from '../../assets/icons/filetypes/folder-pictures.png';
+import folderMusicIcon from '../../assets/icons/filetypes/folder-music.png';
+import folderRecentIcon from '../../assets/icons/filetypes/folder-recent.png';
+import folderFavoritesIcon from '../../assets/icons/filetypes/folder-favorites.png';
 import * as nodePath from 'bfs-path';
-import { FileInfo } from '../widgets/folderview/FolderView';
+import { FileInfo } from '../../widgets/folderview/FolderView';
 import { FSModule } from 'browserfs/dist/node/core/FS';
 
-export function getIcon({path, stats}: FileInfo) {
+export function getDefaultIcon({path, stats}: FileInfo) {
     const ext = nodePath.extname(path);
-    
+
     if (stats.isDirectory()) {
         switch (ext) {
             case '.zip': return compressedFolderIcon;
@@ -41,7 +36,6 @@ export function getIcon({path, stats}: FileInfo) {
     }
 
     switch (ext) {
-        case '.txt': return textIcon;
         case '.doc':
         case '.rtf': return richTextIcon;
         case '.mp3':
@@ -53,12 +47,6 @@ export function getIcon({path, stats}: FileInfo) {
         case '.mp2':
         case '.m3u':
         case '.wav': return mediaIcon;
-        case '.jpg':
-        case '.jpeg': return pictureIcon;
-        case '.gif':
-        case '.png': return imageIcon;
-        case '.bmp': return bitmapIcon;
-        case '.tiff': return faxIcon;
         case '.exe': return executableIcon;
         case '.dll': return dllIcon;
         case '.bat': return batchIcon;

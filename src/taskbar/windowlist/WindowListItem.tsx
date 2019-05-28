@@ -8,8 +8,11 @@ import { observer } from 'mobx-react-lite';
 import { OSContext } from '../../App';
 import styled from 'styled-components/macro';
 import { AppIcon } from '../../windows/TitleBar';
+import { CSSTransition } from 'react-transition-group';
 
-const StyledWindowListItem = styled.div`
+const StyledWindowListItem = styled(({in: inProp, onExited, ...rest}) => (
+    <CSSTransition timeout={1000} classNames="grow-shrink" in={inProp} onExited={onExited}><div {...rest} /></CSSTransition>
+))`
     min-height: 26px;
     flex: 0 1 147px;
     position: relative;
@@ -62,13 +65,35 @@ const StyledWindowListItem = styled.div`
                 inset -1px -1px 2px #ffffff19;
         }
     }
+
+    &.grow-shrink-enter {
+        flex: 0;
+    }
+
+    &.grow-shrink-enter-active {
+        flex: 0 1 147px;
+        transition: flex 150ms linear;
+    }
+
+    &.grow-shrink-exit {
+        opacity: 0;
+        padding: 0;
+        border: none;
+        margin-right: 10px; // prev padding + border
+    }
+
+    &.grow-shrink-exit-active {
+        flex: 0;
+        margin: 0;
+        transition: flex 150ms linear, margin 150ms linear;
+    }
 `;
 
 export interface WindowListItemProps {
     window: WindowInstance
 }
 
-export const WindowListItem: React.FC<WindowListItemProps> = observer(({ window }) => {
+export const WindowListItem: React.FC<WindowListItemProps> = observer(({ window, ...rest }) => {
     const {windowManager} = useContext(OSContext)!;
     const active = window === windowManager.focused;
 
@@ -85,7 +110,7 @@ export const WindowListItem: React.FC<WindowListItemProps> = observer(({ window 
         <MenuProvider 
             id={WindowListItemMenu.Id} 
             className={classNames({ active })} 
-            render={props => <StyledWindowListItem onClick={onClick} {...props} />}>
+            render={props => <StyledWindowListItem onClick={onClick} {...props} {...rest} />}>
             
             <AppIcon src={window.icon || fallbackIcon} />
             <span>{window.title}</span>

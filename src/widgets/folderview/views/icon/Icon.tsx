@@ -7,12 +7,12 @@ import { Label } from './Label';
 export interface IconProps extends HTMLAttributes<HTMLDivElement> {
     icon?: string;
     children?: string;
-    active?: boolean;
+    selected?: boolean;
     focus?: boolean;
 }
 
-const IconBase: React.FC<IconProps> = ({ icon, children, className, active, focus, ...rest }) => (
-    <div className={classNames(className, {active, focus})} {...rest}>
+const IconBase: React.FC<IconProps> = React.forwardRef<HTMLDivElement, IconProps>(({ icon, children, className, selected, focus, ...rest }, ref) => (
+    <div className={classNames(className, {active: selected, focus})} {...rest} ref={ref}>
         <img src={icon} draggable={false} />
         <Label>
             <Truncate lines={2}>
@@ -20,7 +20,7 @@ const IconBase: React.FC<IconProps> = ({ icon, children, className, active, focu
             </Truncate>
         </Label>
     </div>
-);
+));
 
 export const Icon = styled(IconBase)`
     display: flex;

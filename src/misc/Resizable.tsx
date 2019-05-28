@@ -1,19 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Rectangle } from './Rectangle';
 import { Direction } from './Direction';
 import { usePointerCapture } from './hooks/usePointerCapture';
-import { useCssRule } from './hooks/useStyleSheet';
-
-export interface WrappedResizableProps extends Partial<Rectangle> {
-}
-
-export interface ResizableProps extends Rectangle {
-    onResize: (bounds: Rectangle) => void;
-    border?: number;
-    minWidth?: number;
-    minHeight?: number;
-    resizable?: boolean;
-}
+import { createGlobalStyle } from 'styled-components';
+import { GlobalIframePointerPassthrough } from './GlobalIframePointerPassthrough';
 
 function mapDirectionToCursor(dir: Direction) {
     if (dir === Direction.None)
@@ -34,16 +24,28 @@ function mapDirectionToCursor(dir: Direction) {
     return dirs + '-resize';
 }
 
+const CursorStyle = createGlobalStyle<{direction: Direction}>`
+    body * {
+        cursor: ${props => mapDirectionToCursor(props.direction)} !important;
+    }
+`;
+
+export interface WrappedResizableProps extends Partial<Rectangle> {
+    isResizing?: boolean;
+}
+
+export interface ResizableProps extends Rectangle {
+    onResize: (bounds: Rectangle) => void;
+    border?: number;
+    minWidth?: number;
+    minHeight?: number;
+    resizable?: boolean;
+}
+
 export default function asResizable<P extends WrappedResizableProps>(WrappedComponent: React.ComponentType<P>): React.FC<P & ResizableProps> {
     return function Resizable(props) {
         const [ref, pointerId, setCapturedPointer] = usePointerCapture<HTMLDivElement>();
         const [resizeDir, setResizeDir] = useState(Direction.None);
-
-        const [cursorStyle, setCursorStyle] = useCssRule('body *', null);
-
-        useEffect(() => {
-            ensureMinSize();
-        }, [props.width, props.height]);
 
         const ensureMinSize = () => {
             const minWidth = props.minWidth || 0;
@@ -57,15 +59,39 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
                     height: Math.max(props.height, minHeight)
                 })
             }
-        }
+        };
+        useEffect(ensureMinSize, [props.minWidth, props.minHeight, props.width, props.height]);
 
-        const onEnter = (e: React.PointerEvent<HTMLDivElement>) => {
-            updateCursor(getResizeDir(e.clientX, e.clientY));
-        }
+        const getResizeDir = useCallback((e: React.PointerEvent) => { 
+            const border = props.border || 5;
 
-        const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
-            if (pointerId === null) {
-                updateCursor(getResizeDir(e.clientX, e.clientY));
+            let dir: Direction = Direction.None;
+
+            if (!ref.current!.contains(e.target as Node))
+                return dir;
+            
+            if (e.clientY - props.top < border)
+                dir |= Direction.North;
+            else if (props.top + props.height - e.clientY < border)
+                dir |= Direction.South;
+
+            if (e.clientX - props.left < border)
+                dir |= Direction.West;
+            else if (props.left + props.width - e.clientX < border)
+                dir |= Direction.East;
+
+            return dir;
+        }, [props.border, ref.current, props.top, props.left, props.width, props.height]);
+        
+        const updateCursor = useCallback((e: React.PointerEvent) => {
+            if (pointerId === null)
+                setResizeDir(getResizeDir(e));
+        }, [pointerId, setResizeDir, getResizeDir]);
+
+        const onMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+            if (pointerId === null || e.pressure === 0) {
+                setCapturedPointer(null);
+                updateCursor(e);
                 return;
             }
 
@@ -79,14 +105,14 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
                 bottom: props.top + props.height
             };
 
-            if ((resizeDir & Direction.North) == Direction.North)
+            if ((resizeDir & Direction.North) === Direction.North)
                 rect.top = Math.min(rect.bottom - minHeight, e.clientY);
-            else if ((resizeDir & Direction.South) == Direction.South)
+            else if ((resizeDir & Direction.South) === Direction.South)
                 rect.bottom = Math.max(rect.top + minHeight, e.clientY);
 
-            if ((resizeDir & Direction.West) == Direction.West)
+            if ((resizeDir & Direction.West) === Direction.West)
                 rect.left = Math.min(rect.right - minWidth, e.clientX);
-            else if ((resizeDir & Direction.East) == Direction.East)
+            else if ((resizeDir & Direction.East) === Direction.East)
                 rect.right = Math.max(rect.left + minWidth, e.clientX);
 
             props.onResize({
@@ -97,14 +123,30 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
             });
 
             e.stopPropagation();
-        }
+        }, [
+            pointerId, 
+            setCapturedPointer, 
+            updateCursor, 
+            resizeDir, 
+            props.minWidth, 
+            props.minHeight, 
+            props.top, 
+            props.left, 
+            props.width, 
+            props.height, 
+            props.onResize
+        ]);
 
-        const onLeave = (e: React.PointerEvent<HTMLDivElement>) => {
-            updateCursor(Direction.None);
-        }
+        const onLeave = useCallback(() => {
+            if (pointerId === null)
+                setResizeDir(Direction.None);
+        }, [pointerId, setResizeDir]);
 
-        const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
-            const dir = getResizeDir(e.clientX, e.clientY);
+        const onDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+            if (e.button !== 0)
+                return;
+
+            const dir = getResizeDir(e);
 
             if (dir === Direction.None)
                 return;
@@ -114,59 +156,30 @@ export default function asResizable<P extends WrappedResizableProps>(WrappedComp
 
             e.preventDefault();
             e.stopPropagation();
-        }
+        }, [getResizeDir, setCapturedPointer, setResizeDir]);
 
-        const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
+        const onUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
             if (pointerId === null)
                 return;
 
             setCapturedPointer(null);
 
-            const dir = getResizeDir(e.clientX, e.clientY);
-            updateCursor(dir);
-
             e.preventDefault();
             e.stopPropagation();
-        }
-
-        function getResizeDir(x:number, y:number) {
-            const border = props.border || 5;
-
-            let dir: Direction = Direction.None;
-            
-            if (y - props.top < border)
-                dir |= Direction.North;
-            else if (props.top + props.height - y < border)
-                dir |= Direction.South;
-
-            if (x - props.left < border)
-                dir |= Direction.West;
-            else if (props.left + props.width - x < border)
-                dir |= Direction.East;
-
-            return dir;
-        }
-
-        function updateCursor(dir: Direction) {
-            if (pointerId !== null)
-                return;
-
-            if (dir === Direction.None)
-                setCursorStyle(null)
-            else
-                setCursorStyle(`cursor: ${mapDirectionToCursor(dir)} !important`);      
-        }
+        }, [pointerId, setCapturedPointer, updateCursor]);
 
         return (
             <div
                 ref={ref}
                 touch-action="none"
-                onPointerEnter={props.resizable ? onEnter : undefined}
+                onPointerEnter={props.resizable ? updateCursor : undefined}
                 onPointerDown={props.resizable ? onDown : undefined}
                 onPointerMove={props.resizable ? onMove : undefined}
                 onPointerUp={props.resizable ? onUp : undefined}
                 onPointerLeave={props.resizable ? onLeave : undefined}>
-                <WrappedComponent {...props} />
+                {pointerId !== null && <GlobalIframePointerPassthrough />}
+                {resizeDir !== Direction.None && <CursorStyle direction={resizeDir} />}
+                <WrappedComponent {...props} isResizing={pointerId !== null} />
             </div>
         );
     }

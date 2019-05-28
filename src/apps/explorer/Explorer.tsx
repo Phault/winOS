@@ -16,7 +16,6 @@ import { NavigationHistoryButtons } from './header/NavigationHistoryButtons';
 import { OSContext } from '../../App';
 import { CreateNewItems } from '../../widgets/folderview/FolderContextMenu';
 import { KeyMap } from 'react-hotkeys';
-import { getIcon } from '../../misc/fileUtils';
 import { ExplorerApp } from './ExplorerApp';
 import { Header } from './header/Header';
 import { Body } from './Body';
@@ -60,7 +59,7 @@ export const Explorer: React.FC<ExplorerProps> = ({initialDir}) => {
 
     useObserver(() => {
         const stats = fileSystem.statSync(history.current);
-        window.icon = getIcon({
+        window.icon = programManager.getFileIcon({
             path: history.current,
             stats
         });

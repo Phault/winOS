@@ -1,7 +1,7 @@
 import React, { useContext, Fragment } from 'react';
 import { Menu, animation, Submenu, Item, Separator } from "react-contexify";
 import { OSContext } from '../../App';
-import { createNewFolder, createNewFile } from '../../misc/fileUtils';
+import { createNewFolder, createNewFile } from '../../misc/io/fileUtils';
 
 export function CreateNewItems({path}: {path: string}) {
     const { fileSystem } = useContext(OSContext)!;

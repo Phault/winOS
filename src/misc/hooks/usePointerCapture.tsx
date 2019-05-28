@@ -5,7 +5,10 @@ export function usePointerCapture<T extends HTMLElement>(): [RefObject<T>, numbe
     const [capturedPointer, setCapturedPointer] = useState<number | null>(null);
 
     useEffect(() => {
-        const target = ref.current!;
+        const target = ref.current;
+        
+        if (target === null)
+            return;
 
         if (capturedPointer !== null) {
             target.setPointerCapture(capturedPointer);

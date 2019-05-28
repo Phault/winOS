@@ -1,10 +1,10 @@
-import React, { ReactNode, HTMLAttributes, CSSProperties } from 'react';
-import asResizable from '../misc/Resizable';
-import asMovable from '../misc/Movable';
+import React, { ReactNode, HTMLAttributes, CSSProperties, useMemo, useCallback, FC, memo } from 'react';
+import asResizable, { WrappedResizableProps } from '../misc/Resizable';
+import asMovable, { WrappedMovableProps } from '../misc/Movable';
 import { Rectangle } from '../misc/Rectangle';
 import { TitleBar } from './TitleBar';
 import classNames from 'classnames';
-import styled from 'styled-components/macro';
+import styled, { createGlobalStyle } from 'styled-components/macro';
 import { background } from '../misc/mixins';
 
 const Frame = styled(({className, children}) => (
@@ -53,7 +53,7 @@ const StyledWindow = styled.div.attrs<Rectangle>(({left, top, width, height}) =>
         width: `${width}px`,
         height: `${height}px`
     }
-}))`
+}))<Rectangle>`
     position: absolute;
     left: 0;
     top: 0;
@@ -71,18 +71,20 @@ export interface WindowProps extends Rectangle {
     onActivated?: () => void;
     className?: string;
     style?: CSSProperties;
+    isMoving?: boolean;
+    isResizing?: boolean;
 }
 
-export function StaticWindow({
+export const StaticWindow: FC<WindowProps> = memo(({
     left, top, width, height, 
     title, icon, handle, 
     active = true, onActivated, 
-    children, className, style}: WindowProps) {
+    children, className, style}) => {
 
-    const activated = () => {
+    const activated = useCallback(() => {
         if (!active && onActivated)
             onActivated();
-    };
+    }, [active, onActivated]);
 
     const roundedRect = {
         left: Math.floor(left),
@@ -91,12 +93,14 @@ export function StaticWindow({
         height: Math.floor(height),
     }
 
+    const mergedClasses = useMemo(() => classNames(className, { inactive: !active }), [className, active])
+
     return (
         <StyledWindow 
             {...roundedRect}
-            className={classNames(className, { inactive: !active })} 
-            style={style}
-            onPointerDownCapture={activated}>
+            className={mergedClasses} 
+            onPointerDownCapture={activated}
+            style={style}>
 
             <TitleBar title={title || ''} icon={icon} ref={handle} />
             
@@ -105,11 +109,9 @@ export function StaticWindow({
             </Frame>
         </StyledWindow>
     );
-}
+});
 
-const Window = asMovable(asResizable(StaticWindow));
-
-export { Window };
+export const Window = asMovable(asResizable(StaticWindow));
 
 const StyledButton = styled.button.attrs({
     type: 'button'  

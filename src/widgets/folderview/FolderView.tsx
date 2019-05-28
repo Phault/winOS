@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, Fragment, CSSProperties } from 'react';
+import React, { useState, useEffect, useContext, CSSProperties, Context } from 'react';
 import { OSContext } from '../../App';
 import Stats from 'browserfs/dist/node/core/node_fs_stats';
 import { FolderContextMenu } from './FolderContextMenu';
@@ -6,16 +6,17 @@ import { useUuid } from '../../misc/hooks/useUuid';
 import { MenuProvider } from 'react-contexify';
 import * as nodePath from 'bfs-path';
 import { HotKeys, KeyMap, KeySequence } from 'react-hotkeys';
-import { ItemSelection } from "../../misc/ItemSelection";
-import { rimraf } from '../../misc/rimraf';
+import { rimraf } from '../../misc/io/rimraf';
 import styled from 'styled-components/macro';
+import { KeyHandlers } from '../../misc/KeyHandlers';
+import { SelectionContext, Selection } from "../dragselect/Selection";
+import { asSelectableGroup } from "../dragselect/SelectableGroup";
 
 export type ExecuteHandler = (items: FileInfo[]) => void;
 
 export interface ViewModeProps {
     files: FileInfo[];
     onExecute: ExecuteHandler;
-    selection: ItemSelection<number>;
 }
 
 export interface FolderViewProps {
@@ -37,8 +38,6 @@ export interface CursorMovementKeyMap extends KeyMap {
     CURSOR_EXPAND_LEFT: KeySequence,
     CURSOR_EXPAND_RIGHT: KeySequence,
 }
-
-export type KeyHandlers<T extends {[key: string]: any} = any> = { [key in keyof Partial<T>]: (keyEvent?: KeyboardEvent) => void }
 
 const keyMap: CursorMovementKeyMap = {
     DELETE: 'del',
@@ -66,15 +65,23 @@ const FillParent = styled.div`
     width: 100%;
     height: 100%;
     flex-grow: 1;
+    position: relative;
 `;
 
-export const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode, onExecute}) => {
-    const [contents, setContents] = useState<FileInfo[] | null>(null);
-    const [selection] = useState(new ItemSelection<number>());
+// alright this might be a little dumb
+export const FileSelectionContext = SelectionContext as Context<Selection<FileInfo>>;
 
+function getSelectedFiles(selection: Selection<FileInfo>) {
+    return [...selection.selected].map(item => selection.items.get(item)!.data);
+}
+
+export const FolderView: React.FC<FolderViewProps> = asSelectableGroup(({path, viewMode: ViewMode, onExecute}) => {
+    const [contents, setContents] = useState<FileInfo[] | null>(null);
     const contextMenuId = useUuid();
 
     const {fileSystem} = useContext(OSContext)!;
+
+    const selection = useContext(FileSelectionContext);
     
     function loadContents(path: string) {
         const files = fileSystem.readdirSync(path);
@@ -83,13 +90,14 @@ export const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode,
             stats: fileSystem.statSync(nodePath.join(path, file))
         }));
         setContents(fileInfos);
-        selection.clear();
+
+        selection.clearSelection();
     }
 
     useEffect(() => loadContents(path), [path]);
 
     function deleteSelection() {
-        const files = selection.current.map(i => contents![i]);
+        const files = getSelectedFiles(selection);
         for (const file of files) {
             const fullPath = nodePath.join(path, file.path);
             if (file.stats.isDirectory())
@@ -103,22 +111,22 @@ export const FolderView: React.FC<FolderViewProps> = ({path, viewMode: ViewMode,
     const keyHandlers: KeyHandlers<CursorMovementKeyMap> = {
         DELETE: deleteSelection,
         REFRESH: e => { loadContents(path); e!.preventDefault()},
-        EXECUTE: () => { onExecute && selection.current.length && onExecute(selection.current.map(i => contents![i])) },
-        SELECT_ALL: () => selection.set(contents!.map((_f, i) => i)),
+        EXECUTE: () => { onExecute && selection.selected.size && onExecute(getSelectedFiles(selection)) },
+        SELECT_ALL: () => selection.selectAll()
     };
 
     return (
-        <Fragment>
+        <>
             <HotKeys keyMap={keyMap} handlers={keyHandlers} component={FillParent}>
                 <MenuProvider id={contextMenuId} storeRef={false} render={props => <FillParent {...props}/>}>
-                    <ViewMode files={contents!} onExecute={onExecute || (() => {})} selection={selection} />
+                    <ViewMode files={contents!} onExecute={onExecute || (() => {})} />
                 </MenuProvider>
             </HotKeys>
-            
+
             <FolderContextMenu id={contextMenuId} path={path} />
-        </Fragment>
+        </>
     );
-};
+}, FillParent);
 
 export interface FileInfo {
     path: string;

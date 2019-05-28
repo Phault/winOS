@@ -13,14 +13,19 @@ const UsableArea = styled.div`
     flex-flow: column nowrap;
 `;
 
-const StyledDesktopEnvironment = styled(UsableArea)`
-    background: url(${bliss}) center / cover no-repeat;
+const StyledDesktopEnvironment = styled(UsableArea).attrs({
+    // done with inline style to avoid flickering in dev builds
+    style: {
+        backgroundImage: `url(${bliss})`
+    }
+})`
+    background: transparent center / cover no-repeat;
 `
 
 export const DesktopEnvironment: FC = () => (
     <StyledDesktopEnvironment>
         <UsableArea>
-            <Desktop path="/Documents and Settings/Administrator/Desktop" />
+            <Desktop path="/Documents and Settings/Casper Lindschouw/Desktop" />
             <WindowRenderer />
         </UsableArea>
         <TaskBar height={30} />
