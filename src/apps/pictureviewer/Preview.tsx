@@ -7,6 +7,7 @@ export const PreviewWrapper = styled.div<{hideOverflow?: boolean}>`
     display: flex;
     height: 100%;
     align-self: stretch;
+    flex-direction: column;
     overflow: ${props => props.hideOverflow ? 'hidden' : 'auto'};
     padding: 1px;
 
