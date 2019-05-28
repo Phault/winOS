@@ -11,11 +11,11 @@ A ton of stuff is missing, which should be obvious if you check out the live ver
 The filesystem is served from the web server and changes are kept locally.
 
 Current apps:
-    * Notepad
-        * Albeit not fully implemented
-    * File Explorer
-    * Minesweeper
-    * Picture Viewer
+ * Notepad
+    * Albeit not fully implemented
+ * File Explorer
+ * Minesweeper
+ * Picture Viewer
 
 ## Plans
 
