@@ -40,7 +40,9 @@ export const Preview = forwardRef<HTMLDivElement, PreviewProps>(({zoom = 'auto',
 
       return {
         minWidth: imageSize.width * zoom,
-        minHeight: imageSize.height * zoom
+        minHeight: imageSize.height * zoom,
+        width: imageSize.width * zoom,
+        height: imageSize.height * zoom
       };
     }, [imageSize.width, imageSize.height, zoom]);
     
