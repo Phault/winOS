@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import './ContextMenu.scss';
 import BFS, { BFSRequire } from 'browserfs';
 import { WindowManager } from './windows/WindowManager';
@@ -13,9 +13,9 @@ import Loadable from 'react-loadable';
 const BrowserFS: typeof BFS = require('browserfs');
 
 function loadFileSystem(): Promise<FSModule> {
-  return new Promise<FSModule>(
-    (resolve, reject) => {
-      BrowserFS.configure({
+  return new Promise<FSModule>((resolve, reject) => {
+    BrowserFS.configure(
+      {
         fs: 'OverlayFS',
         options: {
           readable: {
@@ -30,14 +30,14 @@ function loadFileSystem(): Promise<FSModule> {
             options: {}
           }
         }
-      }, e => {
-        if (e)
-            reject(e);
-      
+      },
+      e => {
+        if (e) reject(e);
+
         resolve(BFSRequire('fs'));
-      });
-    }
-  );
+      }
+    );
+  });
 }
 
 async function loadProgramManager(): Promise<ProgramManager> {
@@ -46,11 +46,12 @@ async function loadProgramManager(): Promise<ProgramManager> {
   await Promise.all([
     manager.install(async () => (await import('./apps/notepad')).NotepadApp),
     manager.install(async () => (await import('./apps/explorer')).ExplorerApp),
-    manager.install(async () => (await import('./apps/minesweeper')).MinesweeperApp),
-    manager.install(async () => (await import('./apps/pictureviewer')).PictureViewerApp),
-
-    manager.install(async () => (await import('./apps/funbox')).Funbox),
-    manager.install(async () => (await import('./apps/bowmania')).Bowmania)
+    manager.install(
+      async () => (await import('./apps/minesweeper')).MinesweeperApp
+    ),
+    manager.install(
+      async () => (await import('./apps/pictureviewer')).PictureViewerApp
+    )
   ]);
 
   return manager;
@@ -76,22 +77,26 @@ function wait(ms: number): Promise<never> {
 }
 
 const LoadableDesktopEnvironment = Loadable({
-  loader: () => Promise.all([import('./DesktopEnvironment'), wait(1500)]).then(r => r[0]),
+  loader: () =>
+    Promise.all([import('./DesktopEnvironment'), wait(1500)]).then(r => r[0]),
   loading: () => <WelcomeScreen />,
-  render(loaded, props) {
-    return <loaded.DesktopEnvironment {...props}/>
+  render(
+    loaded: typeof import('./DesktopEnvironment'),
+    props: PropsWithChildren<{}>
+  ) {
+    return <loaded.DesktopEnvironment {...props} />;
   }
 });
 
 const LoadableOS = Loadable({
   loader: () => Promise.all([loadOS(), wait(2000)]).then(r => r[0]),
   loading: () => <BootLoader />,
-  render(loaded, props) {
+  render(loaded: OS, props: PropsWithChildren<{}>) {
     return <OSContext.Provider value={loaded} {...props} />;
   }
-})
+});
 
-export const OSContext = React.createContext<OS | null>(null)
+export const OSContext = React.createContext<OS | null>(null);
 
 function blockEvent(e: React.BaseSyntheticEvent<any>) {
   if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development')
