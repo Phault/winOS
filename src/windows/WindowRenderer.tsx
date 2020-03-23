@@ -43,8 +43,8 @@ export function WindowRenderer() {
           onActivated={() => w.focus()}
           style={{ zIndex: i, display: w.isMinimized ? 'none' : undefined }}
           {...(w.isMaximized ? fullScreenRect : w.rect)}
-          minWidth={(w.template.minSize && w.template.minSize.width) || 1}
-          minHeight={(w.template.minSize && w.template.minSize.height) || 1}
+          minWidth={w.template.minSize?.width || 1}
+          minHeight={w.template.minSize?.height || 1}
           resizable={w.isResizable}
           onResize={rect => saveWindowRect(w, rect)}
           onMove={pos => saveWindowRect(w, { ...w.rect, ...pos })}>

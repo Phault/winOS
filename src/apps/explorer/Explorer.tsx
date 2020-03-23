@@ -8,7 +8,7 @@ import foldersIcon from '../../assets/icons/toolbar/folders.png';
 import viewIcon from '../../assets/icons/toolbar/view.png';
 import { WindowContext } from '../../windows/WindowManager';
 import { NavigationHistory } from './NavigationHistory';
-import { Observer, useObserver } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './header/NavigationHistoryButtons';
 import { OSContext } from '../../App';
@@ -23,6 +23,7 @@ import { ViewModeItems } from './header/ViewModeItems';
 import { AddressBar } from './header/addressbar/AddressBar';
 import { ToolbarMenu } from './header/ToolbarMenu';
 import { GroupItem } from './sidebar/GroupItem';
+import { useAutorun } from '../../misc/hooks/useAutorun';
 
 const StyledExplorer = styled.div`
   flex-grow: 1;
@@ -41,14 +42,14 @@ export const Explorer: React.FC<ExplorerProps> = ({ initialDir }) => {
   const window = useContext(WindowContext)!;
   const { processManager, programManager, fileSystem } = useContext(OSContext)!;
 
-  useObserver(() => {
+  useAutorun(() => {
     const stats = fileSystem.statSync(history.current);
     window.icon = programManager.getFileIcon({
       path: history.current,
       stats,
     });
     window.title = nodePath.basename(history.current) || ExplorerApp.name;
-  });
+  }, [fileSystem, programManager, history, window.title, window.icon]);
 
   const handleFileExecution = useCallback(
     (files: FileInfo[]) => {
@@ -64,7 +65,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ initialDir }) => {
         if (apps.length > 0) processManager.run(apps[0], fullPath);
       } else if (fullPath !== history.current) history.push(fullPath);
     },
-    [history, processManager]
+    [history, processManager, programManager]
   );
 
   const goUp = useCallback(() => {
