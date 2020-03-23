@@ -1,5 +1,5 @@
-import React from "react";
-import { Item } from "react-contexify";
+import React from 'react';
+import { Item } from 'react-contexify';
 
 export function ViewModeItems() {
   return (

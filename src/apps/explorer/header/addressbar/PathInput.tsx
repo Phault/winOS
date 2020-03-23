@@ -5,93 +5,111 @@ import { OSContext } from '../../../../App';
 import { AutosuggestWrapper } from './AutosuggestWrapper';
 
 const renderSuggestion: RenderSuggestion<string> = (suggestion: string) => {
-    return <span>{suggestion}</span>;
+  return <span>{suggestion}</span>;
 };
 
-const getSuggestionValue: Autosuggest.GetSuggestionValue<string> = suggestion => suggestion;
+const getSuggestionValue: Autosuggest.GetSuggestionValue<string> = suggestion =>
+  suggestion;
 
 export interface PathInputProps {
-    value: string;
-    onChange: (newValue: string) => void;
+  value: string;
+  onChange: (newValue: string) => void;
 }
 
-export const PathInput: React.FC<PathInputProps> = ({value, onChange, ...rest}) => {
-    const [suggestions, setSuggestions] = useState<string[]>([]);
-    const [workingValue, setWorkingValue] = useState<string>(value);
-    const {fileSystem} = useContext(OSContext)!;
+export const PathInput: React.FC<PathInputProps> = ({
+  value,
+  onChange,
+  ...rest
+}) => {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [workingValue, setWorkingValue] = useState<string>(value);
+  const { fileSystem } = useContext(OSContext)!;
 
-    useEffect(() => setWorkingValue(value), [value]);
+  useEffect(() => setWorkingValue(value), [value]);
 
-    const onKeyDownCapture = useCallback((e: React.KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            setWorkingValue(value);
+  const onKeyDownCapture = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setWorkingValue(value);
 
-            const input = e.currentTarget as HTMLInputElement;
-            input.value = value;
-            input.setSelectionRange(0, 99999999);
-        }
-    }, [value]);
+        const input = e.currentTarget as HTMLInputElement;
+        input.value = value;
+        input.setSelectionRange(0, 99999999);
+      }
+    },
+    [value]
+  );
 
-    const onKeyPress = useCallback((e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            onChange(workingValue);
-            (document.activeElement as HTMLElement).blur();
-        }
-    }, [workingValue, onChange]);
+  const onKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        onChange(workingValue);
+        (document.activeElement as HTMLElement).blur();
+      }
+    },
+    [workingValue, onChange]
+  );
 
-    const onInputChange = useCallback((_, {newValue, method}) => {
-        if (method === 'escape')
-            return;
-            
-        setWorkingValue(newValue);
+  const onInputChange = useCallback(
+    (_, { newValue, method }) => {
+      if (method === 'escape') return;
 
-        if (method === 'enter' || method === 'click')
-            onChange(newValue);
-    }, [onChange]);
+      setWorkingValue(newValue);
 
-    const inputProps = {
-        ...rest,
-        value: workingValue,
-        suggestions,
-        onChange: onInputChange,
-        onKeyPress,
-        onKeyDownCapture
-    };
+      if (method === 'enter' || method === 'click') onChange(newValue);
+    },
+    [onChange]
+  );
 
-    const onSuggestionsFetchRequested = useCallback(({value: request}: {value: string}) => {
-        const isExactDir = request.endsWith('/');
+  const inputProps = {
+    ...rest,
+    value: workingValue,
+    suggestions,
+    onChange: onInputChange,
+    onKeyPress,
+    onKeyDownCapture,
+  };
 
-        const path = isExactDir ? { dir: request, base: '' } : nodePath.parse(request);
-        let dirContents: string[];
-        
-        try {
-            dirContents = fileSystem.readdirSync(path.dir);
-        } catch {
-            dirContents = [];
-        }
+  const onSuggestionsFetchRequested = useCallback(
+    ({ value: request }: { value: string }) => {
+      const isExactDir = request.endsWith('/');
 
-        const newSuggestions = dirContents
-            .filter(file => file.startsWith(path.base) && file !== path.base)
-            .map(file => nodePath.join(path.dir, file)); 
+      const path = isExactDir
+        ? { dir: request, base: '' }
+        : nodePath.parse(request);
+      let dirContents: string[];
 
-        setSuggestions(newSuggestions);
-    }, [fileSystem]);
+      try {
+        dirContents = fileSystem.readdirSync(path.dir);
+      } catch {
+        dirContents = [];
+      }
 
-    function onSuggestionsClearRequested() {
-        setSuggestions([]);
-    }
+      const newSuggestions = dirContents
+        .filter(file => file.startsWith(path.base) && file !== path.base)
+        .map(file => nodePath.join(path.dir, file));
 
-    return (
-        <AutosuggestWrapper>
-            <Autosuggest 
-                suggestions={suggestions}
-                onSuggestionsFetchRequested={onSuggestionsFetchRequested} 
-                onSuggestionsClearRequested={onSuggestionsClearRequested} 
-                getSuggestionValue={getSuggestionValue} 
-                shouldRenderSuggestions={() => true}
-                renderSuggestion={renderSuggestion} 
-                focusInputOnSuggestionClick={false}
-                inputProps={inputProps} />
-        </AutosuggestWrapper>
-    );
+      setSuggestions(newSuggestions);
+    },
+    [fileSystem]
+  );
+
+  function onSuggestionsClearRequested() {
+    setSuggestions([]);
+  }
+
+  return (
+    <AutosuggestWrapper>
+      <Autosuggest
+        suggestions={suggestions}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
+        getSuggestionValue={getSuggestionValue}
+        shouldRenderSuggestions={() => true}
+        renderSuggestion={renderSuggestion}
+        focusInputOnSuggestionClick={false}
+        inputProps={inputProps}
+      />
+    </AutosuggestWrapper>
+  );
 };

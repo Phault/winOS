@@ -15,7 +15,7 @@ export const PictureViewerApp: Program = {
     '.bmp': filetypes.bitmap,
     '.tiff': filetypes.fax,
     '.tif': filetypes.fax,
-    '.gif': filetypes.fax
+    '.gif': filetypes.fax,
   },
   run: async (os, args) => {
     os.windowManager.create({
@@ -25,13 +25,13 @@ export const PictureViewerApp: Program = {
         left: 100,
         top: 100,
         width: 500,
-        height: 400
+        height: 400,
       },
       minSize: {
         width: 100,
-        height: 100
+        height: 100,
       },
-      body: () => <PictureViewer initialPath={args!} />
+      body: () => <PictureViewer initialPath={args!} />,
     });
-  }
+  },
 };

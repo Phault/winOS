@@ -6,28 +6,28 @@ import styled from 'styled-components/macro';
 import bliss from './assets/wallpapers/bliss.jpg';
 
 const UsableArea = styled.div`
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
 `;
 
 const StyledDesktopEnvironment = styled(UsableArea).attrs({
-    // done with inline style to avoid flickering in dev builds
-    style: {
-        backgroundImage: `url(${bliss})`
-    }
+  // done with inline style to avoid flickering in dev builds
+  style: {
+    backgroundImage: `url(${bliss})`,
+  },
 })`
-    background: transparent center / cover no-repeat;
-`
+  background: transparent center / cover no-repeat;
+`;
 
 export const DesktopEnvironment: FC = () => (
-    <StyledDesktopEnvironment>
-        <UsableArea>
-            <Desktop path="/Documents and Settings/Casper Lindschouw/Desktop" />
-            <WindowRenderer />
-        </UsableArea>
-        <TaskBar height={30} />
-    </StyledDesktopEnvironment>
+  <StyledDesktopEnvironment>
+    <UsableArea>
+      <Desktop path="/Documents and Settings/Casper Lindschouw/Desktop" />
+      <WindowRenderer />
+    </UsableArea>
+    <TaskBar height={30} />
+  </StyledDesktopEnvironment>
 );

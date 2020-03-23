@@ -1,6 +1,6 @@
 import { Rectangle } from '../misc/Rectangle';
 import { ReactNode } from 'react';
-import { WindowTemplate } from "./WindowTemplate";
+import { WindowTemplate } from './WindowTemplate';
 import { decorate, observable, action } from 'mobx';
 import { WindowManager } from './WindowManager';
 
@@ -25,9 +25,10 @@ class WindowInstance {
       left: 0,
       top: 0,
       width: 1,
-      height: 1
+      height: 1,
     };
-    this.isResizable = template.isResizable !== undefined ? template.isResizable : true;
+    this.isResizable =
+      template.isResizable !== undefined ? template.isResizable : true;
     this.template = template;
     this.body = template.body(this);
   }
@@ -49,7 +50,7 @@ decorate(WindowInstance, {
   isResizable: observable,
   rect: observable,
   focus: action,
-  destroy: action
+  destroy: action,
 });
 
 export { WindowInstance };

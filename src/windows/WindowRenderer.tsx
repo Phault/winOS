@@ -9,12 +9,12 @@ import { useDimensions } from '../misc/hooks/useDimensions';
 import styled from 'styled-components/macro';
 
 const StyledWindowRenderer = styled.div`
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
 `;
 
 function saveWindowRect(window: WindowInstance, rect: Rectangle) {
@@ -25,30 +25,29 @@ function saveWindowRect(window: WindowInstance, rect: Rectangle) {
 export function WindowRenderer() {
   const { windowManager } = useContext(OSContext)!;
   const [screenRef, screenSize] = useDimensions();
-  
-  
+
   const windows = useObserver(() => {
     const fullScreenRect: Rectangle = {
       left: 0,
       top: 0,
       width: screenSize.width,
-      height: screenSize.height
+      height: screenSize.height,
     };
 
     const windows = windowManager.windows.map((w, i) => (
       <WindowContext.Provider value={w} key={w.id}>
-        <UncontrolledWindow 
-          title={w.title} 
-          icon={w.icon} 
+        <UncontrolledWindow
+          title={w.title}
+          icon={w.icon}
           active={windowManager.focused === w}
           onActivated={() => w.focus()}
           style={{ zIndex: i, display: w.isMinimized ? 'none' : undefined }}
-          {...(w.isMaximized ? fullScreenRect : w.rect)} 
-          minWidth={w.template.minSize && w.template.minSize.width || 1} 
-          minHeight={w.template.minSize && w.template.minSize.height || 1}
+          {...(w.isMaximized ? fullScreenRect : w.rect)}
+          minWidth={(w.template.minSize && w.template.minSize.width) || 1}
+          minHeight={(w.template.minSize && w.template.minSize.height) || 1}
           resizable={w.isResizable}
           onResize={rect => saveWindowRect(w, rect)}
-          onMove={pos => saveWindowRect(w, {...w.rect, ...pos})}>
+          onMove={pos => saveWindowRect(w, { ...w.rect, ...pos })}>
           {w.body}
         </UncontrolledWindow>
       </WindowContext.Provider>
@@ -57,9 +56,5 @@ export function WindowRenderer() {
     return windows.sort((a, b) => (a.key as number) - (b.key as number));
   });
 
-  return (
-    <StyledWindowRenderer ref={screenRef}>
-      {windows}
-    </StyledWindowRenderer>
-  );
+  return <StyledWindowRenderer ref={screenRef}>{windows}</StyledWindowRenderer>;
 }

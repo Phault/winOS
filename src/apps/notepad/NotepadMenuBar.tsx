@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { MenuBar } from "../../widgets/menubar/MenuBar";
-import { Item, Separator } from "react-contexify";
-import { WindowContext } from "../../windows/WindowManager";
-import { MenuBarMenu } from "../../widgets/menubar/MenuBarMenu";
+import React, { useContext } from 'react';
+import { MenuBar } from '../../widgets/menubar/MenuBar';
+import { Item, Separator } from 'react-contexify';
+import { WindowContext } from '../../windows/WindowManager';
+import { MenuBarMenu } from '../../widgets/menubar/MenuBarMenu';
 
 export const NotepadMenuBar = () => {
   const window = useContext(WindowContext)!;

@@ -22,14 +22,14 @@ function loadFileSystem(): Promise<FSModule> {
             fs: 'XmlHttpRequest',
             options: {
               baseUrl: process.env.PUBLIC_URL + '/fs/',
-              index: process.env.PUBLIC_URL + '/filesystem.json'
-            }
+              index: process.env.PUBLIC_URL + '/filesystem.json',
+            },
           },
           writable: {
             fs: 'LocalStorage',
-            options: {}
-          }
-        }
+            options: {},
+          },
+        },
       },
       e => {
         if (e) reject(e);
@@ -51,7 +51,7 @@ async function loadProgramManager(): Promise<ProgramManager> {
     ),
     manager.install(
       async () => (await import('./apps/pictureviewer')).PictureViewerApp
-    )
+    ),
   ]);
 
   return manager;
@@ -61,7 +61,7 @@ async function loadOS(): Promise<OS> {
   const os: Partial<OS> = {
     fileSystem: await loadFileSystem(),
     programManager: await loadProgramManager(),
-    windowManager: new WindowManager()
+    windowManager: new WindowManager(),
   };
 
   os.processManager = new ProcessManager(os as OS);
@@ -80,13 +80,13 @@ const LoadableDesktopEnvironment = Loadable({
   loader: () =>
     Promise.all([import('./DesktopEnvironment'), wait(1500)]).then(r => r[0]),
   loading: () => <WelcomeScreen />,
-  render: (loaded, props) => <loaded.DesktopEnvironment {...props} />
+  render: (loaded, props) => <loaded.DesktopEnvironment {...props} />,
 });
 
 const LoadableOS = Loadable({
   loader: () => Promise.all([loadOS(), wait(2000)]).then(r => r[0]),
   loading: () => <BootLoader />,
-  render: (loaded, props) => <OSContext.Provider value={loaded} {...props} />
+  render: (loaded, props) => <OSContext.Provider value={loaded} {...props} />,
 });
 
 export const OSContext = React.createContext<OS | null>(null);

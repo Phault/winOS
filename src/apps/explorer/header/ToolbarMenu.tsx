@@ -1,12 +1,12 @@
-import React, { FC, useContext } from "react";
-import * as Toolbar from "../../../widgets/toolbar";
-import { MenuBar } from "../../../widgets/menubar/MenuBar";
-import { MenuBarMenu } from "../../../widgets/menubar/MenuBarMenu";
-import { Submenu, Separator, Item } from "react-contexify";
-import { CreateNewItems } from "../../../widgets/folderview/FolderContextMenu";
-import { ViewModeItems } from "./ViewModeItems";
-import { WindowsIcon } from "./WindowsIcon";
-import { WindowContext } from "../../../windows/WindowManager";
+import React, { FC, useContext } from 'react';
+import * as Toolbar from '../../../widgets/toolbar';
+import { MenuBar } from '../../../widgets/menubar/MenuBar';
+import { MenuBarMenu } from '../../../widgets/menubar/MenuBarMenu';
+import { Submenu, Separator, Item } from 'react-contexify';
+import { CreateNewItems } from '../../../widgets/folderview/FolderContextMenu';
+import { ViewModeItems } from './ViewModeItems';
+import { WindowsIcon } from './WindowsIcon';
+import { WindowContext } from '../../../windows/WindowManager';
 
 export const ToolbarMenu: FC<{ path: string }> = ({ path }) => {
   const window = useContext(WindowContext)!;

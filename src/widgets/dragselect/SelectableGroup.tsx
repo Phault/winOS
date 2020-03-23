@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useMemo,
   RefObject,
-  Ref
+  Ref,
 } from 'react';
 import { Position } from '../../misc/Position';
 import { usePointerCapture } from '../../misc/hooks/usePointerCapture';
@@ -52,7 +52,7 @@ export const SelectableGroup: FC<SelectableGroupProps> = ({
       left,
       top,
       width: right - left,
-      height: bottom - top
+      height: bottom - top,
     };
   }, [start, stop]);
 
@@ -78,7 +78,7 @@ export const SelectableGroup: FC<SelectableGroupProps> = ({
 
       const pos = {
         left: e.clientX - bounds.left + ref.current!.scrollLeft,
-        top: e.clientY - bounds.top + ref.current!.scrollTop
+        top: e.clientY - bounds.top + ref.current!.scrollTop,
       };
 
       setStart(pos);
@@ -99,7 +99,7 @@ export const SelectableGroup: FC<SelectableGroupProps> = ({
 
       setStop({
         left: e.clientX - bounds.left + ref.current!.scrollLeft,
-        top: e.clientY - bounds.top + ref.current!.scrollTop
+        top: e.clientY - bounds.top + ref.current!.scrollTop,
       });
 
       e.stopPropagation();

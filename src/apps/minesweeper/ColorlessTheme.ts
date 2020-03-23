@@ -5,12 +5,12 @@ import { Theme } from './Theme';
 import { DefaultTheme } from './DefaultTheme';
 
 export const ColorlessTheme: Theme = {
-    ...DefaultTheme,
-    smileys,
-    cells,
-    digits,
-    border: {
-        ...DefaultTheme.border,
-        dark: 'black'
-    },
+  ...DefaultTheme,
+  smileys,
+  cells,
+  digits,
+  border: {
+    ...DefaultTheme.border,
+    dark: 'black',
+  },
 };

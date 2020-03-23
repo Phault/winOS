@@ -1,95 +1,94 @@
-import { decorate, observable, action, computed } from "mobx";
+import { decorate, observable, action, computed } from 'mobx';
 
 class NavigationHistory<T> {
-    stack: T[];
-    position: number;
+  stack: T[];
+  position: number;
 
-    constructor(start: T) {
-        this.stack = [start];
-        this.position = 0;
-    }
+  constructor(start: T) {
+    this.stack = [start];
+    this.position = 0;
+  }
 
-    push(val: T) {
-        this.stack.splice(this.position + 1, Math.max(0, this.stack.length - this.position - 1), val);
-        this.position = this.stack.length - 1;
-    }
+  push(val: T) {
+    this.stack.splice(
+      this.position + 1,
+      Math.max(0, this.stack.length - this.position - 1),
+      val
+    );
+    this.position = this.stack.length - 1;
+  }
 
-    clear() {
-        this.goToIndex(0);
-        this.stack = [this.stack[0]];
-    }
+  clear() {
+    this.goToIndex(0);
+    this.stack = [this.stack[0]];
+  }
 
-    tryGoBack() {
-        if (this.canGoBack)
-            this.position--;
-    }
+  tryGoBack() {
+    if (this.canGoBack) this.position--;
+  }
 
-    tryGoForward() {
-        if (this.canGoForward)
-            this.position++;
-    }
+  tryGoForward() {
+    if (this.canGoForward) this.position++;
+  }
 
-    goTo(val: T) {
-        const index = this.stack.indexOf(val);
-        this.goToIndex(index);
-    }
+  goTo(val: T) {
+    const index = this.stack.indexOf(val);
+    this.goToIndex(index);
+  }
 
-    goToIndex(index: number) {
-        if (index < 0 || index >= this.stack.length)
-            throw new RangeError();
+  goToIndex(index: number) {
+    if (index < 0 || index >= this.stack.length) throw new RangeError();
 
-        this.position = index;
-    }
+    this.position = index;
+  }
 
-    get current() {
-        return this.stack[this.position];
-    }
+  get current() {
+    return this.stack[this.position];
+  }
 
-    get previous() {
-        if (this.canGoBack)
-            return this.stack[this.position - 1];
-    }
-    
-    get next() {
-        if (this.canGoForward)
-            return this.stack[this.position + 1];
-    }
+  get previous() {
+    if (this.canGoBack) return this.stack[this.position - 1];
+  }
 
-    get previousAll() {
-        return this.stack.slice(0, this.position);
-    }
+  get next() {
+    if (this.canGoForward) return this.stack[this.position + 1];
+  }
 
-    get nextAll() {
-        return this.stack.slice(this.position + 1);
-    }
+  get previousAll() {
+    return this.stack.slice(0, this.position);
+  }
 
-    get canGoBack() {
-        return this.position > 0;
-    }
+  get nextAll() {
+    return this.stack.slice(this.position + 1);
+  }
 
-    get canGoForward() {
-        return this.position < this.stack.length - 1;
-    }
+  get canGoBack() {
+    return this.position > 0;
+  }
+
+  get canGoForward() {
+    return this.position < this.stack.length - 1;
+  }
 }
 
 decorate(NavigationHistory, {
-    stack: observable,
-    position: observable,
-        
-    canGoBack: computed,
-    canGoForward: computed,
-    current: computed,
-    next: computed,
-    nextAll: computed,
-    previous: computed,
-    previousAll: computed,
+  stack: observable,
+  position: observable,
 
-    push: action,
-    clear: action,
-    tryGoBack: action,
-    tryGoForward: action,
-    goTo: action,
-    goToIndex: action
+  canGoBack: computed,
+  canGoForward: computed,
+  current: computed,
+  next: computed,
+  nextAll: computed,
+  previous: computed,
+  previousAll: computed,
+
+  push: action,
+  clear: action,
+  tryGoBack: action,
+  tryGoForward: action,
+  goTo: action,
+  goToIndex: action,
 });
 
 export { NavigationHistory };

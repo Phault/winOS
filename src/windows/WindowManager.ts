@@ -3,12 +3,11 @@ import React from 'react';
 import { WindowInstance } from './WindowInstance';
 import { WindowTemplate } from './WindowTemplate';
 
-
 export const WindowContext = React.createContext<WindowInstance | null>(null);
 
 class WindowManager {
   windows: WindowInstance[] = [];
-  
+
   private idToWindowMap = new Map<number, WindowInstance>();
 
   private nextId = 0;
@@ -17,8 +16,7 @@ class WindowManager {
     for (let i = this.windows.length - 1; i >= 0; i--) {
       const window = this.windows[i];
 
-      if (!window.isMinimized)
-        return window;
+      if (!window.isMinimized) return window;
     }
 
     return null;
@@ -29,7 +27,7 @@ class WindowManager {
     const instance = new WindowInstance(id, this, template);
     this.windows.push(instance);
     this.idToWindowMap.set(id, instance);
-    
+
     return instance;
   }
 
@@ -43,18 +41,16 @@ class WindowManager {
   public minimize(instanceOrId: WindowInstance | number) {
     const window = this.getWindow(instanceOrId);
 
-    if (window!.isMinimized)
-      return;
+    if (window!.isMinimized) return;
 
     window!.isMinimized = true;
     this.sendBackwards(window!);
   }
 
-  public restore(instanceOrId: WindowInstance | number) { 
+  public restore(instanceOrId: WindowInstance | number) {
     const window = this.getWindow(instanceOrId);
 
-    if (!window!.isMinimized)
-      return;
+    if (!window!.isMinimized) return;
 
     window!.isMinimized = false;
     this.bringToFront(instanceOrId);
@@ -95,7 +91,9 @@ class WindowManager {
   }
 
   private getWindow(instanceOrId: WindowInstance | number) {
-    return instanceOrId instanceof WindowInstance ? instanceOrId : this.idToWindowMap.get(instanceOrId);
+    return instanceOrId instanceof WindowInstance
+      ? instanceOrId
+      : this.idToWindowMap.get(instanceOrId);
   }
 }
 

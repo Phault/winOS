@@ -12,7 +12,8 @@ export const Content = styled.div`
 
   position: relative;
 
-  ::before, ::after {
+  ::before,
+  ::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -20,12 +21,22 @@ export const Content = styled.div`
   }
 
   ::before {
-    background: linear-gradient(to right, #5076d4, #c3dafd 15% 50%, transparent);
+    background: linear-gradient(
+      to right,
+      #5076d4,
+      #c3dafd 15% 50%,
+      transparent
+    );
     top: 0;
   }
 
   ::after {
-    background: linear-gradient(to right, #06389c, #f99737 15% 50%, transparent);
+    background: linear-gradient(
+      to right,
+      #06389c,
+      #f99737 15% 50%,
+      transparent
+    );
     bottom: 0;
   }
 `;

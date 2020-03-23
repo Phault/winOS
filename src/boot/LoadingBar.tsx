@@ -14,26 +14,27 @@ function ProgressKeyFrames(cellWidth: number, cellCount: number) {
   `;
 }
 
-const ProgressBarFilling = styled.img<{cellWidth: number, cellCount: number}>`
+const ProgressBarFilling = styled.img<{ cellWidth: number; cellCount: number }>`
   position: absolute;
-  animation: 
-    ${props => ProgressKeyFrames(props.cellWidth, props.cellCount)} 
-    1.5s 
-    steps(${props => props.cellCount + 4}, start) 
-    infinite;
+  animation: ${props => ProgressKeyFrames(props.cellWidth, props.cellCount)}
+    1.5s steps(${props => props.cellCount + 4}, start) infinite;
 `;
 
 export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   width: number;
 }
 
-export const ProgressBar = styled(({width, ...rest}: ProgressBarProps) => {
+export const ProgressBar = styled(({ width, ...rest }: ProgressBarProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   return (
     <div {...rest}>
       <div ref={wrapperRef}>
-        <ProgressBarFilling src={logonProgress} cellCount={Math.ceil(width / 8)} cellWidth={8} />
+        <ProgressBarFilling
+          src={logonProgress}
+          cellCount={Math.ceil(width / 8)}
+          cellWidth={8}
+        />
       </div>
     </div>
   );

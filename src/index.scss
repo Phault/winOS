@@ -1,6 +1,6 @@
 * {
-    box-sizing: border-box;
-    user-select: none;
+  box-sizing: border-box;
+  user-select: none;
 }
 
 body {
@@ -9,7 +9,9 @@ body {
   touch-action: none;
 }
 
-button, input, textarea {
+button,
+input,
+textarea {
   font: inherit;
   outline: none;
   border: none;
@@ -23,12 +25,15 @@ button {
   padding: 0;
 }
 
-input, textarea {
+input,
+textarea {
   border: 1px solid #7f9db9;
   background: white;
 }
 
-textarea, textarea:focus, textarea:active {
+textarea,
+textarea:focus,
+textarea:active {
   border: 1px solid rgb(127, 157, 185);
   outline: 0;
   resize: none;

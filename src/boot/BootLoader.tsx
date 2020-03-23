@@ -1,8 +1,8 @@
-import React from "react";
-import styled, { keyframes } from "styled-components/macro";
-import logonLogo from "./assets/boot-windows-logo.png";
-import { MicrosoftLogo } from "./MicrosoftLogo";
-import { ProgressBar } from "./LoadingBar";
+import React from 'react';
+import styled, { keyframes } from 'styled-components/macro';
+import logonLogo from './assets/boot-windows-logo.png';
+import { MicrosoftLogo } from './MicrosoftLogo';
+import { ProgressBar } from './LoadingBar';
 
 const fadeIn = keyframes`
   from {
@@ -15,11 +15,11 @@ const fadeIn = keyframes`
 
 export const BootLoader = styled(props => (
   <div {...props}>
-    <div style={{flexGrow: 1.3}} />
+    <div style={{ flexGrow: 1.3 }} />
     <img src={logonLogo} />
-    <div style={{flexGrow: 1}} />
+    <div style={{ flexGrow: 1 }} />
     <ProgressBar width={126} />
-    <div style={{flexGrow: 1}} />
+    <div style={{ flexGrow: 1 }} />
     <footer>
       <span>Copyright © Microsoft Corporation</span>
       <MicrosoftLogo />

@@ -1,8 +1,8 @@
-import { Program } from "../Program.interface";
+import { Program } from '../Program.interface';
 import { decorate, computed, action, observable } from 'mobx';
-import { FileInfo } from "../widgets/folderview/FolderView";
+import { FileInfo } from '../widgets/folderview/FolderView';
 import * as nodePath from 'bfs-path';
-import { getDefaultIcon } from "../misc/io/fileUtils";
+import { getDefaultIcon } from '../misc/io/fileUtils';
 
 class ProgramManager {
   _installed: Program[] = [];
@@ -17,21 +17,24 @@ class ProgramManager {
     return result;
   }
 
-  uninstall() {
-  }
+  uninstall() {}
 
   getInstalledForExtension(extension: string): Program[] {
-    return computed(() => this._installed.filter(p => p.fileExtensions && extension in p.fileExtensions)).get();
+    return computed(() =>
+      this._installed.filter(
+        p => p.fileExtensions && extension in p.fileExtensions
+      )
+    ).get();
   }
 
   getFileIcon(file: FileInfo) {
-      const ext = nodePath.extname(file.path);
-      const programs = this.getInstalledForExtension(ext);
+    const ext = nodePath.extname(file.path);
+    const programs = this.getInstalledForExtension(ext);
 
-      if (programs.length > 0)
-        return programs[0].fileExtensions![ext] || getDefaultIcon(file);
+    if (programs.length > 0)
+      return programs[0].fileExtensions![ext] || getDefaultIcon(file);
 
-      return getDefaultIcon(file);
+    return getDefaultIcon(file);
   }
 }
 
