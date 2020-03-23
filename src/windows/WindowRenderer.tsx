@@ -1,10 +1,10 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext } from 'react';
 import { UncontrolledWindow } from './UncontrolledWindow';
 import { useObserver } from 'mobx-react-lite';
 import { WindowContext } from './WindowManager';
 import { OSContext } from '../App';
 import { Rectangle } from '../misc/Rectangle';
-import { WindowInstance } from './WindowInstance';
+import { MetaWindow } from './MetaWindow';
 import { useDimensions } from '../misc/hooks/useDimensions';
 import styled from 'styled-components/macro';
 
@@ -17,7 +17,7 @@ const StyledWindowRenderer = styled.div`
   pointer-events: none;
 `;
 
-function saveWindowRect(window: WindowInstance, rect: Rectangle) {
+function saveWindowRect(window: MetaWindow, rect: Rectangle) {
   window.isMaximized = false;
   window.rect = rect;
 }

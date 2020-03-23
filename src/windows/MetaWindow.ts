@@ -4,7 +4,7 @@ import { WindowTemplate } from './WindowTemplate';
 import { decorate, observable, action } from 'mobx';
 import { WindowManager } from './WindowManager';
 
-class WindowInstance {
+class MetaWindow {
   id: Readonly<number>;
   manager: Readonly<WindowManager>;
   title: string;
@@ -42,7 +42,7 @@ class WindowInstance {
   }
 }
 
-decorate(WindowInstance, {
+decorate(MetaWindow, {
   title: observable,
   icon: observable,
   isMaximized: observable,
@@ -53,4 +53,4 @@ decorate(WindowInstance, {
   destroy: action,
 });
 
-export { WindowInstance };
+export { MetaWindow };

@@ -1,14 +1,14 @@
 import { decorate, observable, action, computed } from 'mobx';
 import React from 'react';
-import { WindowInstance } from './WindowInstance';
+import { MetaWindow } from './MetaWindow';
 import { WindowTemplate } from './WindowTemplate';
 
-export const WindowContext = React.createContext<WindowInstance | null>(null);
+export const WindowContext = React.createContext<MetaWindow | null>(null);
 
 class WindowManager {
-  windows: WindowInstance[] = [];
+  windows: MetaWindow[] = [];
 
-  private idToWindowMap = new Map<number, WindowInstance>();
+  private idToWindowMap = new Map<number, MetaWindow>();
 
   private nextId = 0;
 
@@ -22,23 +22,23 @@ class WindowManager {
     return null;
   }
 
-  public create(template: WindowTemplate): WindowInstance {
+  public create(template: WindowTemplate): MetaWindow {
     const id = this.getNextId();
-    const instance = new WindowInstance(id, this, template);
+    const instance = new MetaWindow(id, this, template);
     this.windows.push(instance);
     this.idToWindowMap.set(id, instance);
 
     return instance;
   }
 
-  public destroy(instanceOrId: WindowInstance | number) {
+  public destroy(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
     this.windows.splice(currentIndex, 1);
     this.idToWindowMap.delete(window!.id);
   }
 
-  public minimize(instanceOrId: WindowInstance | number) {
+  public minimize(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
 
     if (window!.isMinimized) return;
@@ -47,7 +47,7 @@ class WindowManager {
     this.sendBackwards(window!);
   }
 
-  public restore(instanceOrId: WindowInstance | number) {
+  public restore(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
 
     if (!window!.isMinimized) return;
@@ -56,14 +56,14 @@ class WindowManager {
     this.bringToFront(instanceOrId);
   }
 
-  public bringToFront(instanceOrId: WindowInstance | number) {
+  public bringToFront(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
     this.windows.splice(currentIndex, 1);
     this.windows.push(window!);
   }
 
-  public bringForwards(instanceOrId: WindowInstance | number) {
+  public bringForwards(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
     const targetIndex = Math.min(this.windows.length - 1, currentIndex + 1);
@@ -71,14 +71,14 @@ class WindowManager {
     this.windows[targetIndex] = window!;
   }
 
-  public sendToBack(instanceOrId: WindowInstance | number) {
+  public sendToBack(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
     this.windows.splice(currentIndex, 1);
     this.windows.unshift(window!);
   }
 
-  public sendBackwards(instanceOrId: WindowInstance | number) {
+  public sendBackwards(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
     const targetIndex = Math.max(0, currentIndex - 1);
@@ -90,8 +90,8 @@ class WindowManager {
     return this.nextId++;
   }
 
-  private getWindow(instanceOrId: WindowInstance | number) {
-    return instanceOrId instanceof WindowInstance
+  private getWindow(instanceOrId: MetaWindow | number) {
+    return instanceOrId instanceof MetaWindow
       ? instanceOrId
       : this.idToWindowMap.get(instanceOrId);
   }

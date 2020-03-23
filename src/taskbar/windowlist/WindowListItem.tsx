@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import fallbackIcon from '../../assets/icons/apps/default.png';
-import { WindowInstance } from '../../windows/WindowInstance';
+import { MetaWindow } from '../../windows/MetaWindow';
 import { MenuProvider } from 'react-contexify';
 import { WindowListItemMenu } from './WindowListItemMenu';
 import classNames from 'classnames';
@@ -101,7 +101,7 @@ const StyledWindowListItem = styled(({ in: inProp, onExited, ...rest }) => (
 `;
 
 export interface WindowListItemProps {
-  window: WindowInstance;
+  window: MetaWindow;
 }
 
 export const WindowListItem: React.FC<WindowListItemProps> = observer(
