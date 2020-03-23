@@ -14,10 +14,10 @@ import { checkCollision } from './checkCollision';
 import { Selection, SelectionContext } from './Selection';
 
 export interface SelectableWrappedRequiredProps {
-  ref: Ref<HTMLDivElement> | undefined | null;
-  onPointerDown: React.PointerEventHandler<HTMLElement>;
-  onPointerMove: React.PointerEventHandler<HTMLElement>;
-  onPointerUp: React.PointerEventHandler<HTMLElement>;
+  ref?: Ref<HTMLDivElement> | null;
+  onPointerDown?: React.PointerEventHandler<HTMLElement>;
+  onPointerMove?: React.PointerEventHandler<HTMLElement>;
+  onPointerUp?: React.PointerEventHandler<HTMLElement>;
 }
 
 export interface SelectableGroupProps {
@@ -137,7 +137,7 @@ export const SelectableGroup: FC<SelectableGroupProps> = ({
 
 export function asSelectableGroup<P>(
   WrappedComponent: React.ComponentType<P>,
-  component?: React.ComponentType<SelectableWrappedRequiredProps>
+  component?: React.ElementType<SelectableWrappedRequiredProps>
 ): FC<P> {
   return props => (
     <SelectableGroup component={component}>

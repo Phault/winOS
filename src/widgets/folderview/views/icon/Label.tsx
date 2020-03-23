@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import { Icon } from './Icon';
+import { Icon } from './';
 
 export const Label = styled.div`
     padding: 1px;

@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react';
 import Truncate from 'react-truncate';
 import classNames from 'classnames';
 import styled from 'styled-components/macro';
-import { Label } from './Label';
+import { Label } from './';
 
 export interface IconProps extends HTMLAttributes<HTMLDivElement> {
     icon?: string;

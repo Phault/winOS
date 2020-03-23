@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ViewModeProps, FileInfo, FileSelectionContext } from '../../FolderView';
-import { Icon, IconProps } from './Icon';
+import { Icon, IconProps } from './';
 import { useUuid } from '../../../../misc/hooks/useUuid';
 import { FileContextMenu } from '../../FileContextMenu';
 import { MenuProvider } from 'react-contexify';

@@ -138,7 +138,7 @@ export const PictureViewer: FC<PictureViewerProps> = ({ initialPath }) => {
   }), [nextImage, prevImage, setBestFit, setActualSize, rotateCW, rotateCCW]);
 
   return (
-    <HotKeys keyMap={KeyboardShortcuts} handlers={actions} component={StyledPictureViewer} onWheel={onWheel}>
+    <HotKeys keyMap={KeyboardShortcuts} handlers={actions} component={StyledPictureViewer} onWheel={onWheel} allowChanges>
         <Preview src={url!} ref={containerRef} zoom={zoom} imageSizeChanged={setImageSize} />
         <Toolbar>
             <Button onClick={prevImage}><Icon src={assets.previous} /></Button>

@@ -8,8 +8,8 @@ export interface SelectableItemProps<T = undefined> {
 }
 
 export interface SelectableItemChildProps {
-    ref: Ref<HTMLElement>;
-    selected: boolean;
+  ref: Ref<HTMLElement>;
+  selected?: boolean;
 }
 
 export const SelectableItem = <T extends {}>({children, data}: SelectableItemProps<T>) => {

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import './ContextMenu.scss';
 import BFS, { BFSRequire } from 'browserfs';
 import { WindowManager } from './windows/WindowManager';
@@ -9,7 +9,7 @@ import { WelcomeScreen } from './logon/WelcomeScreen';
 import { BootLoader } from './boot/BootLoader';
 import { OS } from './OS';
 import styled from 'styled-components/macro';
-import Loadable from 'react-loadable';
+import { Loadable } from './misc/Loadable';
 const BrowserFS: typeof BFS = require('browserfs');
 
 function loadFileSystem(): Promise<FSModule> {
@@ -21,8 +21,8 @@ function loadFileSystem(): Promise<FSModule> {
           readable: {
             fs: 'XmlHttpRequest',
             options: {
-              baseUrl: 'fs/',
-              index: 'fs/index.json'
+              baseUrl: process.env.PUBLIC_URL + '/fs/',
+              index: process.env.PUBLIC_URL + '/fs/index.json'
             }
           },
           writable: {
@@ -69,9 +69,9 @@ async function loadOS(): Promise<OS> {
   return os as OS;
 }
 
-function wait(ms: number): Promise<never> {
+function wait(ms: number): Promise<void> {
   if (process.env.NODE_ENV && process.env.NODE_ENV === 'development')
-    return new Promise(resolve => resolve());
+    return Promise.resolve();
 
   return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
@@ -80,20 +80,13 @@ const LoadableDesktopEnvironment = Loadable({
   loader: () =>
     Promise.all([import('./DesktopEnvironment'), wait(1500)]).then(r => r[0]),
   loading: () => <WelcomeScreen />,
-  render(
-    loaded: typeof import('./DesktopEnvironment'),
-    props: PropsWithChildren<{}>
-  ) {
-    return <loaded.DesktopEnvironment {...props} />;
-  }
+  render: (loaded, props) => <loaded.DesktopEnvironment {...props} />
 });
 
 const LoadableOS = Loadable({
   loader: () => Promise.all([loadOS(), wait(2000)]).then(r => r[0]),
   loading: () => <BootLoader />,
-  render(loaded: OS, props: PropsWithChildren<{}>) {
-    return <OSContext.Provider value={loaded} {...props} />;
-  }
+  render: (loaded, props) => <OSContext.Provider value={loaded} {...props} />
 });
 
 export const OSContext = React.createContext<OS | null>(null);
