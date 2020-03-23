@@ -70,7 +70,7 @@ export interface ButtonProps extends HTMLAttributes<HTMLDivElement> {
 
 export const StartButton: FC<ButtonProps> = ({ label, active, ...rest }) => (
   <StyledStartButton className={classNames({ active })} {...rest}>
-    <img src={windowsIcon} draggable={false} />
+    <img src={windowsIcon} draggable={false} alt="" />
     {label}
   </StyledStartButton>
 );

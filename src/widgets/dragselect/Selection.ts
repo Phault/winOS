@@ -48,7 +48,7 @@ export class Selection<T = any> {
 
   selectAll() {
     this.selected = new Set(this.items.keys());
-    for (let [item, config] of this.items) config.setSelected(true);
+    for (let [, config] of this.items) config.setSelected(true);
   }
 
   clearSelection() {

@@ -1,6 +1,4 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { MenuBar } from '../../widgets/menubar/MenuBar';
-import { Submenu, Item, Separator } from 'react-contexify';
 import { FolderView, FileInfo } from '../../widgets/folderview/FolderView';
 import { IconView } from '../../widgets/folderview/views/icon/IconView';
 import * as Toolbar from '../../widgets/toolbar';
@@ -14,31 +12,17 @@ import { Observer, useObserver } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './header/NavigationHistoryButtons';
 import { OSContext } from '../../App';
-import { CreateNewItems } from '../../widgets/folderview/FolderContextMenu';
-import { KeyMap } from 'react-hotkeys';
 import { ExplorerApp } from './ExplorerApp';
 import { Header } from './header/Header';
 import { Body } from './Body';
 import { Sidebar } from './sidebar/Sidebar';
 import { Group } from './sidebar/Group';
 import { Contents } from './Contents';
-import { WindowsIcon } from './header/WindowsIcon';
 import styled from 'styled-components/macro';
 import { ViewModeItems } from './header/ViewModeItems';
 import { AddressBar } from './header/addressbar/AddressBar';
-import { MenuBarMenu } from '../../widgets/menubar/MenuBarMenu';
 import { ToolbarMenu } from './header/ToolbarMenu';
 import { GroupItem } from './sidebar/GroupItem';
-
-const ExplorerKeyMap: KeyMap = {
-  SEARCH: ['ctrl+f', 'ctrl+e', 'f3'],
-  FAVORITES: 'ctrl+i',
-  HISTORY: 'ctrl+h',
-  BACK: ['alt+left', 'backspace'],
-  FORWARD: 'alt+right',
-  CLOSE: 'ctrl+w',
-  FOCUS_ADDRESSBAR: 'f4',
-};
 
 const StyledExplorer = styled.div`
   flex-grow: 1;

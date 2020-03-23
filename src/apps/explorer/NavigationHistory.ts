@@ -48,10 +48,14 @@ class NavigationHistory<T> {
 
   get previous() {
     if (this.canGoBack) return this.stack[this.position - 1];
+
+    return null;
   }
 
   get next() {
     if (this.canGoForward) return this.stack[this.position + 1];
+
+    return null;
   }
 
   get previousAll() {

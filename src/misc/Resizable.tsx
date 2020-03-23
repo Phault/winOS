@@ -10,11 +10,11 @@ function mapDirectionToCursor(dir: Direction) {
 
   var dirs = '';
 
-  if ((dir & Direction.North) == Direction.North) dirs += 'n';
-  else if ((dir & Direction.South) == Direction.South) dirs += 's';
+  if ((dir & Direction.North) === Direction.North) dirs += 'n';
+  else if ((dir & Direction.South) === Direction.South) dirs += 's';
 
-  if ((dir & Direction.West) == Direction.West) dirs += 'w';
-  else if ((dir & Direction.East) == Direction.East) dirs += 'e';
+  if ((dir & Direction.West) === Direction.West) dirs += 'w';
+  else if ((dir & Direction.East) === Direction.East) dirs += 'e';
 
   return dirs + '-resize';
 }

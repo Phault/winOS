@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  RefObject,
   Ref,
 } from 'react';
 import { Position } from '../../misc/Position';

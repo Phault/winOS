@@ -19,7 +19,7 @@ const IconBase: React.FC<IconProps> = React.forwardRef<
     className={classNames(className, { active: selected, focus })}
     {...rest}
     ref={ref}>
-    <img src={icon} draggable={false} />
+    <img src={icon} draggable={false} alt="" />
     <Label>
       <Truncate lines={2}>{children}</Truncate>
     </Label>

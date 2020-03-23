@@ -16,7 +16,7 @@ const fadeIn = keyframes`
 export const BootLoader = styled(props => (
   <div {...props}>
     <div style={{ flexGrow: 1.3 }} />
-    <img src={logonLogo} />
+    <img src={logonLogo} alt="" />
     <div style={{ flexGrow: 1 }} />
     <ProgressBar width={126} />
     <div style={{ flexGrow: 1 }} />

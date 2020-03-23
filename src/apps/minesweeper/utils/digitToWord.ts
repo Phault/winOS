@@ -21,6 +21,6 @@ export function digitToWord(digit: number) {
     case 9:
       return 'nine';
     default:
-      throw `${digit} is not a digit`;
+      throw new Error(`${digit} is not a digit`);
   }
 }

@@ -59,7 +59,7 @@ export const Preview = forwardRef<HTMLDivElement, PreviewProps>(
 
     return (
       <PreviewWrapper ref={ref} hideOverflow={zoom === 'auto'}>
-        <img {...rest} ref={imageRef} style={style} draggable={false} />
+        <img {...rest} ref={imageRef} style={style} draggable={false} alt="" />
       </PreviewWrapper>
     );
   }

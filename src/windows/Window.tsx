@@ -7,12 +7,12 @@ import React, {
   FC,
   memo,
 } from 'react';
-import asResizable, { WrappedResizableProps } from '../misc/Resizable';
-import asMovable, { WrappedMovableProps } from '../misc/Movable';
+import asResizable from '../misc/Resizable';
+import asMovable from '../misc/Movable';
 import { Rectangle } from '../misc/Rectangle';
 import { TitleBar } from './TitleBar';
 import classNames from 'classnames';
-import styled, { createGlobalStyle } from 'styled-components/macro';
+import styled from 'styled-components/macro';
 import { background } from '../misc/mixins';
 
 const Frame = styled(({ className, children }) => (
