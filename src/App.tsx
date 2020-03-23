@@ -22,7 +22,7 @@ function loadFileSystem(): Promise<FSModule> {
             fs: 'XmlHttpRequest',
             options: {
               baseUrl: process.env.PUBLIC_URL + '/fs/',
-              index: process.env.PUBLIC_URL + '/fs/index.json'
+              index: process.env.PUBLIC_URL + '/filesystem.json'
             }
           },
           writable: {
