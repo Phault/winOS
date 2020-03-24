@@ -1,4 +1,4 @@
-import { decorate, action, observable } from 'mobx';
+import { action, observable } from 'mobx';
 
 export type GridCallbackHandler<T, R = void> = (
   value: T,
@@ -23,10 +23,12 @@ export class Grid<T> {
     return this.items[this.calcIndex(x, y)];
   }
 
+  @action
   set(x: number, y: number, value: T) {
     this.items[this.calcIndex(x, y)] = value;
   }
 
+  @action
   setAll(value: () => T | T) {
     if (typeof value !== 'function') {
       this.items.fill(value);
@@ -83,8 +85,3 @@ export class Grid<T> {
     }
   }
 }
-
-decorate(Grid, {
-  set: action,
-  setAll: action,
-});

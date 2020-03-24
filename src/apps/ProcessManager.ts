@@ -1,6 +1,6 @@
 import { Program } from '../Program.interface';
 import { OS } from '../OS';
-import { decorate, computed } from 'mobx';
+import { computed } from 'mobx';
 
 export interface Process {
   program: Program;
@@ -8,11 +8,12 @@ export interface Process {
   promise: Promise<number | void>;
 }
 
-class ProcessManager {
+export class ProcessManager {
   private _running: Process[] = [];
 
   constructor(private os: OS) {}
 
+  @computed
   get running(): ReadonlyArray<Process> {
     return this._running;
   }
@@ -33,9 +34,3 @@ class ProcessManager {
     return await process.promise;
   }
 }
-
-decorate(ProcessManager, {
-  running: computed,
-});
-
-export { ProcessManager };

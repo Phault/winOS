@@ -1,4 +1,4 @@
-import { decorate, observable } from 'mobx';
+import { observable } from 'mobx';
 
 export type CellContents = 'mine' | 'explosion' | number;
 
@@ -9,13 +9,7 @@ export enum CellMarker {
 }
 
 export class Cell {
-  hidden = true;
-  contents: CellContents = 0;
-  marker = CellMarker.None;
+  @observable hidden = true;
+  @observable contents: CellContents = 0;
+  @observable marker = CellMarker.None;
 }
-
-decorate(Cell, {
-  hidden: observable,
-  contents: observable,
-  marker: observable,
-});

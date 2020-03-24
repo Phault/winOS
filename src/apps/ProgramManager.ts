@@ -1,22 +1,27 @@
 import { Program } from '../Program.interface';
-import { decorate, computed, action, observable } from 'mobx';
+import { computed, action, observable, runInAction } from 'mobx';
 import { FileInfo } from '../widgets/folderview/FolderView';
 import * as nodePath from 'bfs-path';
 import { getDefaultIcon } from '../misc/io/fileUtils';
 
-class ProgramManager {
-  _installed: Program[] = [];
+export class ProgramManager {
+  @observable _installed: Program[] = [];
 
+  @computed
   get installed(): ReadonlyArray<Program> {
     return this._installed;
   }
 
+  @action
   async install(installer: () => Promise<Program>): Promise<Program> {
     const result = await installer();
-    this._installed.push(result);
+    runInAction(() => {
+      this._installed.push(result);
+    });
     return result;
   }
 
+  @action
   uninstall() {}
 
   getInstalledForExtension(extension: string): Program[] {
@@ -37,12 +42,3 @@ class ProgramManager {
     return getDefaultIcon(file);
   }
 }
-
-decorate(ProgramManager, {
-  _installed: observable,
-  installed: computed,
-  install: action,
-  uninstall: action,
-});
-
-export { ProgramManager };

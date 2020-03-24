@@ -1,5 +1,5 @@
 import { Grid } from './utils/Grid';
-import { decorate, observable, action, computed } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { Cell, CellMarker } from './Cell';
 
 export enum GameState {
@@ -9,15 +9,13 @@ export enum GameState {
 }
 
 export class Game {
-  state = GameState.Pregame;
+  @observable state = GameState.Pregame;
   mineCount: number;
   minefield: Grid<Cell>;
-  flagsPlaced = 0;
-  cellsLeft: number;
+  @observable flagsPlaced = 0;
+  @observable cellsLeft: number;
   private startTime: number = 0;
   private endTime: number = 0;
-
-  // onGameOver: () => void;
 
   constructor(width: number, height: number, mines: number) {
     this.minefield = new Grid<Cell>(width, height, () => new Cell());
@@ -25,6 +23,7 @@ export class Game {
     this.cellsLeft = width * height - this.mineCount;
   }
 
+  @computed
   get time() {
     if (this.state === GameState.InProgress)
       return new Date().getTime() - this.startTime;
@@ -58,6 +57,7 @@ export class Game {
     this.state = GameState.Ended;
   }
 
+  @action
   revealMinesAndFlags(flagAllMines: boolean) {
     this.minefield.forEach(cell => {
       if (cell.contents === 'mine' || cell.marker === CellMarker.Flag) {
@@ -68,6 +68,7 @@ export class Game {
     });
   }
 
+  @action
   revealCell(x: number, y: number) {
     const cell = this.minefield.get(x, y);
 
@@ -85,12 +86,14 @@ export class Game {
     } else if (cell.contents === 'mine') this.end(cell);
   }
 
+  @action
   revealAdjacentCells(x: number, y: number) {
     this.minefield.forEachAdjacent(x, y, (cell, adjacentX, adjacentY, grid) => {
       this.revealCell(adjacentX, adjacentY);
     });
   }
 
+  @action
   cycleMarker(cell: Cell, unknownMarkEnabled: boolean) {
     const lastMarker = unknownMarkEnabled
       ? CellMarker.Unknown
@@ -98,6 +101,7 @@ export class Game {
     this.setMarker(cell, (cell.marker + 1) % (lastMarker + 1));
   }
 
+  @action
   setMarker(cell: Cell, marker: CellMarker) {
     if (!cell.hidden) return;
 
@@ -136,15 +140,3 @@ export class Game {
     });
   }
 }
-
-decorate(Game, {
-  state: observable,
-  cellsLeft: observable,
-  flagsPlaced: observable,
-  time: computed,
-  revealCell: action,
-  revealAdjacentCells: action,
-  revealMinesAndFlags: action,
-  setMarker: action,
-  cycleMarker: action,
-});

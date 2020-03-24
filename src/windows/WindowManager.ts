@@ -1,17 +1,18 @@
-import { decorate, observable, action, computed } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import React from 'react';
 import { MetaWindow } from './MetaWindow';
 import { WindowTemplate } from './WindowTemplate';
 
 export const WindowContext = React.createContext<MetaWindow | null>(null);
 
-class WindowManager {
-  windows: MetaWindow[] = [];
+export class WindowManager {
+  @observable windows: MetaWindow[] = [];
 
   private idToWindowMap = new Map<number, MetaWindow>();
 
   private nextId = 0;
 
+  @computed
   public get focused() {
     for (let i = this.windows.length - 1; i >= 0; i--) {
       const window = this.windows[i];
@@ -22,6 +23,7 @@ class WindowManager {
     return null;
   }
 
+  @action
   public create(template: WindowTemplate): MetaWindow {
     const id = this.getNextId();
     const instance = new MetaWindow(id, this, template);
@@ -31,6 +33,7 @@ class WindowManager {
     return instance;
   }
 
+  @action
   public destroy(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
@@ -38,6 +41,7 @@ class WindowManager {
     this.idToWindowMap.delete(window!.id);
   }
 
+  @action
   public minimize(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
 
@@ -47,6 +51,7 @@ class WindowManager {
     this.sendBackwards(window!);
   }
 
+  @action
   public restore(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
 
@@ -56,6 +61,7 @@ class WindowManager {
     this.bringToFront(instanceOrId);
   }
 
+  @action
   public bringToFront(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
@@ -63,6 +69,7 @@ class WindowManager {
     this.windows.push(window!);
   }
 
+  @action
   public bringForwards(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
@@ -71,6 +78,7 @@ class WindowManager {
     this.windows[targetIndex] = window!;
   }
 
+  @action
   public sendToBack(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
@@ -78,6 +86,7 @@ class WindowManager {
     this.windows.unshift(window!);
   }
 
+  @action
   public sendBackwards(instanceOrId: MetaWindow | number) {
     const window = this.getWindow(instanceOrId);
     const currentIndex = this.windows.indexOf(window!);
@@ -96,18 +105,3 @@ class WindowManager {
       : this.idToWindowMap.get(instanceOrId);
   }
 }
-
-decorate(WindowManager, {
-  windows: observable,
-  focused: computed,
-  create: action,
-  destroy: action,
-  minimize: action,
-  restore: action,
-  bringToFront: action,
-  bringForwards: action,
-  sendToBack: action,
-  sendBackwards: action,
-});
-
-export { WindowManager };

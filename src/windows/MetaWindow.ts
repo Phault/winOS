@@ -1,20 +1,20 @@
 import { Rectangle } from '../misc/Rectangle';
 import { ReactNode } from 'react';
 import { WindowTemplate } from './WindowTemplate';
-import { decorate, observable, action } from 'mobx';
+import { observable, action } from 'mobx';
 import { WindowManager } from './WindowManager';
 
-class MetaWindow {
+export class MetaWindow {
   id: Readonly<number>;
   manager: Readonly<WindowManager>;
-  title: string;
-  icon?: string;
-  isMaximized: boolean = false;
-  isMinimized: boolean = false;
-  rect: Rectangle;
+  @observable title: string;
+  @observable icon?: string;
+  @observable isMaximized: boolean = false;
+  @observable isMinimized: boolean = false;
+  @observable isResizable: boolean = true;
+  @observable rect: Rectangle;
   body: ReactNode;
   template: Readonly<WindowTemplate>;
-  isResizable: boolean;
 
   constructor(id: number, manager: WindowManager, template: WindowTemplate) {
     this.id = id;
@@ -33,24 +33,13 @@ class MetaWindow {
     this.body = template.body(this);
   }
 
+  @action
   focus() {
     this.manager.bringToFront(this);
   }
 
+  @action
   destroy() {
     this.manager.destroy(this);
   }
 }
-
-decorate(MetaWindow, {
-  title: observable,
-  icon: observable,
-  isMaximized: observable,
-  isMinimized: observable,
-  isResizable: observable,
-  rect: observable,
-  focus: action,
-  destroy: action,
-});
-
-export { MetaWindow };
