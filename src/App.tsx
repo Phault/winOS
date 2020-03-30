@@ -1,8 +1,6 @@
 import React from 'react';
 import './ContextMenu.scss';
-import BFS, { BFSRequire } from 'browserfs';
 import { WindowManager } from './windows/WindowManager';
-import { FSModule } from 'browserfs/dist/node/core/FS';
 import { ProgramManager } from './apps/ProgramManager';
 import { ProcessManager } from './apps/ProcessManager';
 import { WelcomeScreen } from './logon/WelcomeScreen';
@@ -10,35 +8,7 @@ import { BootLoader } from './boot/BootLoader';
 import { OS } from './OS';
 import styled from 'styled-components/macro';
 import { Loadable } from './misc/Loadable';
-const BrowserFS: typeof BFS = require('browserfs');
-
-function loadFileSystem(): Promise<FSModule> {
-  return new Promise<FSModule>((resolve, reject) => {
-    BrowserFS.configure(
-      {
-        fs: 'OverlayFS',
-        options: {
-          readable: {
-            fs: 'XmlHttpRequest',
-            options: {
-              baseUrl: process.env.PUBLIC_URL + '/fs/',
-              index: process.env.PUBLIC_URL + '/filesystem.json',
-            },
-          },
-          writable: {
-            fs: 'LocalStorage',
-            options: {},
-          },
-        },
-      },
-      e => {
-        if (e) reject(e);
-
-        resolve(BFSRequire('fs'));
-      }
-    );
-  });
-}
+import { loadFileSystem } from './filesystem/loadFileSystem';
 
 async function loadProgramManager(): Promise<ProgramManager> {
   const manager = new ProgramManager();

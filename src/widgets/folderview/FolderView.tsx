@@ -105,6 +105,13 @@ export const FolderView: React.FC<FolderViewProps> = asSelectableGroup(
 
     useEffect(() => loadContents(path), [path]);
 
+    useEffect(() => {
+      const watcher = fileSystem.watch(path, () => loadContents(path));
+      // todo: if dir is deleted, tell parent so that it can go up to nearest existing dir
+      // todo: if a new item is created through context menu, then it should be selected after the refresh
+      return () => watcher.close();
+    }, [fileSystem, path]);
+
     function deleteSelection() {
       const files = getSelectedFiles(selection);
       for (const file of files) {
@@ -112,7 +119,6 @@ export const FolderView: React.FC<FolderViewProps> = asSelectableGroup(
         if (file.stats.isDirectory()) rimraf(fileSystem, fullPath);
         else if (file.stats.isFile()) fileSystem.unlinkSync(fullPath);
       }
-      loadContents(path);
     }
 
     const keyHandlers: KeyHandlers<CursorMovementKeyMap> = {
