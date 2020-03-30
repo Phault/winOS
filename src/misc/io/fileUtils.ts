@@ -98,8 +98,8 @@ export function getNextFreeName(
 
   if (!contents.has(fileName)) return fileName;
 
-  const base = nodePath.basename(fileName);
   const ext = nodePath.extname(fileName);
+  const base = nodePath.basename(fileName, ext);
 
   for (let i = 2; ; i++) {
     const newName = `${base} (${i})${ext}`;
