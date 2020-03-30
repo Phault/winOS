@@ -19,6 +19,7 @@ export const AutosuggestWrapper = styled.div`
     left: 0px;
     top: 100%;
 
+    z-index: 1;
     max-height: 100px;
   }
 
