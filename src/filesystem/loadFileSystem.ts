@@ -13,18 +13,23 @@ export function loadFileSystem(): Promise<FSModule> {
         fs: 'WatchableFS',
         options: {
           wrapped: {
-            fs: 'OverlayFS',
+            fs: 'MountableFileSystem',
             options: {
-              readable: {
-                fs: 'XmlHttpRequest',
+              '/C:': {
+                fs: 'OverlayFS',
                 options: {
-                  baseUrl: process.env.PUBLIC_URL + '/fs/',
-                  index: process.env.PUBLIC_URL + '/filesystem.json',
+                  readable: {
+                    fs: 'XmlHttpRequest',
+                    options: {
+                      baseUrl: process.env.PUBLIC_URL + '/fs/',
+                      index: process.env.PUBLIC_URL + '/filesystem.json',
+                    },
+                  },
+                  writable: {
+                    fs: 'LocalStorage',
+                    options: {},
+                  },
                 },
-              },
-              writable: {
-                fs: 'LocalStorage',
-                options: {},
               },
             },
           },

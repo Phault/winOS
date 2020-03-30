@@ -111,7 +111,7 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
             onClick={() =>
               run(
                 ExplorerApp,
-                '/Documents and Settings/Casper Lindschouw/My Documents'
+                '/C:/Documents and Settings/Casper Lindschouw/My Documents'
               )
             }
           />
@@ -122,7 +122,7 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
             onClick={() =>
               run(
                 ExplorerApp,
-                '/Documents and Settings/Casper Lindschouw/Recent'
+                '/C:/Documents and Settings/Casper Lindschouw/Recent'
               )
             }
           />
@@ -133,7 +133,7 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
             onClick={() =>
               run(
                 ExplorerApp,
-                '/Documents and Settings/Casper Lindschouw/My Documents/My Pictures'
+                '/C:/Documents and Settings/Casper Lindschouw/My Documents/My Pictures'
               )
             }
           />
@@ -144,7 +144,7 @@ export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
             onClick={() =>
               run(
                 ExplorerApp,
-                '/Documents and Settings/Casper Lindschouw/My Documents/My Music'
+                '/C:/Documents and Settings/Casper Lindschouw/My Documents/My Music'
               )
             }
           />

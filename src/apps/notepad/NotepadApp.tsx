@@ -12,7 +12,7 @@ export const NotepadApp: Program = {
     '.txt': textIcon,
   },
   run: async (os, args) => {
-    const path = args || 'test.txt';
+    const path = args || '/C:/test.txt';
     const nodePath = BFSRequire('path');
     const fileName = nodePath.basename(path);
 
