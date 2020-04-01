@@ -25,7 +25,7 @@ export const MinesweeperApp: Program = {
         height: 100,
       },
       isResizable: false,
-      body: _window => <Minesweeper />,
+      body: <Minesweeper />,
     });
   },
 };

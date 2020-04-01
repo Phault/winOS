@@ -19,9 +19,6 @@ export class FSWatcherShim extends EventEmitter implements FSWatcher {
     this.path = nodePath.normalize(path);
     this.stats = fileSystem.statSync(this.path, false);
 
-    console.log(this.path);
-    console.log(this.stats);
-
     fileSystem.on('any', this.fsListener);
   }
 

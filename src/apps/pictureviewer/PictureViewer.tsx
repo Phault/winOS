@@ -68,7 +68,7 @@ export const PictureViewer: FC<PictureViewerProps> = ({ initialPath }) => {
 
   useEffect(() => {
     const name = nodePath.basename(path);
-    window.title = `${name} - ${window.template.title}`;
+    window.title = `${name} - Picture Viewer`;
   }, [path]);
 
   const containerRef = useRef<HTMLDivElement>(null);

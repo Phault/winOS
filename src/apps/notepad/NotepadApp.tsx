@@ -33,7 +33,7 @@ export const NotepadApp: Program = {
         width: 120,
         height: 100,
       },
-      body: () => <NotepadWindow path={path} />,
+      body: <NotepadWindow path={path} />,
     });
   },
 };

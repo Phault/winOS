@@ -26,7 +26,7 @@ export const ExplorerApp: Program = {
         width: 120,
         height: 100,
       },
-      body: () => <Explorer initialDir={initialDir} />,
+      body: <Explorer initialDir={initialDir} />,
     });
   },
 };

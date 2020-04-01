@@ -3,34 +3,29 @@ import { ReactNode } from 'react';
 import { WindowTemplate } from './WindowTemplate';
 import { observable, action } from 'mobx';
 import { WindowManager } from './WindowManager';
+import { Size } from '../misc/Size';
 
 export class MetaWindow {
   id: Readonly<number>;
   manager: Readonly<WindowManager>;
-  @observable title: string;
+  @observable title: string = 'Untitled';
   @observable icon?: string;
   @observable isMaximized: boolean = false;
   @observable isMinimized: boolean = false;
   @observable isResizable: boolean = true;
-  @observable rect: Rectangle;
-  body: ReactNode;
-  template: Readonly<WindowTemplate>;
+  @observable rect: Rectangle = { left: 0, top: 0, width: 1, height: 1 };
+  @observable minSize: Size = { width: 1, height: 1 };
+  @observable maxSize: Size = {
+    width: Number.POSITIVE_INFINITY,
+    height: Number.POSITIVE_INFINITY,
+  };
+  @observable body: ReactNode;
 
-  constructor(id: number, manager: WindowManager, template: WindowTemplate) {
+  constructor(id: number, manager: WindowManager, template?: WindowTemplate) {
     this.id = id;
     this.manager = manager;
-    this.title = template.title;
-    this.icon = template.icon;
-    this.rect = template.rect || {
-      left: 0,
-      top: 0,
-      width: 1,
-      height: 1,
-    };
-    this.isResizable =
-      template.isResizable !== undefined ? template.isResizable : true;
-    this.template = template;
-    this.body = template.body(this);
+
+    if (template) Object.assign(this, template);
   }
 
   @action
