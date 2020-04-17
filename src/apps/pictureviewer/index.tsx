@@ -31,7 +31,7 @@ export const PictureViewerApp: Program = {
         width: 100,
         height: 100,
       },
-      body: () => <PictureViewer initialPath={args!} />,
+      body: <PictureViewer initialPath={args!} />,
     });
   },
 };
