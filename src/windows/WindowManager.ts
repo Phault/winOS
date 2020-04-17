@@ -35,64 +35,64 @@ export class WindowManager {
 
   @action
   public destroy(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
-    const currentIndex = this.windows.indexOf(window!);
+    const window = this.getWindow(instanceOrId)!;
+    const currentIndex = this.windows.indexOf(window);
     this.windows.splice(currentIndex, 1);
-    this.idToWindowMap.delete(window!.id);
+    this.idToWindowMap.delete(window.id);
   }
 
   @action
   public minimize(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
+    const window = this.getWindow(instanceOrId)!;
 
-    if (window!.isMinimized) return;
+    if (window.isMinimized) return;
 
-    window!.isMinimized = true;
-    this.sendBackwards(window!);
+    window.isMinimized = true;
+    this.sendBackwards(window);
   }
 
   @action
   public restore(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
+    const window = this.getWindow(instanceOrId)!;
 
-    if (!window!.isMinimized) return;
+    if (!window.isMinimized) return;
 
-    window!.isMinimized = false;
+    window.isMinimized = false;
     this.bringToFront(instanceOrId);
   }
 
   @action
   public bringToFront(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
-    const currentIndex = this.windows.indexOf(window!);
+    const window = this.getWindow(instanceOrId)!;
+    const currentIndex = this.windows.indexOf(window);
     this.windows.splice(currentIndex, 1);
-    this.windows.push(window!);
+    this.windows.push(window);
   }
 
   @action
   public bringForwards(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
-    const currentIndex = this.windows.indexOf(window!);
+    const window = this.getWindow(instanceOrId)!;
+    const currentIndex = this.windows.indexOf(window);
     const targetIndex = Math.min(this.windows.length - 1, currentIndex + 1);
     this.windows[currentIndex] = this.windows[targetIndex];
-    this.windows[targetIndex] = window!;
+    this.windows[targetIndex] = window;
   }
 
   @action
   public sendToBack(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
-    const currentIndex = this.windows.indexOf(window!);
+    const window = this.getWindow(instanceOrId)!;
+    const currentIndex = this.windows.indexOf(window);
     this.windows.splice(currentIndex, 1);
-    this.windows.unshift(window!);
+    this.windows.unshift(window);
   }
 
   @action
   public sendBackwards(instanceOrId: MetaWindow | number) {
-    const window = this.getWindow(instanceOrId);
-    const currentIndex = this.windows.indexOf(window!);
+    const window = this.getWindow(instanceOrId)!;
+    const currentIndex = this.windows.indexOf(window);
     const targetIndex = Math.max(0, currentIndex - 1);
     this.windows[currentIndex] = this.windows[targetIndex];
-    this.windows[targetIndex] = window!;
+    this.windows[targetIndex] = window;
   }
 
   private getNextId() {
