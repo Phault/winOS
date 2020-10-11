@@ -12,7 +12,7 @@ import { Observer } from 'mobx-react-lite';
 import * as nodePath from 'bfs-path';
 import { NavigationHistoryButtons } from './header/NavigationHistoryButtons';
 import { OSContext } from '../../App';
-import { ExplorerApp } from './ExplorerApp';
+import { ExplorerApp } from '.';
 import { Header } from './header/Header';
 import { Body } from './Body';
 import { Sidebar } from './sidebar/Sidebar';
@@ -48,7 +48,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ initialDir }) => {
       path: history.current,
       stats,
     });
-    window.title = nodePath.basename(history.current) || ExplorerApp.name;
+    window.title =
+      nodePath.basename(history.current) || ExplorerApp.metadata.name;
   }, [fileSystem, programManager, history, window.title, window.icon]);
 
   const handleFileExecution = useCallback(
@@ -59,10 +60,21 @@ export const Explorer: React.FC<ExplorerProps> = ({ initialDir }) => {
         : nodePath.join(history.current, file.path);
 
       if (file.stats.isFile()) {
+        if (nodePath.extname(fullPath) === '.exe') {
+          processManager.start(fullPath);
+          return;
+        }
+
         const apps = programManager.getInstalledForExtension(
           nodePath.extname(fullPath)
         );
-        if (apps.length > 0) processManager.run(apps[0], fullPath);
+
+        if (apps.length > 0) {
+          processManager.startFromMemory(apps[0], {
+            fileName: `${apps[0].name}.exe`,
+            arguments: [fullPath],
+          });
+        }
       } else if (fullPath !== history.current) history.push(fullPath);
     },
     [history, processManager, programManager]

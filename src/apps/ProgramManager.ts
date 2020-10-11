@@ -27,7 +27,7 @@ export class ProgramManager {
   getInstalledForExtension(extension: string): Program[] {
     return computed(() =>
       this._installed.filter(
-        p => p.fileExtensions && extension in p.fileExtensions
+        p => p.metadata.fileExtensions && extension in p.metadata.fileExtensions
       )
     ).get();
   }
@@ -37,7 +37,7 @@ export class ProgramManager {
     const programs = this.getInstalledForExtension(ext);
 
     if (programs.length > 0)
-      return programs[0].fileExtensions![ext] || getDefaultIcon(file);
+      return programs[0].metadata.fileExtensions![ext] || getDefaultIcon(file);
 
     return getDefaultIcon(file);
   }

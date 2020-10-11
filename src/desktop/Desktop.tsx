@@ -43,11 +43,25 @@ export const Desktop: FC<{ path: string }> = ({ path }) => {
         : nodePath.join(path, file.path);
 
       if (file.stats.isFile()) {
+        if (nodePath.extname(fullPath) === '.exe') {
+          processManager.start(fullPath);
+          return;
+        }
+
         const apps = programManager.getInstalledForExtension(
           nodePath.extname(fullPath)
         );
-        if (apps.length > 0) processManager.run(apps[0], fullPath);
-      } else processManager.run(ExplorerApp, fullPath);
+
+        if (apps.length > 0)
+          processManager.startFromMemory(apps[0], {
+            fileName: `${apps[0].name}.exe`,
+            arguments: [fullPath],
+          });
+      } else
+        processManager.startFromMemory(ExplorerApp, {
+          fileName: `${ExplorerApp.name}.exe`,
+          arguments: [fullPath],
+        });
     },
     [processManager, path]
   );

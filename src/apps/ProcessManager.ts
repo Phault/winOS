@@ -1,36 +1,106 @@
-import { Program } from '../Program.interface';
 import { OS } from '../OS';
-import { computed } from 'mobx';
+
+export type Executable = (
+  this: ProcessContext,
+  args: string[]
+) => Promise<void>;
 
 export interface Process {
-  program: Program;
-  args?: string;
-  promise: Promise<number | void>;
+  id: number;
+  command: string;
+  userName: string;
+}
+
+export interface ProcessContext extends Process {
+  os: OS;
+  environment: Record<string, string>;
+  workingDirectory: string;
+}
+
+export interface ProcessStartInfo {
+  fileName: string;
+  arguments: string[];
+  userName: string;
+  workingDirectory: string;
+  environment: Record<string, string>;
+}
+
+export interface ProcessStartInfoInput extends Partial<ProcessStartInfo> {
+  fileName: string;
 }
 
 export class ProcessManager {
-  private _running: Process[] = [];
+  private _processes: Process[] = [];
+  private _nextId = 0;
 
   constructor(private os: OS) {}
 
-  @computed
-  get running(): ReadonlyArray<Process> {
-    return this._running;
+  start(fileName: string, ...args: string[]): Promise<Process> {
+    return this.startWithInfo({
+      fileName,
+      arguments: args,
+    });
   }
 
-  async run(program: Program, args?: string): Promise<number | void> {
-    const process: Process = {
-      program,
-      args,
-      promise: program.run(this.os, args),
+  async startWithInfo(startInfo: ProcessStartInfoInput): Promise<Process> {
+    const contents = this.os.fileSystem.readFileSync(
+      startInfo.fileName,
+      'utf8'
+    );
+
+    const base64code = 'data:application/javascript;base64,' + btoa(contents);
+
+    const entryPoint = (await import(/* webpackIgnore: true */ base64code))
+      .main;
+    return this.startFromMemory(entryPoint, startInfo);
+  }
+
+  startFromMemory(
+    entryPoint: Executable,
+    startInfo: ProcessStartInfoInput
+  ): Process {
+    const fullStartInfo: ProcessStartInfo = {
+      arguments: [],
+      environment: {
+        OS: 'Windows_NT',
+        PATH: '%SystemRoot%;%SystemRoot%/System32',
+        TEMP: '%SystemRoot%/TEMP',
+        TMP: '%SystemRoot%/TEMP',
+      },
+      workingDirectory: '%SystemRoot%/System32',
+      userName: 'SYSTEM',
+      ...startInfo,
     };
 
-    this._running.push(process);
+    const process: ProcessContext = {
+      ...fullStartInfo,
+      id: this.getNextId(),
+      command: 'placeholder.exe',
+      os: this.os,
+    };
 
-    process.promise.finally(() => {
-      this._running.splice(this.running.indexOf(process));
-    });
+    try {
+      this._processes.push(process);
 
-    return await process.promise;
+      const promise = entryPoint.apply(process, [fullStartInfo.arguments]);
+
+      promise.finally(() => {
+        this._processes.splice(this._processes.indexOf(process));
+      });
+
+      // todo: store this promise so we can await it in wait()
+    } catch (e) {
+      console.error('process exited with an error', process, e);
+    }
+
+    return process;
+  }
+
+  // async wait(process: Process) {}
+
+  // kill(process: Process) {}
+
+  private getNextId() {
+    return this._nextId++;
   }
 }

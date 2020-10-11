@@ -1,1 +1,0 @@
-export { NotepadApp } from './NotepadApp';

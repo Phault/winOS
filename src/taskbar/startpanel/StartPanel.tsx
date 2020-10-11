@@ -72,15 +72,23 @@ export interface StartPanelProps {
 export const StartPanel: React.FC<StartPanelProps> = ({ onClose, ...rest }) => {
   const { programManager, processManager } = useContext(OSContext)!;
 
-  function run(program: Program, args?: string) {
-    processManager.run(program, args);
+  function run(program: Program, ...args: string[]) {
+    processManager.startFromMemory(program, {
+      fileName: `${program.name}.exe`,
+      arguments: args,
+    });
     onClose();
   }
 
   const programs = programManager.installed
-    .filter(p => !p.hidden)
+    .filter(p => !p.metadata.hidden)
     .map((p, i) => (
-      <Item key={i} title={p.name} icon={p.icon} onClick={() => run(p)} />
+      <Item
+        key={i}
+        title={p.metadata.name}
+        icon={p.metadata.icon}
+        onClick={() => run(p)}
+      />
     ));
 
   return (
